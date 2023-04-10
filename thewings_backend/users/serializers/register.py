@@ -26,8 +26,16 @@ class UserRegisterSerializer(ModelSerializer):
 
 
 class SubmitCodeSerializer(ModelSerializer):
-    code = CharField(style={'input_type': 'password'}, write_only=True, max_length=6, min_length=6)
+    code = CharField(style={'input_type': 'password'}, max_length=6, min_length=6)
 
     class Meta:
         model = User
         fields = ['email', 'code']
+        
+
+class SendNewCodeSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+        
+
