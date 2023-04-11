@@ -8,6 +8,8 @@ from ...utils import Util
 import random
 from .processing.env_variables import redis_cache, redis_instance
 import json
+from ..tasks import send_email_signup, resend_email_signup
+
 
 class UserRegisterView(APIView):
     renderer_classes = (UserRenderer,)
@@ -16,19 +18,7 @@ class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            email = serializer.data.get('email')
-            name = serializer.data.get('name')
-            code = random.randint(100000, 999999)
-            body = {
-                'email_subject': 'The wings send to you',
-                'email_body': 'Hi ' + name + ', ' + 'your code is ' + str(code),
-                'to_email': email,
-            }
-            # gửi lên mailhog
-            Util.send_email(body)
-
-            # lưu redis
-            redis_cache(email, code, request.data)
+            send_email_signup.delay(request.data)
             return Response({'data': serializer.data, 'message': 'Send email success'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -65,31 +55,18 @@ class CreateRegisterView(APIView):
                 return Response({'detail': 'Code is not correct'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class SendNewCodeView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = SendNewCodeSerializer
-    
-    
+
     def post(self, request):
         serializer = SendNewCodeSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.data.get('email')
-            user = json.loads(redis_instance.get(f"{email}_value"))
-            code = random.randint(100000, 999999)
-            body = {
-                'email_subject': 'The wings send to you',
-                'email_body': 'Hi ' + user['name'] + ', ' + 'your code is ' + str(code),
-                'to_email': email,
-            }
-            Util.send_email(body)
-            key = f"{email}_code"
-            if redis_instance.get(key) is not None:
-                redis_instance.delete(key)
-            redis_instance.set(key, code)
-            redis_instance.expire(key, 300)
+            resend_email_signup.delay(email)
             return Response({'data': serializer.data, 'message': 'Send email success'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 recode_register_view = SendNewCodeView.as_view()

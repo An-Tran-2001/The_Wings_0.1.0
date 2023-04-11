@@ -83,6 +83,10 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "thewings_backend.users",
+    "thewings_backend.friends",
+    "thewings_backend.messaging",
+    "thewings_backend.notifications",
+    "thewings_backend.posts",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
