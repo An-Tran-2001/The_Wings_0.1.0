@@ -55,11 +55,11 @@ class User(AbstractUser):
 
     #: First and last name do not cover name patterns around the globe
     name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
+    first_name = CharField(_("First Name"), blank=True, max_length=255)
+    last_name = CharField(_("Last Name"), blank=True, max_length=255)
     email = EmailField(verbose_name='Email', unique=True, null=False, blank=False)
-    phone_number = PhoneNumberField(verbose_name='Phone Number', unique=True, null=True, blank=True)
-    username = CharField(verbose_name='User Name', max_length=100, unique=True, validators=[RegexValidator(regex='^[a-zA-Z0-9]*$', message='User Name must be Alphanumeric', code='invalid_user_name')])
+    phone_number = PhoneNumberField(verbose_name='Phone Number', unique=True, null=False, blank=False)
+    username = CharField(verbose_name='User Name', max_length=100, unique=True, validators=[RegexValidator(regex='^[a-zA-Z0-9]*$', message='User Name must be Alphanumeric', code='invalid_user_name')],null=False, blank=False)
     password = CharField(verbose_name='Password', max_length=500, validators=[RegexValidator(regex='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d](?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', message='Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character', code='invalid_password')])
     tc = BooleanField(verbose_name='TC', default=False)
     is_active = BooleanField(default=True)

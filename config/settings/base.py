@@ -78,6 +78,7 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_advanced_password_validation',
     'rest_framework_simplejwt',
+    'channels',
 ]
 
 LOCAL_APPS = [

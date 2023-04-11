@@ -10,6 +10,7 @@ from thewings_backend.users.views import (
     user_login_view,
     user_forgot_password_view,
     user_reset_password_view,
+    user_logout_view,
 )
 
 app_name = "users"
@@ -21,6 +22,7 @@ urlpatterns = [
     path("register-recode/", view=recode_register_view, name="recode"), 
     path("forgot-password/", view=user_forgot_password_view, name="forgot"),
     path("reset-password/", view=user_reset_password_view, name="reset"),
+    path("logout/", view=user_logout_view, name="logout"),
     path("~redirect/", view=user_redirect_view, name="redirect"),
     path("~update/", view=user_update_view, name="update"),
     path("<str:username>/", view=user_detail_view, name="detail"),
