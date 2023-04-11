@@ -36,5 +36,5 @@ async def application(scope, receive, send):
         await django_application(scope, receive, send)
     elif scope["type"] == "websocket":
         await websocket_application(scope, receive, send)
-    else:
+    else: 
         raise NotImplementedError(f"Unknown scope type {scope['type']}")
