@@ -63,8 +63,6 @@ services:
   redis:
     image: redis:6
     container_name: thewings_backend_local_redis
-    ports:
-      - "6262:6262"
 
   celeryworker:
     <<: *django
