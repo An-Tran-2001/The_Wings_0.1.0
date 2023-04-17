@@ -22,7 +22,7 @@ sys.path.append(str(BASE_DIR / "thewings_backend"))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
 # This application object is used by any ASGI server configured to use this file.
-django_application = get_asgi_application()
+# django_application = get_asgi_application()
 # Apply ASGI middleware here.
 # from helloworld.asgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
@@ -31,10 +31,35 @@ django_application = get_asgi_application()
 from config.websocket import websocket_application  # noqa isort:skip
 
 
-async def application(scope, receive, send):
-    if scope["type"] == "http":
-        await django_application(scope, receive, send)
-    elif scope["type"] == "websocket":
-        await websocket_application(scope, receive, send)
-    else: 
-        raise NotImplementedError(f"Unknown scope type {scope['type']}")
+# async def application(scope, receive, send):
+#     if scope["type"] == "http":
+#         await django_application(scope, receive, send)
+#     elif scope["type"] == "websocket":
+#         await websocket_application(scope, receive, send)
+#     else: 
+#         raise NotImplementedError(f"Unknown scope type {scope['type']}")
+
+
+from config import websocket_routing  # noqa isort:skip
+
+from channels.routing import ProtocolTypeRouter, URLRouter  # noqa isort:skip
+from channels.auth import AuthMiddlewareStack  # noqa isort:skip
+from channels.security.websocket import AllowedHostsOriginValidator  # noqa isort:skip
+
+
+# application = ProtocolTypeRouter(
+#     {
+#         "http": get_asgi_application(),
+#         "websocket": AllowedHostsOriginValidator(
+#             AuthMiddlewareStack(URLRouter(websocket_routing.websocket_urlpatterns))
+#         ),
+#     }
+# )
+
+application = ProtocolTypeRouter(
+    {
+        "http": get_asgi_application(),
+        "websocket": 
+            URLRouter(websocket_routing.websocket_urlpatterns)
+    }
+)

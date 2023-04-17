@@ -5,7 +5,8 @@ IPYTHONDIR=/app/.ipython
 # Redis
 # ------------------------------------------------------------------------------
 REDIS_URL=redis://redis:6379/0
-
+REDIS_HOST=redis
+REDIS_PORT=6379
 # Celery
 # ------------------------------------------------------------------------------
 CELERY_BROKER_URL=redis://redis:6379/0

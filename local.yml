@@ -15,6 +15,7 @@ services:
       - postgres
       - redis
       - mailhog
+      - react
     volumes:
       - .:/app:z
     env_file:
@@ -63,6 +64,8 @@ services:
   redis:
     image: redis:6
     container_name: thewings_backend_local_redis
+    ports:
+      - "6379:6379"
 
   celeryworker:
     <<: *django
@@ -104,15 +107,13 @@ services:
     ports:
       - "5050:80"
 
-  # react:
-  #   build:
-  #     context: .
-  #     dockerfile: ./compose/local/react/Dockerfile
-  #   image: thewings_frontend_local_react
-  #   container_name: thewings_frontend_local_react
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/app:z
-  #   depends_on:
-  #     - django
+  react:
+    build:
+      context: .
+      dockerfile: ./compose/local/react/Dockerfile
+    image: thewings_frontend_local_react
+    container_name: thewings_frontend_local_react
+    ports:
+      - "3000:3000"
+    volumes:
+      -  ./app-frontend:/app-frontend/the-wings-frontend:z

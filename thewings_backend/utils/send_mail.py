@@ -4,10 +4,6 @@ from django.conf import settings
 class Util:
     @staticmethod
     def send_email(data):
-        print(settings.GMAIL_HOST)
-        print(settings.GMAIL_PORT)
-        print(settings.EMAIL_HOST_USER)
-        print(settings.EMAIL_HOST_PASSWORD)
         email = EmailMessage(
             subject=data['email_subject'], body=data['email_body'], from_email='from@example.com', to=[data['to_email']])
         email.send()
