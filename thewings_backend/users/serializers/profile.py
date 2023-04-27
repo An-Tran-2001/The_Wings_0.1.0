@@ -24,7 +24,6 @@ class UserCreateProfileSerializer(ModelSerializer):
 
     def validate(self,data):
         user = self.context['user']
-        data['avatar'] = str(data.get('avatar')).split('.jpg')[0] + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.jpg' if data.get('avatar') is not None else None
         if Profile.objects.filter(user=user).exists():
             raise ValidationError("You have already created a profile")
         return data

@@ -7,7 +7,5 @@ class MessagingConfig(AppConfig):
     verbose_name = _("Messaging")
     
     def ready(self):
-        try:
-            import messaging.signals  # noqa: F401
-        except ImportError:
-            pass
+        from django.utils.module_loading import autodiscover_modules
+        autodiscover_modules('thewings_backend.messaging.consumers')

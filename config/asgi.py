@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/asgi/
 import os
 import sys
 from pathlib import Path
+import django
 
 from django.core.asgi import get_asgi_application
 
@@ -20,6 +21,7 @@ sys.path.append(str(BASE_DIR / "thewings_backend"))
 
 # If DJANGO_SETTINGS_MODULE is unset, default to the local settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+django.setup()
 
 # This application object is used by any ASGI server configured to use this file.
 # django_application = get_asgi_application()
@@ -45,6 +47,7 @@ from config import websocket_routing  # noqa isort:skip
 from channels.routing import ProtocolTypeRouter, URLRouter  # noqa isort:skip
 from channels.auth import AuthMiddlewareStack  # noqa isort:skip
 from channels.security.websocket import AllowedHostsOriginValidator  # noqa isort:skip
+from thewings_backend.messaging.middleware import TokenAuthMiddleware
 
 
 # application = ProtocolTypeRouter(
@@ -60,6 +63,6 @@ application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
         "websocket": 
-            URLRouter(websocket_routing.websocket_urlpatterns)
+            TokenAuthMiddleware(URLRouter(websocket_routing.websocket_urlpatterns))
     }
 )

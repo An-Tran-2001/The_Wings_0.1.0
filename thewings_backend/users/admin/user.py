@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from thewings_backend.users.forms import UserAdminChangeForm, UserAdminCreationForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from thewings_backend.users.models import *
 
 User = get_user_model()
 
@@ -41,3 +42,6 @@ class UserAdmin(auth_admin.UserAdmin):
     search_fields = ('username', 'email', 'phone_number', 'name')
     ordering = ('-date_joined',)
     filter_horizontal = ()
+    
+admin.site.register(Profile)
+admin.site.register(PicLogin)

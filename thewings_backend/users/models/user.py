@@ -1,11 +1,9 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db.models import CharField, EmailField, DateTimeField, BooleanField, Index
+from django.db.models import CharField, EmailField, DateTimeField, BooleanField, Index, UUIDField
 from django.core.validators import RegexValidator, MinLengthValidator
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
-
 
 
 class UserManager(BaseUserManager):
@@ -60,10 +58,10 @@ class User(AbstractUser):
     email = EmailField(verbose_name='Email', unique=True, null=False, blank=False)
     phone_number = PhoneNumberField(verbose_name='Phone Number', unique=True, null=False, blank=False)
     username = CharField(verbose_name='User Name', max_length=100, unique=True, validators=[RegexValidator(regex='^[a-zA-Z0-9]*$', message='User Name must be Alphanumeric', code='invalid_user_name')],null=False, blank=False)
-    password = CharField(verbose_name='Password', max_length=500, validators=[RegexValidator(regex='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d](?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', message='Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character', code='invalid_password')])
+    password = CharField(verbose_name='Password', max_length=500, validators=[RegexValidator(regex='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d](?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', message='Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character', code='invalid_password')], null=False, blank=False)
     tc = BooleanField(verbose_name='TC', default=False)
     is_active = BooleanField(default=True)
-    created_at = DateTimeField(auto_now_add=True, null=True)
+    created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     objects = UserManager()
     
