@@ -14,7 +14,10 @@ class ViewFriendInfomationSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "avatar"]
 
     def get_avatar(self, obj):
-        return obj.profile.avatar.url if obj.profile.avatar else None
+        try:
+            return obj.profile.avatar.url if obj.profile.avatar else None
+        except:
+            raise serializers.ValidationError("User not profile")
 
 
 class FriendSerializer(serializers.ModelSerializer):
@@ -35,6 +38,12 @@ class AddFriendSerializer(serializers.ModelSerializer):
         fields = ["friend"]
 
     def create(self, validated_data):
+        if Friend.objects.filter(Q(user=self.context["user"]) & Q(friend=validated_data["friend"])).exists():
+            raise serializers.ValidationError("You are already friends")
+        if BlackFriend.objects.filter(Q(user=self.context["user"]) & Q(friend=validated_data["friend"])).exists():
+            raise serializers.ValidationError("You are already blocked")
+        if validated_data["friend"] == self.context["user"]:
+            raise serializers.ValidationError("You can't add yourself")
         return Friend.objects.create(user=self.context["user"], **validated_data)
 
 

@@ -27,6 +27,10 @@ class UserRenderer(renderers.JSONRenderer):
     charset = 'utf-8'
 
     def render(self, data, media_type=None, renderer_context=None):
+        if isinstance(data, list):
+            return json.dumps({
+                'errors': data
+            })
         errors = data.get('errors', None)
 
         if errors is not None:

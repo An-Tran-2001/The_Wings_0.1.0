@@ -21,7 +21,7 @@ class Friend(Model):
         
 class BlackFriend(Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = OneToOneField(User, on_delete=CASCADE, related_name='black_friends')
+    user = ForeignKey(User, on_delete=CASCADE, related_name='black_friends')
     black_friend = ForeignKey(User, on_delete=CASCADE, related_name='black_friend_requests',null= False, blank=False)
     created_at = DateTimeField(auto_now_add=True)
     

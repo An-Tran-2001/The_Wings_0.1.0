@@ -20,6 +20,7 @@ urlpatterns = [
     # User management
     path("users/", include("thewings_backend.users.urls", namespace="users")),
     path("friends/", include("thewings_backend.friends.urls", namespace="friends")),
+    path("posts/", include("thewings_backend.posts.router", namespace="posts")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
