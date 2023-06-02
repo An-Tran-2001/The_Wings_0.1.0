@@ -5,7 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from ..renderers import UserRenderer
 from ..serializers import UserCreateProfileSerializer
 from ..models import Profile
-from ..custom_permission import IsAcessToken
+from thewings_backend.custom_permission import IsAcessToken
 from rest_framework.permissions import IsAuthenticated
 
 class UserCreateProfileView(APIView):

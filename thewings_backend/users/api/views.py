@@ -7,7 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
-from ..custom_permission import IsAcessToken
+from thewings_backend.custom_permission import IsAcessToken
 from .serializers import UserSerializer
 
 User = get_user_model()

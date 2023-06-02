@@ -6,7 +6,7 @@ from ..serializers import UserLogoutSerializer
 from rest_framework.permissions import IsAuthenticated
 import datetime
 from .processing.env_variables import get_token_expiration_time, redis_instance
-from ..custom_permission import IsAcessToken
+from thewings_backend.custom_permission import IsAcessToken
 from django.contrib.auth import get_user_model
 
 User = get_user_model()

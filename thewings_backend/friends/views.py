@@ -7,7 +7,7 @@ from thewings_backend.users.renderers import UserRenderer
 from .models import Friend
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
-from thewings_backend.users.custom_permission import IsAcessToken
+from thewings_backend.custom_permission import IsAcessToken
 
 
 class AddFriendView(APIView):
