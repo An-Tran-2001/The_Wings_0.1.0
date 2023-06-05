@@ -5,7 +5,7 @@ FROM node:19-alpine as react-build-stage
 WORKDIR /app-frontend
 
 # Copy package.json and package-lock.json to work directory
-COPY ./the-wings-frontend/package.json ./the-wings-frontend/package-lock.json ./
+COPY ./thewings-frontend/package.json ./thewings-frontend/package-lock.json ./
 
 # Install dependencies
 RUN npm install

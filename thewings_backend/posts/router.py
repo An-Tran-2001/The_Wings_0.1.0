@@ -14,11 +14,9 @@ router.register("my-posts", CreatePostViewSet)
 app_name = "posts"
 
 
-urlpatterns = router.urls
 
-urlpatterns += [
-    path("like-post/<int:id>/", LikePostView.as_view()),
-    path("like-comment/<int:id>/", LikeCommentView.as_view()),
+
+urlpatterns = [
+    path("like/", LikeViewSet.as_view()),
     path("comment/", CommentViewSet.as_view()),
-]
-    
+] + router.urls

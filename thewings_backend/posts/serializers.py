@@ -7,6 +7,45 @@ from django.db.models import Q
 
 User = get_user_model()
 
+class LikeSerializer(ModelSerializer):
+    
+    
+    class Meta:
+        model = Like
+        fields = "__all__"
+        extra_kwargs = {"user": {"read_only": True ,"required": False}, "posts": {"required": False}, "comments": {"required": False}}
+
+    def create(self, validated_data):
+        if Like.objects.filter(Q(user=validated_data.get("user")) & Q(Q(post=validated_data.get("post")) | Q(comment=validated_data.get("comment")))).exists():
+            raise ValidationError("You already liked this post")
+        return Like.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        if instance:= Like.objects.filter(Q(user=validated_data.get("user")) & Q(Q(post=validated_data.get("post")) | Q(comment=validated_data.get("comment")))).first(): 
+            print(instance)
+            instance.status = validated_data.get("status", instance.status)
+            if instance.status == "dislike":
+                instance.delete()
+            else:
+                instance.save()
+            return instance
+        raise ValidationError("Empty Post or Comment")
+
+class LikeCreateSerializer(LikeSerializer):
+        
+        def create(self, validated_data):
+            like = Like.objects.create(**validated_data)
+            return like
+
+class GetPostLikeSerializer(ModelSerializer):
+    user = SerializerMethodField()
+    
+    class Meta:
+            model = Like
+            fields = ["id", "user", "status", "created_at", "updated_at"]
+    
+    def get_user(self, obj):
+        return UserSerializer(obj.user, context=self.context).data
 
 class FileSerializer(ModelSerializer):
     
@@ -23,22 +62,26 @@ class Comments(ModelSerializer):
         fields = "__all__"
 
 class CommentSerializer(ModelSerializer):
-    user = SerializerMethodField()
+    users = SerializerMethodField()
+    likes = SerializerMethodField()
     
     class Meta:
         model = Comment
         fields = "__all__"
         extra_kwargs = {"users": {"read_only": True}, "posts": {"read_only": True}}
         
-    def get_user(self, obj):
+    def get_users(self, obj):
         return UserSerializer(obj.users, context=self.context).data
+    
+    def get_likes(self, obj):
+        return dict(count=obj.likes.count(), data=GetPostLikeSerializer(obj.comment_likes.all(), many=True, context=self.context).data)
 
 class CommentCreateSerializer(ModelSerializer):
     
     class Meta:
         model = Comment
         fields = "__all__"
-        extra_kwargs = {"users": {"required": False}, "parent":  {"required": True}, "likes": {"read_only": True}}
+        extra_kwargs = {"users": {"required": False, "read_only": True}, "parent":  {"required": False}, "likes": {"read_only": True}}
     
     def validate(self, attrs):
         if not attrs.get("content"):
@@ -95,24 +138,24 @@ class PostsSerializer(Posts):
     def get_comments(self, obj):
         user = self.context.get("request").user
         if friend:= Friend.objects.filter(Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))).values('user', 'friend'):
-            comments_limit = obj.comments.filter(users__in = friend)[:2]
-        comments_limit = obj.comments.all()[:2]
-        return dict(total=obj.comments.count(), data=CommentSerializer(comments_limit, many=True, context=self.context).data)
+            comments_limit = obj.post_comments.filter(users__in = friend)[:2]
+        comments_limit = obj.post_comments.all()[:2]
+        return dict(count=obj.comments.count(), recomment=CommentSerializer(comments_limit, many=True, context=self.context).data, data = CommentSerializer(obj.post_comments.all(), many=True, context=self.context).data)
     
     def get_likes(self, obj):
         user = self.context.get("request").user
         if friend:= Friend.objects.filter(Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))).values('user', 'friend'):
             like_limit = obj.likes.filter(users__in = friend)[:2]
         like_limit = obj.likes.all()[:2]
-        return dict(total=obj.likes.count(), data=UserSerializer(like_limit, many=True, context=self.context).data)
+        return dict(count=obj.likes.count(), recomment=UserSerializer(like_limit, many=True, context=self.context).data, data=GetPostLikeSerializer(obj.post_likes.all(), many=True, context=self.context).data)
 
     def get_tags(self, obj):
         tags = obj.tags.all()
-        return dict(total=tags.count(), data=UserSerializer(tags, many=True, context=self.context).data)
+        return dict(count=tags.count(), data=UserSerializer(tags, many=True, context=self.context).data)
     
     def get_files(self, obj):
         files = obj.post_files.all()
-        return dict(total=files.count(), data=FileSerializer(files, many=True, context=self.context).data)
+        return dict(count=files.count(), data=FileSerializer(files, many=True, context=self.context).data)
 
     
 

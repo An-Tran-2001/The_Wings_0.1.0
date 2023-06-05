@@ -52,7 +52,7 @@ services:
       - ./config:/app/config:z
       - ./thewings_backend:/app/thewings_backend:z
     ports:
-      - "9000:9000"
+      - "9050:9000"
     command: /start-docs
 
   mailhog:
