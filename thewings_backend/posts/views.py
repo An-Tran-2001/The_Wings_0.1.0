@@ -13,7 +13,7 @@ from .models import *
 from thewings_backend.users.renderers import UserRenderer
 from django.views.generic import DetailView
 from django.db.models import Q
-from thewings_backend.docs.posts import get_post_docs
+from thewings_backend.docs.posts import get_all_post_docs
 from drf_spectacular.utils import extend_schema
 # Create your views here.
 
@@ -33,7 +33,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             return self.queryset.filter(author=self.request.user.id)
         return self.queryset.filter(author=self.request.user.id)
     
-    @get_post_docs()
+    @get_all_post_docs()
     @action(detail=False)
     def my_post_all(self, request):
         serializer = self.serializer_class(

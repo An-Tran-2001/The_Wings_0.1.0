@@ -4,8 +4,11 @@ from .models import *
 from thewings_backend.friends.models import Friend
 from thewings_backend.users.api.serializers import UserSerializer
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema_field
+import json
 
 User = get_user_model()
+
 
 class LikeSerializer(ModelSerializer):
     
@@ -43,9 +46,25 @@ class GetPostLikeSerializer(ModelSerializer):
     class Meta:
             model = Like
             fields = ["id", "user", "status", "created_at", "updated_at"]
-    
+        
+    @extend_schema_field(UserSerializer)
     def get_user(self, obj):
         return UserSerializer(obj.user, context=self.context).data
+    
+class DocsLikesSerializer(ModelSerializer):
+    count = IntegerField()
+    recomment = GetPostLikeSerializer(many=True)
+    data = GetPostLikeSerializer(many=True)
+    
+    class Meta:
+        model = Like
+        fields = ["count", "recomment", "data"]
+
+class DocLikesSerializer(DocsLikesSerializer):
+    
+    class Meta:
+        model = Like
+        fields = ["count", "data"]
 
 class FileSerializer(ModelSerializer):
     
@@ -55,11 +74,13 @@ class FileSerializer(ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"post": {"write_only": True}}
 
+
 class Comments(ModelSerializer):
     
     class Meta:
         model = Comment
         fields = "__all__"
+
 
 class CommentSerializer(ModelSerializer):
     users = SerializerMethodField()
@@ -70,11 +91,24 @@ class CommentSerializer(ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"users": {"read_only": True}, "posts": {"read_only": True}}
         
+    @extend_schema_field(UserSerializer)
     def get_users(self, obj):
         return UserSerializer(obj.users, context=self.context).data
     
+    @extend_schema_field(DocLikesSerializer) 
     def get_likes(self, obj):
         return dict(count=obj.likes.count(), data=GetPostLikeSerializer(obj.comment_likes.all(), many=True, context=self.context).data)
+
+
+class DocsCommentSerializer(ModelSerializer):
+    count = IntegerField()
+    recomment = CommentSerializer(many=True)
+    data = CommentSerializer(many=True)
+    
+    class Meta:
+        model = Comment
+        fields = ["count", "recomment", "data"]
+
 
 class CommentCreateSerializer(ModelSerializer):
     
@@ -125,7 +159,17 @@ class CreatePostSerializer(Posts):
         if isinstance(files, list):
             post.post_files.add(*files)
         return post
+
+class DocsTagsSerializer(ModelSerializer):
+    count = IntegerField()
+    data = UserSerializer(many=True)
     
+    class Meta:
+        model = Post
+        fields = ["count", "data"]
+
+class DocsFilesSerializer(DocsTagsSerializer): 
+    data = FileSerializer(many=True)
 
 class PostsSerializer(Posts):
     comments = SerializerMethodField(read_only=True)
@@ -134,7 +178,7 @@ class PostsSerializer(Posts):
     author = UserSerializer(read_only=True)
     files = SerializerMethodField()
     
-
+    @extend_schema_field(DocsCommentSerializer)
     def get_comments(self, obj):
         user = self.context.get("request").user
         if friend:= Friend.objects.filter(Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))).values('user', 'friend'):
@@ -142,17 +186,20 @@ class PostsSerializer(Posts):
         comments_limit = obj.post_comments.all()[:2]
         return dict(count=obj.comments.count(), recomment=CommentSerializer(comments_limit, many=True, context=self.context).data, data = CommentSerializer(obj.post_comments.all(), many=True, context=self.context).data)
     
+    @extend_schema_field(DocsLikesSerializer)   
     def get_likes(self, obj):
         user = self.context.get("request").user
         if friend:= Friend.objects.filter(Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))).values('user', 'friend'):
             like_limit = obj.likes.filter(users__in = friend)[:2]
-        like_limit = obj.likes.all()[:2]
-        return dict(count=obj.likes.count(), recomment=UserSerializer(like_limit, many=True, context=self.context).data, data=GetPostLikeSerializer(obj.post_likes.all(), many=True, context=self.context).data)
+        like_limit = obj.post_likes.all()[:2]
+        return dict(count=obj.likes.count(), recomment=GetPostLikeSerializer(like_limit, many=True, context=self.context).data, data=GetPostLikeSerializer(obj.post_likes.all(), many=True, context=self.context).data)
 
+    @extend_schema_field(DocsTagsSerializer)
     def get_tags(self, obj):
         tags = obj.tags.all()
         return dict(count=tags.count(), data=UserSerializer(tags, many=True, context=self.context).data)
     
+    @extend_schema_field(DocsFilesSerializer)
     def get_files(self, obj):
         files = obj.post_files.all()
         return dict(count=files.count(), data=FileSerializer(files, many=True, context=self.context).data)
