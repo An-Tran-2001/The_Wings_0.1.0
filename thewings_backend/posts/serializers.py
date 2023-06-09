@@ -5,7 +5,6 @@ from thewings_backend.friends.models import Friend
 from thewings_backend.users.api.serializers import UserSerializer
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema_field
-import json
 
 User = get_user_model()
 
@@ -141,16 +140,17 @@ class Posts(ModelSerializer):
 class CreatePostSerializer(Posts):
     
     def validate(self, attrs):
-        if not attrs.get("content"):
-            raise ValidationError("You can't post empty post")
-        for id in attrs.get("tags"):
-            if id == self.context.get("request").user:  
-                raise ValidationError("You can't tag yourself")
-            elif id in self.context.get("request").user.black_friends.values('black_friend'):
-                raise ValidationError("You can't tag this user")
+        if attrs.get("tags"):
+            for id in attrs.get("tags"):
+                if id == self.context.get("request").user:  
+                    raise ValidationError("You can't tag yourself")
+                elif id in self.context.get("request").user.black_friends.values('black_friend'):
+                    raise ValidationError("You can't tag this user")
         return attrs
     
     def create(self, validated_data):
+        if not validated_data.get("content"):
+            raise ValidationError("You can't post empty post")
         files = validated_data.pop("files", None) 
         tags = validated_data.pop("tags", None)
         post = Post.objects.create(**validated_data)
