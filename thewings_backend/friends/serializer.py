@@ -2,22 +2,10 @@ from rest_framework import serializers
 from .models import Friend, BlackFriend
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from thewings_backend.users.api.serializers import UserSerializer
+from drf_spectacular.utils import extend_schema_field
 
 User = get_user_model()
-
-
-class ViewFriendInfomationSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = ["id", "name", "avatar"]
-
-    def get_avatar(self, obj):
-        try:
-            return obj.profile.avatar.url if obj.profile.avatar else None
-        except:
-            raise serializers.ValidationError("User not profile")
 
 
 class FriendSerializer(serializers.ModelSerializer):
@@ -28,8 +16,9 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = ["id", "friend", "is_accepted", "created_at"]
         read_only_fields = fields
 
+    @extend_schema_field(UserSerializer)
     def get_friend(self, obj):
-        return ViewFriendInfomationSerializer(obj.user).data
+        return UserSerializer(obj.user).data
 
 
 class AddFriendSerializer(serializers.ModelSerializer):
@@ -40,7 +29,7 @@ class AddFriendSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if Friend.objects.filter(Q(user=self.context["user"]) & Q(friend=validated_data["friend"])).exists():
             raise serializers.ValidationError("You are already friends")
-        if BlackFriend.objects.filter(Q(user=self.context["user"]) & Q(friend=validated_data["friend"])).exists():
+        if BlackFriend.objects.filter(Q(user=self.context["user"]) & Q(black_friend=validated_data["friend"])).exists():
             raise serializers.ValidationError("You are already blocked")
         if validated_data["friend"] == self.context["user"]:
             raise serializers.ValidationError("You can't add yourself")
@@ -56,11 +45,12 @@ class ListFriendSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "friend", "friend_id"]
         extra_kwargs = {"friend": {"read_only": True}, "name": {"read_only": True}}
 
+    @extend_schema_field(UserSerializer(many=True))
     def get_friend(self, obj):
         query_user = obj.friends.filter(Q(user=obj.id) & Q(is_accepted=True)).values("friend")
         query_friend = obj.friend_requests.filter(Q(friend=obj.id) & Q(is_accepted=True)).values("user")
         query = User.objects.filter(Q(id__in=query_user) | Q(id__in=query_friend))
-        return ViewFriendInfomationSerializer(query, many=True).data
+        return UserSerializer(query, many=True).data
 
     def update(self, instance, validated_data):
         friend_id = validated_data.pop("friend_id")
@@ -102,6 +92,7 @@ class UserBlockFriendSerializer(serializers.ModelSerializer):
     def update(self, validated_data):
         return BlackFriend.objects.filter(user=self.context["user"], **validated_data).delete()
     
+    @extend_schema_field(UserSerializer(many=True))
     def get_list_black_friend(self, obj):
         query = obj.black_friends.filter(user=obj.id)
-        return ViewFriendInfomationSerializer(query, many=True).data
+        return UserSerializer(query, many=True).data

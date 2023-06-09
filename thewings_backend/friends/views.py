@@ -16,14 +16,19 @@ class AddFriendView(APIView):
     permission_classes = [IsAuthenticated & IsAcessToken]
 
     def post(self, request):
-        try:
-            serializer = self.serializer_class(data=request.data, context={"user": request.user})
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"messenger": "send a friends request"}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response({"messenger": 'This friend request has already been sent'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=request.data, context={"user": request.user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"messenger": "send a friends request"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # try:
+        #     serializer = self.serializer_class(data=request.data, context={"user": request.user})
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response({"messenger": "send a friends request"}, status=status.HTTP_201_CREATED)
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response({"messenger": 'This friend request has already been sent'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FriendView(APIView):
