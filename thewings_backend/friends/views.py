@@ -36,7 +36,7 @@ class FriendView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        serializer = self.serializer_class(request.user, data=request.data, partial=True, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response({"messenger": "delete friend success"}, status=status.HTTP_200_OK)
@@ -54,11 +54,11 @@ class UserRequestFriendView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
-        serializer.is_valid()
-        serializer.save()
-        return Response({"messenger": "success"}, status=status.HTTP_200_OK)
-
+        serializer = self.serializer_class(request.user, data=request.data, partial=True, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"messenger": "success"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
 class UserBlockFriendView(APIView):
     serializer_class = UserBlockFriendSerializer
@@ -66,21 +66,21 @@ class UserBlockFriendView(APIView):
     permission_classes = [IsAuthenticated & IsAcessToken]
     parser_classes = (MultiPartParser, FormParser, JSONParser)
     
-    def get(self, request):
-        serializer = self.serializer_class(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def post(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        serializer = self.serializer_class(data=request.data, context={"user": request.user})
         serializer.is_valid()
         serializer.save()
         return Response({"messenger": "block success"}, status=status.HTTP_200_OK)
-
+    
     def patch(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        serializer = self.serializer_class(request.user, data=request.data, partial=True, context={"request": request})
         serializer.is_valid()
         serializer.save()
         return Response({"messenger": "delete block success"}, status=status.HTTP_200_OK)
+    
+    def get(self, request):
+        serializer = self.serializer_class(request.user, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 friend_request_view = AddFriendView.as_view()

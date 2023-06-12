@@ -25,6 +25,11 @@ class AddFriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friend
         fields = ["friend"]
+        
+    def validate(self, attrs):
+        if attrs["friend"] == self.context["user"]:
+            raise serializers.ValidationError("You can't add yourself")
+        return attrs
 
     def create(self, validated_data):
         if Friend.objects.filter(Q(Q(user=self.context["user"]) | Q(friend=self.context["user"]))
@@ -51,6 +56,11 @@ class ListFriendSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "name", "friend", "friend_id"]
         extra_kwargs = {"friend": {"read_only": True}, "name": {"read_only": True}}
+    
+    def validate(self, attrs):
+        if attrs["friend_id"] == self.context["request"].user.id:
+            raise serializers.ValidationError("You can't remove yourself")
+        return attrs
 
     @extend_schema_field(UserSerializer(many=True))
     def get_friend(self, obj):
@@ -61,8 +71,7 @@ class ListFriendSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         friend_id = validated_data.pop("friend_id")
-        instance.friends.filter(Q(friend=friend_id) | Q(user=friend_id)).delete()
-        return instance
+        return Friend.objects.filter(Q(Q(user=friend_id) | Q(friend=friend_id)) & Q(Q(user=instance) | Q(friend=instance))).delete()
 
 
 class UserRequestFriendSerializer(serializers.ModelSerializer):
@@ -73,6 +82,11 @@ class UserRequestFriendSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "name", "friend", "friend_id"]
         extra_kwargs = {"friend": {"read_only": True}, "name": {"read_only": True}}
+    
+    def validate(self, attrs):
+        if attrs["friend_id"] == self.context["request"].user.id:
+            raise serializers.ValidationError("You can't add yourself")
+        return attrs
 
     @extend_schema_field(FriendSerializer(many=True))
     def get_friend(self, obj):
@@ -87,18 +101,18 @@ class UserRequestFriendSerializer(serializers.ModelSerializer):
 
 class UserBlockFriendSerializer(serializers.ModelSerializer):
     list_black_friend = serializers.SerializerMethodField(read_only=True)
+    black_friend = serializers.IntegerField(write_only=True)
     class Meta:
         model = BlackFriend
         fields = ["black_friend", "list_black_friend"]
-        kwargs = {"black_friend": {"read_only": True}, "list_black_friend": {"write_only": True}}
         
     def create(self, validated_data):
         return BlackFriend.objects.create(user=self.context["user"], **validated_data)
     
-    def update(self, validated_data):
-        return BlackFriend.objects.filter(user=self.context["user"], **validated_data).delete()
+    def update(self, instance, validated_data):
+        return instance.black_friends.filter(Q(user=self.context["user"]) & Q(black_friend=validated_data["black_friend"])).delete()
     
     @extend_schema_field(UserSerializer(many=True))
     def get_list_black_friend(self, obj):
-        query = obj.black_friends.filter(user=obj.id)
-        return UserSerializer(query, many=True).data
+        query = obj.black_friends.filter(user=obj.id).values("black_friend")
+        return UserSerializer(query, many=True, context=self.context).data
