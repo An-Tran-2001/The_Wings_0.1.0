@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from ..renderers import UserRenderer
 from ..serializers import UserCreateProfileSerializer
 from ..models import Profile
@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class UserCreateProfileView(APIView):
     render_class = [UserRenderer]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     permission_classes = [IsAuthenticated & IsAcessToken]
     serializer_class = UserCreateProfileSerializer
     

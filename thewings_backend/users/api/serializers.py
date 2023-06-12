@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ["username", "name", "url", "avatar"]
+        fields = ["id", "username", "name", "url", "avatar"]
 
         extra_kwargs = {
             "url": {"view_name": "api:user-detail", "lookup_field": "username"}

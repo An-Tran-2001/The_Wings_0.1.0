@@ -7,7 +7,7 @@ from ...utils import Util
 import random
 from .processing.env_variables import redis_instance
 from django.contrib.auth import get_user_model
-
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 User = get_user_model()
 
@@ -15,7 +15,9 @@ User = get_user_model()
 class UserForgotPasswordView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = SendMailForgotPasswordSerializer
-
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    
+    
     def post(self, request):
         serializer = SendMailForgotPasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -41,7 +43,9 @@ class UserForgotPasswordView(APIView):
 class UserResetPasswordView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = ResetPasswordSerializer
-
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    
+    
     def put(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         if serializer.is_valid():

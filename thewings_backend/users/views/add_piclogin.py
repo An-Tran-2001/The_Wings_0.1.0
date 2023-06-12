@@ -3,13 +3,13 @@ from ..serializers.add_piclogin import AddPicsLoginSerializer
 from ..renderers import UserRenderer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import base64
 from ..models import PicLogin
 from ..tasks import save_image_login
 class AddPicsLogin(APIView):
     renderer_classes = (UserRenderer,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = AddPicsLoginSerializer
 
     def post(self, request, *args, **kwargs):

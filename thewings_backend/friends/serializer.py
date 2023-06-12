@@ -18,7 +18,7 @@ class FriendSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(UserSerializer)
     def get_friend(self, obj):
-        return UserSerializer(obj.user).data
+        return UserSerializer(obj.user, context=self.context).data
 
 
 class AddFriendSerializer(serializers.ModelSerializer):
@@ -27,9 +27,16 @@ class AddFriendSerializer(serializers.ModelSerializer):
         fields = ["friend"]
 
     def create(self, validated_data):
-        if Friend.objects.filter(Q(user=self.context["user"]) & Q(friend=validated_data["friend"])).exists():
+        if Friend.objects.filter(Q(Q(user=self.context["user"]) | Q(friend=self.context["user"]))
+                                 & Q(Q(user=validated_data["friend"]) | Q(friend=validated_data["friend"]))
+                                & Q(is_accepted=True)).exists():
             raise serializers.ValidationError("You are already friends")
-        if BlackFriend.objects.filter(Q(user=self.context["user"]) & Q(black_friend=validated_data["friend"])).exists():
+        if Friend.objects.filter(Q(Q(user=self.context["user"]) | Q(friend=self.context["user"]))
+                                 & Q(Q(user=validated_data["friend"]) | Q(friend=validated_data["friend"]))
+                                & Q(is_accepted=False)).exists():
+            raise serializers.ValidationError("You are already sent request")
+        if BlackFriend.objects.filter(Q(Q(user=self.context["user"]) | Q(black_friend=self.context["user"]))
+                                 & Q(Q(user=validated_data["friend"])) | Q(black_friend=validated_data["friend"])).exists():
             raise serializers.ValidationError("You are already blocked")
         if validated_data["friend"] == self.context["user"]:
             raise serializers.ValidationError("You can't add yourself")
@@ -50,12 +57,11 @@ class ListFriendSerializer(serializers.ModelSerializer):
         query_user = obj.friends.filter(Q(user=obj.id) & Q(is_accepted=True)).values("friend")
         query_friend = obj.friend_requests.filter(Q(friend=obj.id) & Q(is_accepted=True)).values("user")
         query = User.objects.filter(Q(id__in=query_user) | Q(id__in=query_friend))
-        return UserSerializer(query, many=True).data
-
+        return UserSerializer(query, many=True, context=self.context).data
+    
     def update(self, instance, validated_data):
         friend_id = validated_data.pop("friend_id")
-        friend = User.objects.get(id=friend_id)
-        instance.friends.filter(friend=friend).delete()
+        instance.friends.filter(Q(friend=friend_id) | Q(user=friend_id)).delete()
         return instance
 
 
@@ -68,14 +74,14 @@ class UserRequestFriendSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "friend", "friend_id"]
         extra_kwargs = {"friend": {"read_only": True}, "name": {"read_only": True}}
 
+    @extend_schema_field(FriendSerializer(many=True))
     def get_friend(self, obj):
         query = obj.friend_requests.filter(Q(friend=obj.id) & Q(is_accepted=False))
-        return FriendSerializer(query, many=True).data
+        return FriendSerializer(query, many=True, context=self.context).data
 
     def update(self, instance, validated_data):
         friend_id = validated_data.pop("friend_id")
-        friend = User.objects.get(id=friend_id)
-        instance.friend_requests.filter(Q(user=friend) & Q(friend=instance)).update(is_accepted=True)
+        instance.friend_requests.filter(Q(user=friend_id) & Q(friend=instance)).update(is_accepted=True)
         return instance
 
 

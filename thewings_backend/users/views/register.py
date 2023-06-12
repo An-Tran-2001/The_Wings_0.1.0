@@ -9,11 +9,12 @@ import random
 from .processing.env_variables import redis_cache, redis_instance
 import json
 from ..tasks import send_email_signup, resend_email_signup
-
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 class UserRegisterView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = UserRegisterSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
@@ -26,6 +27,7 @@ class UserRegisterView(APIView):
 class CreateRegisterView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = SubmitCodeSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def post(self, request):
         serializer = SubmitCodeSerializer(data=request.data)
@@ -59,6 +61,7 @@ class CreateRegisterView(APIView):
 class SendNewCodeView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = SendNewCodeSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def post(self, request):
         serializer = SendNewCodeSerializer(data=request.data)

@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from thewings_backend.custom_permission import IsAcessToken, IsAuthor, PostStatus
 from rest_framework.response import Response
 from .serializers import PostsSerializer, CreatePostSerializer, CommentCreateSerializer, LikeSerializer, CommentSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .models import *
 from thewings_backend.users.renderers import UserRenderer
 from django.views.generic import DetailView
@@ -81,7 +81,7 @@ class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated & IsAcessToken & IsAuthor]
     renderer_classes = [UserRenderer]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     
     def perform_create(self, serializer, *args, **kwargs):
         serializer.save(author=self.request.user)
@@ -100,7 +100,7 @@ class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
 class LikeViewSet(APIView):
     permission_classes = [IsAuthenticated & IsAcessToken & PostStatus]
     renderer_classes = [UserRenderer]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = LikeSerializer
     
     def post(self, request, *args, **kwargs):
@@ -120,7 +120,7 @@ class CommentViewSet(APIView):
     permission_classes = [IsAuthenticated & IsAcessToken & PostStatus]
     renderer_classes = [UserRenderer]
     serializer_class = CommentCreateSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})

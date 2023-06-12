@@ -8,6 +8,7 @@ import datetime
 from .processing.env_variables import get_token_expiration_time, redis_instance
 from thewings_backend.custom_permission import IsAcessToken
 from django.contrib.auth import get_user_model
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 User = get_user_model()
 
@@ -15,6 +16,8 @@ class UserLogoutView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = UserLogoutSerializer
     permission_classes = [IsAuthenticated & IsAcessToken]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    
 
     def patch(self, request):
         email = request.user.email

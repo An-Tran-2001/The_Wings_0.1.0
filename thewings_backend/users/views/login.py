@@ -7,13 +7,14 @@ from .processing.env_variables import get_token_for_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 import datetime
-
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 User = get_user_model()
 
 class UserLoginView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = UserLoginSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
