@@ -1,6 +1,7 @@
 from django.db.models import CASCADE, Model, ForeignKey, BooleanField, DateTimeField, OneToOneField, UUIDField
 from django.contrib.auth import get_user_model
 import uuid
+from rest_framework.response import Response
 User = get_user_model()
 
 # Create your models here.

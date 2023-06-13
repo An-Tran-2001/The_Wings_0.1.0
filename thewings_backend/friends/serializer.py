@@ -100,19 +100,30 @@ class UserRequestFriendSerializer(serializers.ModelSerializer):
 
 
 class UserBlockFriendSerializer(serializers.ModelSerializer):
-    list_black_friend = serializers.SerializerMethodField(read_only=True)
-    black_friend = serializers.IntegerField(write_only=True)
+    black_friend = serializers.SerializerMethodField()
     class Meta:
         model = BlackFriend
-        fields = ["black_friend", "list_black_friend"]
-        
-    def create(self, validated_data):
-        return BlackFriend.objects.create(user=self.context["user"], **validated_data)
+        fields = ["black_friend"]
     
-    def update(self, instance, validated_data):
-        return instance.black_friends.filter(Q(user=self.context["user"]) & Q(black_friend=validated_data["black_friend"])).delete()
+    def validate(self, attrs):
+        if attrs["black_friend"] == self.context["request"].user.id:
+            raise serializers.ValidationError("You can't add yourself")
+        return attrs
     
     @extend_schema_field(UserSerializer(many=True))
-    def get_list_black_friend(self, obj):
-        query = obj.black_friends.filter(user=obj.id).values("black_friend")
+    def get_black_friend(self, obj):
+        query = User.objects.filter(id__in=obj.black_friends.all().values("black_friend"))
         return UserSerializer(query, many=True, context=self.context).data
+
+class BlockUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlackFriend
+        fields = ["black_friend"]
+    
+    def validate(self, attrs):
+        if attrs["black_friend"] == self.context["request"].user.id:
+            raise serializers.ValidationError("You can't add yourself")
+        return attrs
+    
+    def create(self, validated_data):
+        return BlackFriend.objects.create(user=self.context["request"].user, **validated_data)
