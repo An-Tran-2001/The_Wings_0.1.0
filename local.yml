@@ -116,4 +116,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      -  ./app-frontend:/app-frontend/the-wings-frontend:z
+      -  ./thewings-frontend:/thewings-frontend:z

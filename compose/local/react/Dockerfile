@@ -1,17 +1,19 @@
-# Use the official Node.js image as the base image
-FROM node:19-alpine as react-build-stage
+# dev.Dockerfile for development
 
-# Set working directory
-WORKDIR /app-frontend
+FROM node:19-alpine
 
-# Copy package.json and package-lock.json to work directory
-COPY ./thewings-frontend/package.json ./thewings-frontend/package-lock.json ./
+WORKDIR /thewings-frontend
 
-# Install dependencies
-RUN npm install
+# Install dependencies based on the preferred package manager
+COPY thewings-frontend/package.json thewings-frontend/yarn.lock* thewings-frontend/package-lock.json* thewings-frontend/pnpm-lock.yaml* ./
 
-# Copy the rest of the application files
-COPY ./the-wings-frontend/ .
+RUN \
+    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-CMD ["npm", "start"]
-EXPOSE 3000
+COPY ./thewings-frontend/ .
+
+CMD yarn dev
