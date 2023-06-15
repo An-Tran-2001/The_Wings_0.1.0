@@ -39,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({label, validated, onCha
         <div className="relative">
             <label className="text-white font-semibold ">{label}</label>
             <input onChange={onChange} onKeyDown={onKeyDown} ref={ref} className="w-full h-12 px-5 rounded-lg bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition duration-300"/>
-            <span className="absolute text-xs r-0 w-40 bg-gray-700 mx-3">{validated && validated(value || '')}</span>
+            <span className="absolute text-xs r-0 w-40 bg-gray-600 mx-3 z-10">{validated && validated(value || '')}</span>
         </div>
     );
 });
