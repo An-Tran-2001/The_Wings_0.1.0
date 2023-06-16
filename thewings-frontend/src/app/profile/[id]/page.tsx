@@ -1,9 +1,11 @@
-import React from "react"
+import React from 'react'
 
-export default () => {
-    return(
-        <div>
-            <h1>Profile/id</h1>
-        </div>
-    )
+const page = () => {
+  return (
+    <div>
+        <h1>Profile/id</h1>
+    </div>
+  )
 }
+
+export default page

@@ -4,9 +4,9 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Input,{validateUserName, validatePassword} from  "@/components/input/Input"
 
-export default () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const page: React.FC = () => {
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
     
     const forcusInput = () => {
@@ -26,8 +26,12 @@ export default () => {
                         <Input label="Password" onChange={e => setPassword(e.target.value)} validated={validatePassword} value={password} ref={inputRef}/>
                     </div>
                     <button type="submit" className="h-12 px-5 mt-5 text-white font-semibold hover:bg-black transition duration-300">Login</button>
+                    <p className="text-white text-center mt-2">Can't remember an account? <a href="/dashboard/forgotpassword" className="text-blue-600">Forgot Password</a></p>
                 </form>
             </div>
         </div>
     )
 }
+
+export default page
+

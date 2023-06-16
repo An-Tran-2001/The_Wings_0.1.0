@@ -34,7 +34,7 @@ interface InputProps {
     value?: string,
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({label, validated, onChange, onKeyDown, value}, ref) => {
+const Input= forwardRef<HTMLInputElement, InputProps>(({label, validated, onChange, onKeyDown, value}, ref) => {
     return (
         <div className="relative">
             <label className="text-white font-semibold ">{label}</label>
@@ -44,6 +44,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({label, validated, onCha
     );
 });
 
+Input.displayName = 'Input';
 
 export default Input; 
 export {validateUserName, validatePassword, validateEmail, validatePhone, validateCode};

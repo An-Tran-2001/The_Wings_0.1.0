@@ -21,7 +21,7 @@ const link: readonly AppComponent[] = [
     },
 ]
 
-export default () =>{
+const Navbar = () => {
     return(
             <div className= "w-full fixed top-0 flex items-center justify-center">
                 <nav className="container items-center navbar navbar-expand-lg navbar-light bg-light flex justify-between my-10 p-5" >
@@ -39,3 +39,6 @@ export default () =>{
             </div>
         )
 }
+
+export default Navbar
+

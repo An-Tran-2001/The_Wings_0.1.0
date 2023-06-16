@@ -1,10 +1,11 @@
 "use client"
-import React from "react"
+import React from 'react'
 import { useState } from "react"
 import Input,{validateCode} from "@/components/input/Input"
 
-export default () => {
-    const [code, setCode] = useState("");
+
+const page = () => {
+    const [code, setCode] = useState<string>("")
     return(
         <div className = "w-full h-screen flex justify-center items-center">
             <div className="3xl flex flex-col items-center justify-center p-10 bg-gray-900">
@@ -19,3 +20,5 @@ export default () => {
         </div>
     )
 }
+
+export default page
