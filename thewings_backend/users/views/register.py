@@ -10,12 +10,14 @@ from .processing.env_variables import redis_cache, redis_instance
 import json
 from ..tasks import send_email_signup, resend_email_signup
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from thewings_backend.docs.auth import register_docs
 
 class UserRegisterView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = UserRegisterSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
+    @register_docs()
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():

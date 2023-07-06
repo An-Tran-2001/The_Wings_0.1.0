@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 import datetime
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from thewings_backend.docs.auth import login_docs
 
 User = get_user_model()
 
@@ -16,6 +17,7 @@ class UserLoginView(APIView):
     serializer_class = UserLoginSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
     
+    @login_docs()
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
