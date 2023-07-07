@@ -117,3 +117,9 @@ services:
       - "3000:3000"
     volumes:
       -  ./thewings-frontend:/thewings-frontend:z
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  
+          memory: 2G 
