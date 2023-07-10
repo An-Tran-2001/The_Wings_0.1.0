@@ -7,6 +7,8 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import base64
 from ..models import PicLogin
 from ..tasks import save_image_login
+
+
 class AddPicsLogin(APIView):
     renderer_classes = (UserRenderer,)
     parser_classes = (MultiPartParser, FormParser, JSONParser)
@@ -16,15 +18,22 @@ class AddPicsLogin(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             save_image_login.delay(serializer.data)
-            return Response({'msg': 'PicLogin Successfully Created'}, status=status.HTTP_201_CREATED)
-        return Response({'msg': 'PicLogin Not Created'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"msg": "PicLogin Successfully Created"}, status=status.HTTP_201_CREATED
+            )
+        return Response(
+            {"msg": "PicLogin Not Created"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def get(self, request, *args, **kwargs):
         queryset = PicLogin.objects.all()
         serializer = self.serializer_class(queryset, many=True)
         if serializer.data:
-            return Response({'msg': 'have a piclogin', 'data': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'msg': 'no piclogin'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"msg": "have a piclogin", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+        return Response({"msg": "no piclogin"}, status=status.HTTP_404_NOT_FOUND)
 
 
 add_piclogin = AddPicsLogin.as_view()

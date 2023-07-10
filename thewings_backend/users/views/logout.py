@@ -12,19 +12,19 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 User = get_user_model()
 
+
 class UserLogoutView(APIView):
     renderer_classes = (UserRenderer,)
     serializer_class = UserLogoutSerializer
     permission_classes = [IsAuthenticated & IsAcessToken]
     parser_classes = (MultiPartParser, FormParser, JSONParser)
-    
 
     def patch(self, request):
         email = request.user.email
         start_time = datetime.datetime.now()
         end_time = get_token_expiration_time(request.auth.token)
         time_stamp = end_time - start_time
-        seconds = time_stamp.days * 24 * 60 * 60 + time_stamp.seconds        
+        seconds = time_stamp.days * 24 * 60 * 60 + time_stamp.seconds
         serializer = UserLogoutSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         redis_instance.set(email, request.auth.token, seconds)
@@ -33,6 +33,7 @@ class UserLogoutView(APIView):
             request.auth.delete()
         except:
             pass
-        return Response({'message': 'Logout success'}, status=status.HTTP_200_OK)
-    
+        return Response({"message": "Logout success"}, status=status.HTTP_200_OK)
+
+
 user_logout_view = UserLogoutView.as_view()

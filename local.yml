@@ -1,125 +1,125 @@
-version: '3'
+  version: '3'
 
-volumes:
-  thewings_backend_local_postgres_data: {}
-  thewings_backend_local_postgres_data_backups: {}
+  volumes:
+    thewings_backend_local_postgres_data: {}
+    thewings_backend_local_postgres_data_backups: {}
 
-services:
-  django: &django
-    build:
-      context: .
-      dockerfile: ./compose/local/django/Dockerfile
-    image: thewings_backend_local_django
-    container_name: thewings_backend_local_django
-    depends_on:
-      - postgres
-      - redis
-      - mailhog
-      - react
-    volumes:
-      - .:/app:z
-    env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
-      - ./.envs/.local/.emailhost
-    ports:
-      - "8000:8000"
-    command: /start
+  services:
+    django: &django
+      build:
+        context: .
+        dockerfile: ./compose/local/django/Dockerfile
+      image: thewings_backend_local_django
+      container_name: thewings_backend_local_django
+      depends_on:
+        - postgres
+        - redis
+        - mailhog
+        - react
+      volumes:
+        - .:/app:z
+      env_file:
+        - ./.envs/.local/.django
+        - ./.envs/.local/.postgres
+        - ./.envs/.local/.emailhost
+      ports:
+        - "8000:8000"
+      command: /start
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: thewings_backend_production_postgres
-    container_name: thewings_backend_local_postgres
-    volumes:
-      - thewings_backend_local_postgres_data:/var/lib/postgresql/data
-      - thewings_backend_local_postgres_data_backups:/backups
-    env_file:
-      - ./.envs/.local/.postgres
+    postgres:
+      build:
+        context: .
+        dockerfile: ./compose/production/postgres/Dockerfile
+      image: thewings_backend_production_postgres
+      container_name: thewings_backend_local_postgres
+      volumes:
+        - thewings_backend_local_postgres_data:/var/lib/postgresql/data
+        - thewings_backend_local_postgres_data_backups:/backups
+      env_file:
+        - ./.envs/.local/.postgres
 
-  docs:
-    image: thewings_backend_local_docs
-    container_name: thewings_backend_local_docs
-    build:
-      context: .
-      dockerfile: ./compose/local/docs/Dockerfile
-    env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.emailhost
-    volumes:
-      - ./docs:/docs:z
-      - ./config:/app/config:z
-      - ./thewings_backend:/app/thewings_backend:z
-    ports:
-      - "9050:9000"
-    command: /start-docs
+    docs:
+      image: thewings_backend_local_docs
+      container_name: thewings_backend_local_docs
+      build:
+        context: .
+        dockerfile: ./compose/local/docs/Dockerfile
+      env_file:
+        - ./.envs/.local/.django
+        - ./.envs/.local/.emailhost
+      volumes:
+        - ./docs:/docs:z
+        - ./config:/app/config:z
+        - ./thewings_backend:/app/thewings_backend:z
+      ports:
+        - "9050:9000"
+      command: /start-docs
 
-  mailhog:
-    image: mailhog/mailhog:v1.0.0
-    container_name: thewings_backend_local_mailhog
-    ports:
-      - "8025:8025"
+    mailhog:
+      image: mailhog/mailhog:v1.0.0
+      container_name: thewings_backend_local_mailhog
+      ports:
+        - "8025:8025"
 
-  redis:
-    image: redis:6
-    container_name: thewings_backend_local_redis
-    ports:
-      - "6379:6379"
+    redis:
+      image: redis:6
+      container_name: thewings_backend_local_redis
+      ports:
+        - "6379:6379"
 
-  celeryworker:
-    <<: *django
-    image: thewings_backend_local_celeryworker
-    container_name: thewings_backend_local_celeryworker
-    depends_on:
-      - redis
-      - postgres
-      - mailhog
-    ports: []
-    command: /start-celeryworker
+    celeryworker:
+      <<: *django
+      image: thewings_backend_local_celeryworker
+      container_name: thewings_backend_local_celeryworker
+      depends_on:
+        - redis
+        - postgres
+        - mailhog
+      ports: []
+      command: /start-celeryworker
 
-  celerybeat:
-    <<: *django
-    image: thewings_backend_local_celerybeat
-    container_name: thewings_backend_local_celerybeat
-    depends_on:
-      - redis
-      - postgres
-      - mailhog
-    ports: []
-    command: /start-celerybeat
+    celerybeat:
+      <<: *django
+      image: thewings_backend_local_celerybeat
+      container_name: thewings_backend_local_celerybeat
+      depends_on:
+        - redis
+        - postgres
+        - mailhog
+      ports: []
+      command: /start-celerybeat
 
-  flower:
-    <<: *django
-    image: thewings_backend_local_flower
-    container_name: thewings_backend_local_flower
-    ports:
-      - "5555:5555"
-    command: /start-flower
+    flower:
+      <<: *django
+      image: thewings_backend_local_flower
+      container_name: thewings_backend_local_flower
+      ports:
+        - "5555:5555"
+      command: /start-flower
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: my_pgadmin_container
-    restart: always
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    ports:
-      - "5050:80"
+    pgadmin:
+      image: dpage/pgadmin4
+      container_name: my_pgadmin_container
+      restart: always
+      environment:
+        - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+        - PGADMIN_DEFAULT_PASSWORD=admin
+      ports:
+        - "5050:80"
 
-  react:
-    build:
-      context: .
-      dockerfile: ./compose/local/react/Dockerfile
-    image: thewings_frontend_local_react
-    container_name: thewings_frontend_local_react
-    ports:
-      - "3000:3000"
-    volumes:
-      -  ./thewings-frontend:/thewings-frontend:z
-    restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: '2'  
-          memory: 2G 
+    react:
+      build:
+        context: .
+        dockerfile: ./compose/local/react/Dockerfile
+      image: thewings_frontend_local_react
+      container_name: thewings_frontend_local_react
+      ports:
+        - "3000:3000"
+      volumes:
+        -  ./thewings-frontend:/thewings-frontend:z
+      restart: always
+      deploy:
+        resources:
+          limits:
+            cpus: '2'  
+            memory: 2G 

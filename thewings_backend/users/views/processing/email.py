@@ -14,13 +14,13 @@ def email(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         request = self.request
-        email = request.data.get('email')
-        name = request.data.get('name')
+        email = request.data.get("email")
+        name = request.data.get("name")
         code = random.randint(100000, 999999)
         body = {
-            'email_subject': 'The wings send to you',
-            'email_body': 'Hi ' + name + ', ' + 'your code is ' + str(code),
-            'to_email': email,
+            "email_subject": "The wings send to you",
+            "email_body": "Hi " + name + ", " + "your code is " + str(code),
+            "to_email": email,
         }
         # gửi lên mailhog
         Util.send_email(body)
@@ -44,7 +44,10 @@ def email(func):
             redis_instance.expire(key, 30)
             redis_instance.expire(value, 3000)
         except Exception as e:
-            return Response({'detail': 'Redis error', 'error': e}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Redis error", "error": e},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     return wrapper
 
@@ -53,17 +56,23 @@ def code(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         request = self.request
-        email = request.data.get('email')
-        code = request.data.get('code')
+        email = request.data.get("email")
+        code = request.data.get("code")
         keys = redis_instance.keys(f"{email}_*")
         if len(keys) == 0:
-            return Response({'msg': 'Email is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"msg": "Email is not valid"}, status=status.HTTP_400_BAD_REQUEST
+            )
         key = f"{email}_code"
         value = f"{email}_value"
         if redis_instance.ttl(key) == -1:
-            return Response({'msg': 'Code is expired'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"msg": "Code is expired"}, status=status.HTTP_400_BAD_REQUEST
+            )
         elif redis_instance.ttl(key) == -2:
-            return Response({'msg': 'Code is expired'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"msg": "Code is expired"}, status=status.HTTP_400_BAD_REQUEST
+            )
         if int(redis_instance.get(key)) == int(code):
             data = json.loads(redis_instance.get(value))
             request.data.update(data)
@@ -71,20 +80,24 @@ def code(func):
             redis_instance.delete(value)
             return func(self, *args, **kwargs)
         else:
-            return Response({'detail': 'Code is not correct'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Code is not correct"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
     return wrapper
+
 
 def recode(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         request = self.request
-        email = request.data.get('email')
+        email = request.data.get("email")
         user = json.loads(redis_instance.get(f"{email}_value"))
         code = random.randint(100000, 999999)
         body = {
-            'email_subject': 'The wings send to you',
-            'email_body': 'Hi ' + user['name'] + ', ' + 'your code is ' + str(code),
-            'to_email': email,
+            "email_subject": "The wings send to you",
+            "email_body": "Hi " + user["name"] + ", " + "your code is " + str(code),
+            "to_email": email,
         }
         Util.send_email(body)
         key = f"{email}_code"
@@ -93,4 +106,5 @@ def recode(func):
         redis_instance.set(key, code)
         redis_instance.expire(key, 300)
         return func(self, *args, **kwargs)
+
     return wrapper
