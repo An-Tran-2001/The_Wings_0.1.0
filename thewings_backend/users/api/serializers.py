@@ -6,6 +6,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["id", "username", "name", "url", "avatar"]
@@ -19,4 +20,3 @@ class UserSerializer(serializers.ModelSerializer):
             return obj.profile.avatar.url if obj.profile.avatar else None
         except:
             return None
-            

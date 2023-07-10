@@ -7,13 +7,11 @@ if settings.DEBUG:
     router = DefaultRouter()
 else:
     router = SimpleRouter()
-    
+
 router.register("", PostsViewSet)
 router.register("my-posts", CreatePostViewSet)
 
 app_name = "posts"
-
-
 
 
 urlpatterns = [

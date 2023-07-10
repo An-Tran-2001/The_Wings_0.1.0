@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializer import AddFriendSerializer, ListFriendSerializer, UserRequestFriendSerializer, UserBlockFriendSerializer, BlockUserSerializer
+from .serializer import (
+    AddFriendSerializer,
+    ListFriendSerializer,
+    UserRequestFriendSerializer,
+    UserBlockFriendSerializer,
+    BlockUserSerializer,
+)
 from rest_framework.response import Response
 from rest_framework import status
 from thewings_backend.users.renderers import UserRenderer
@@ -18,10 +24,14 @@ class AddFriendView(APIView):
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data, context={"user": request.user})
+        serializer = self.serializer_class(
+            data=request.data, context={"user": request.user}
+        )
         if serializer.is_valid():
             serializer.save()
-            return Response({"messenger": "send a friends request"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"messenger": "send a friends request"}, status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -36,10 +46,14 @@ class FriendView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True, context={"request": request})
+        serializer = self.serializer_class(
+            request.user, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
-            return Response({"messenger": "delete friend success"}, status=status.HTTP_200_OK)
+            return Response(
+                {"messenger": "delete friend success"}, status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -54,21 +68,25 @@ class UserRequestFriendView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True, context={"request": request})
+        serializer = self.serializer_class(
+            request.user, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response({"messenger": "success"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserBlockFriendView(APIView):
     serializer_class = UserBlockFriendSerializer
     renderer_classes = (UserRenderer,)
     permission_classes = [IsAuthenticated & IsAcessToken]
-    
+
     def get(self, request):
         serializer = self.serializer_class(request.user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
 class BlockFriendView(APIView):
     serializer_class = BlockUserSerializer
     renderer_classes = (UserRenderer,)
@@ -76,20 +94,24 @@ class BlockFriendView(APIView):
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response({"messenger": "success"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class DeleteBlockView(APIView):
     renderer_classes = (UserRenderer,)
     permission_classes = [IsAuthenticated & IsAcessToken]
     parser_classes = (MultiPartParser, FormParser, JSONParser)
-    
+
     def delete(self, request, id):
         request.user.black_friends.filter(user=request.user, black_friend=id).delete()
         return Response({"messenger": "success"}, status=status.HTTP_200_OK)
+
 
 friend_request_view = AddFriendView.as_view()
 friend_view = FriendView.as_view()

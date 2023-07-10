@@ -38,7 +38,7 @@ from config.websocket import websocket_application  # noqa isort:skip
 #         await django_application(scope, receive, send)
 #     elif scope["type"] == "websocket":
 #         await websocket_application(scope, receive, send)
-#     else: 
+#     else:
 #         raise NotImplementedError(f"Unknown scope type {scope['type']}")
 
 
@@ -62,7 +62,8 @@ from thewings_backend.messaging.middleware import TokenAuthMiddleware
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": 
-            TokenAuthMiddleware(URLRouter(websocket_routing.websocket_urlpatterns))
+        "websocket": TokenAuthMiddleware(
+            URLRouter(websocket_routing.websocket_urlpatterns)
+        ),
     }
 )

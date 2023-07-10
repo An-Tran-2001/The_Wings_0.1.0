@@ -125,7 +125,6 @@ class ChatConsumer(JsonWebsocketConsumer):
             )
 
         if message_type == "chat_message":
-
             message = Message.objects.create(
                 from_user=self.user,
                 to_user=self.get_receiver(),

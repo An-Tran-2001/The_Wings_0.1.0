@@ -1,6 +1,15 @@
 from django.apps import apps
+
 apps.check_apps_ready()
-from django.db.models import CASCADE, Model, ForeignKey, DateTimeField, TextField, CharField, ManyToManyField
+from django.db.models import (
+    CASCADE,
+    Model,
+    ForeignKey,
+    DateTimeField,
+    TextField,
+    CharField,
+    ManyToManyField,
+)
 import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -49,7 +58,10 @@ class Message(models.Model):
 
 class GroupChat(Model):
     name = CharField(max_length=100)
-    members = ManyToManyField(User, through='GroupChatMember', related_name='group_chats')
+    members = ManyToManyField(
+        User, through="GroupChatMember", related_name="group_chats"
+    )
+
 
 class GroupChatMember(Model):
     group_chat = ForeignKey(GroupChat, on_delete=CASCADE)
@@ -58,7 +70,7 @@ class GroupChatMember(Model):
 
 
 class GroupChatMessage(Model):
-    group_chat = ForeignKey(GroupChat, on_delete=CASCADE, related_name='messages')
+    group_chat = ForeignKey(GroupChat, on_delete=CASCADE, related_name="messages")
     sender = ForeignKey(User, on_delete=CASCADE)
     content = TextField()
     created_at = DateTimeField(auto_now_add=True)

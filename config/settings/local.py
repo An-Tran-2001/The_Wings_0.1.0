@@ -17,7 +17,7 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
 
-#default
+# default
 
 # CACHES = {
 #     "default": {
@@ -26,15 +26,15 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 #     }
 # }
 
-#custom redis
-#redis
+# custom redis
+# redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
     }
 }
 # setting session redis
@@ -49,7 +49,7 @@ EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 
 # gmail smtp
-GMAIL_HOST = 'smtp.gmail.com'
+GMAIL_HOST = "smtp.gmail.com"
 GMAIL_PORT = 587
 GMAIL_USER_FORM = env("EMAIL_FROM")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
@@ -104,18 +104,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://127.0.0.1:8000"
-]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:8000"]
 
 # #setting csrf trusted origins
-CSRF_COOKIE_SECURE = False # tắt cookie secure để có thể gửi request từ localhost:3000
-CSRF_COOKIE_HTTPONLY = False# xóa cookie http only để có thể gửi request từ localhost:3000
+CSRF_COOKIE_SECURE = False  # tắt cookie secure để có thể gửi request từ localhost:3000
+CSRF_COOKIE_HTTPONLY = (
+    False  # xóa cookie http only để có thể gửi request từ localhost:3000
+)
 
 CSRF_DISABLE_TOKEN = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:8000"
-]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]

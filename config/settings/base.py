@@ -77,11 +77,11 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "phonenumber_field",
-    'rest_framework_simplejwt.token_blacklist',
-    'django_advanced_password_validation',
-    'rest_framework_simplejwt',
-    'channels',
-    'channels.layers',
+    "rest_framework_simplejwt.token_blacklist",
+    "django_advanced_password_validation",
+    "rest_framework_simplejwt",
+    "channels",
+    "channels.layers",
 ]
 
 LOCAL_APPS = [
@@ -133,28 +133,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
     {
-        'NAME': 'django_advanced_password_validation.advanced_password_validation.ContainsDigitsValidator',
-        'OPTIONS': {
-            'min_digits': 1
-        }
+        "NAME": "django_advanced_password_validation.advanced_password_validation.ContainsDigitsValidator",
+        "OPTIONS": {"min_digits": 1},
     },
     {
-        'NAME': 'django_advanced_password_validation.advanced_password_validation.ContainsUppercaseValidator',
-        'OPTIONS': {
-            'min_uppercase': 1
-        }
+        "NAME": "django_advanced_password_validation.advanced_password_validation.ContainsUppercaseValidator",
+        "OPTIONS": {"min_uppercase": 1},
     },
     {
-        'NAME': 'django_advanced_password_validation.advanced_password_validation.ContainsLowercaseValidator',
-        'OPTIONS': {
-            'min_lowercase': 1
-        }
+        "NAME": "django_advanced_password_validation.advanced_password_validation.ContainsLowercaseValidator",
+        "OPTIONS": {"min_lowercase": 1},
     },
     {
-        'NAME': 'django_advanced_password_validation.advanced_password_validation.ContainsSpecialCharactersValidator',
-        'OPTIONS': {
-            'min_characters': 1
-        }
+        "NAME": "django_advanced_password_validation.advanced_password_validation.ContainsSpecialCharactersValidator",
+        "OPTIONS": {"min_characters": 1},
     },
 ]
 
@@ -343,7 +335,7 @@ SOCIALACCOUNT_FORMS = {"signup": "thewings_backend.users.forms.UserSocialSignupF
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 
-#default
+# default
 
 # REST_FRAMEWORK = {
 #     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -354,16 +346,14 @@ SOCIALACCOUNT_FORMS = {"signup": "thewings_backend.users.forms.UserSocialSignupF
 #     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 # }
 
-#custom
+# custom
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-} 
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -372,7 +362,7 @@ REST_FRAMEWORK = {
 # By Default swagger ui is available only to admin user(s). You can change permission classes to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 
-#default
+# default
 
 # SPECTACULAR_SETTINGS = {
 #     "TITLE": "thewings_backend API",
@@ -381,16 +371,15 @@ REST_FRAMEWORK = {
 #     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 # }
 
-#custom
+# custom
 SPECTACULAR_SETTINGS = {
     "TITLE": "thewings API",
     "DESCRIPTION": "Documentation of API endpoints of thewings",
     "VERSION": "1.0.0",
     # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
-    'SERVE_INCLUDE_SCHEMA': False, # bỏ qua schema
+    "SERVE_INCLUDE_SCHEMA": False,  # bỏ qua schema
     # OTHER SETTINGS
-    'COMPONENT_SPLIT_REQUEST': True, # tách các phần của request
-    
+    "COMPONENT_SPLIT_REQUEST": True,  # tách các phần của request
     "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
     "SERVERS": [
         {"url": "http://127.0.0.1:8000", "description": "Local server"},
@@ -403,101 +392,95 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "JWT_BLACKLIST_CLOCK_SKEW" : timedelta(seconds=1),
-
+    "JWT_BLACKLIST_CLOCK_SKEW": timedelta(seconds=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
-    'BLACKLIST_AFTER_ROTATION': True, # True thì token cũ sẽ bị blacklist khi refresh token
-    'ROTATE_REFRESH_TOKENS': True, # True thì mỗi lần refresh token sẽ tạo ra 1 token mới
-    'BLACKLIST_EXPIRE_SECONDS': 3600,  # thời gian token bị blacklist 
+    "BLACKLIST_AFTER_ROTATION": True,  # True thì token cũ sẽ bị blacklist khi refresh token
+    "ROTATE_REFRESH_TOKENS": True,  # True thì mỗi lần refresh token sẽ tạo ra 1 token mới
+    "BLACKLIST_EXPIRE_SECONDS": 3600,  # thời gian token bị blacklist
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-
     "JTI_CLAIM": "jti",
-    
-    
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer", # verify token
-    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer", # blacklist token
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",  # verify token
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",  # blacklist token
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
-
 }
 
 PASS_WORD_RESET_TIMEOUT = 900
 
-#setting swagge UI
-SWAGGER_SETTINGS = { # thiết lập cấu hình cho swagger UI 
-    'SECURITY_DEFINITIONS': { # cấu hình cho phần security
-        'Bearer': { # tên của security
-            'type': 'apiKey', # kiểu của security
-            'name': 'Authorization', # tên của security
-            'in': 'header', # nơi chứa security
+# setting swagge UI
+SWAGGER_SETTINGS = {  # thiết lập cấu hình cho swagger UI
+    "SECURITY_DEFINITIONS": {  # cấu hình cho phần security
+        "Bearer": {  # tên của security
+            "type": "apiKey",  # kiểu của security
+            "name": "Authorization",  # tên của security
+            "in": "header",  # nơi chứa security
         },
     },
-    'USE_SESSION_AUTH': False, # không sử dụng session
-    'JSON_EDITOR': True, # sử dụng json editor
-    'VALIDATOR_URL': None, # không sử dụng validator
-    'DOC_EXPANSION': 'list', # mở rộng các phần của API
-    'OPERATIONS_SORTER': 'method', # sắp xếp các phần của API theo method
-    'TAGS_SORTER': 'alpha', # sắp xếp các tag theo thứ tự alphabet
-    'SUPPORTED_SUBMIT_METHODS': [ # các method được hỗ trợ
-        'get',
-        'post',
-        'put',
-        'patch',
-        'delete',
-        'head',
-        'options',
-        'trace',
+    "USE_SESSION_AUTH": False,  # không sử dụng session
+    "JSON_EDITOR": True,  # sử dụng json editor
+    "VALIDATOR_URL": None,  # không sử dụng validator
+    "DOC_EXPANSION": "list",  # mở rộng các phần của API
+    "OPERATIONS_SORTER": "method",  # sắp xếp các phần của API theo method
+    "TAGS_SORTER": "alpha",  # sắp xếp các tag theo thứ tự alphabet
+    "SUPPORTED_SUBMIT_METHODS": [  # các method được hỗ trợ
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "head",
+        "options",
+        "trace",
     ],
-    'SHOW_REQUEST_HEADERS': False, # không hiển thị phần request header
-    'HIDE_TOP_BAR': False, # ẩn top bar
-    'PERSIST_AUTH': True, # lưu lại thông tin auth
-    'REFETCH_SCHEMA_WITH_AUTH': True, # tự động lấy lại schema khi có auth
-    'DEFAULT_MODEL_RENDERING': 'model', # hiển thị model
-    'DEFAULT_MODEL_DEPTH': 3, # độ sâu của model
-    'DISPLAY_OPERATION_ID': False, # không hiển thị operation id
-    'DOC_EXPANSION': 'none', # không mở rộng các phần của API
-    'MAX_ITEMS_TO_LIST': 2000, # số lượng item tối đa được hiển thị
-    'SWAGGER_UI_SETTINGS': { # cấu hình cho swagger UI
-        'deepLinking': True, # cho phép deep linking
-        'persistAuthorization': True, # lưu lại thông tin auth
-        'showExtensions': True, # hiển thị các extension
-        'showCommonExtensions': True, # hiển thị các common extension
-        'displayOperationId': False, # không hiển thị operation id
-        'defaultModelsExpandDepth': 0, # độ sâu mặc định của model
-        'defaultModelExpandDepth': 0, # độ sâu mặc định của model
-        'defaultModelRendering': 'model', # hiển thị model
-        'displayRequestDuration': False, # không hiển thị thời gian request
-        'docExpansion': 'none', # không mở rộng các phần của API
-        'filter': True, # cho phép filter
-        'supportedSubmitMethods': [ # các method được hỗ trợ
-            'get',
-            'post',
-            'put',
-            'delete',
-            'patch',
+    "SHOW_REQUEST_HEADERS": False,  # không hiển thị phần request header
+    "HIDE_TOP_BAR": False,  # ẩn top bar
+    "PERSIST_AUTH": True,  # lưu lại thông tin auth
+    "REFETCH_SCHEMA_WITH_AUTH": True,  # tự động lấy lại schema khi có auth
+    "DEFAULT_MODEL_RENDERING": "model",  # hiển thị model
+    "DEFAULT_MODEL_DEPTH": 3,  # độ sâu của model
+    "DISPLAY_OPERATION_ID": False,  # không hiển thị operation id
+    "DOC_EXPANSION": "none",  # không mở rộng các phần của API
+    "MAX_ITEMS_TO_LIST": 2000,  # số lượng item tối đa được hiển thị
+    "SWAGGER_UI_SETTINGS": {  # cấu hình cho swagger UI
+        "deepLinking": True,  # cho phép deep linking
+        "persistAuthorization": True,  # lưu lại thông tin auth
+        "showExtensions": True,  # hiển thị các extension
+        "showCommonExtensions": True,  # hiển thị các common extension
+        "displayOperationId": False,  # không hiển thị operation id
+        "defaultModelsExpandDepth": 0,  # độ sâu mặc định của model
+        "defaultModelExpandDepth": 0,  # độ sâu mặc định của model
+        "defaultModelRendering": "model",  # hiển thị model
+        "displayRequestDuration": False,  # không hiển thị thời gian request
+        "docExpansion": "none",  # không mở rộng các phần của API
+        "filter": True,  # cho phép filter
+        "supportedSubmitMethods": [  # các method được hỗ trợ
+            "get",
+            "post",
+            "put",
+            "delete",
+            "patch",
         ],
-        'tagsSorter': 'alpha', # sắp xếp các tag theo thứ tự alphabet
-        'operationsSorter': 'alpha',    # sắp xếp các phần của API theo method
-        'validatorUrl': None, # không sử dụng validator
-        'docExpansion': 'none', # không mở rộng các phần của API
-        'urls': [ # các url được hỗ trợ
+        "tagsSorter": "alpha",  # sắp xếp các tag theo thứ tự alphabet
+        "operationsSorter": "alpha",  # sắp xếp các phần của API theo method
+        "validatorUrl": None,  # không sử dụng validator
+        "docExpansion": "none",  # không mở rộng các phần của API
+        "urls": [  # các url được hỗ trợ
             {
-                'name': 'API documentation',
-                'url': 'http://localhost:8000/openapi/',
+                "name": "API documentation",
+                "url": "http://localhost:8000/openapi/",
             },
         ],
-        'externalDocs': { # các docs được hỗ trợ
-            'description': 'Find out more about DRF Spectacular',
-            'url': 'https://github.com/tfranzel/drf-spectacular',
+        "externalDocs": {  # các docs được hỗ trợ
+            "description": "Find out more about DRF Spectacular",
+            "url": "https://github.com/tfranzel/drf-spectacular",
         },
     },
 }

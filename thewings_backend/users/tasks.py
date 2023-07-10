@@ -16,16 +16,17 @@ def get_users_count():
     """A pointless Celery task to demonstrate usage."""
     return User.objects.count()
 
+
 @celery_app.task()
 def send_email_signup(serializer_data):
     """A pointless Celery task to demonstrate usage."""
-    email = serializer_data.get('email')
-    name = serializer_data.get('name')
+    email = serializer_data.get("email")
+    name = serializer_data.get("name")
     code = random.randint(100000, 999999)
     body = {
-        'email_subject': 'The wings send to you',
-        'email_body': 'Hi ' + name + ', ' + 'your code is ' + str(code),
-        'to_email': email,
+        "email_subject": "The wings send to you",
+        "email_body": "Hi " + name + ", " + "your code is " + str(code),
+        "to_email": email,
     }
     # gửi lên mailhog
     Util.send_email(body)
@@ -33,15 +34,16 @@ def send_email_signup(serializer_data):
     # lưu redis
     redis_cache(email, code, serializer_data)
 
+
 @celery_app.task()
 def resend_email_signup(email):
     """A pointless Celery task to demonstrate usage."""
     user = json.loads(redis_instance.get(f"{email}_value"))
     code = random.randint(100000, 999999)
     body = {
-        'email_subject': 'The wings send to you',
-        'email_body': 'Hi ' + user['name'] + ', ' + 'your code is ' + str(code),
-        'to_email': email,
+        "email_subject": "The wings send to you",
+        "email_body": "Hi " + user["name"] + ", " + "your code is " + str(code),
+        "to_email": email,
     }
     Util.send_email(body)
     key = f"{email}_code"
@@ -49,5 +51,3 @@ def resend_email_signup(email):
         redis_instance.delete(key)
     redis_instance.set(key, code)
     redis_instance.expire(key, 300)
-
-        

@@ -10,13 +10,13 @@ from thewings_backend.users.models import *
 User = get_user_model()
 
 
-@admin.register(User) # đăng ký model User vào admin
+@admin.register(User)  # đăng ký model User vào admin
 class UserAdmin(auth_admin.UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("name", "email","phone_number", "tc")}),
+        (_("Personal info"), {"fields": ("name", "email", "phone_number", "tc")}),
         (
             _("Permissions"),
             {
@@ -32,16 +32,37 @@ class UserAdmin(auth_admin.UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email','phone_number', 'name', 'tc', 'is_staff', 'password1', 'password2')}
-         ),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "email",
+                    "phone_number",
+                    "name",
+                    "tc",
+                    "is_staff",
+                    "password1",
+                    "password2",
+                ),
+            },
+        ),
     )
-    list_display = ('username', 'email', 'phone_number', 'name', 'tc', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser')
-    search_fields = ('username', 'email', 'phone_number', 'name')
-    ordering = ('-date_joined',)
+    list_display = (
+        "username",
+        "email",
+        "phone_number",
+        "name",
+        "tc",
+        "is_staff",
+        "is_superuser",
+    )
+    list_filter = ("is_staff", "is_superuser")
+    search_fields = ("username", "email", "phone_number", "name")
+    ordering = ("-date_joined",)
     filter_horizontal = ()
-    
+
+
 admin.site.register(Profile)
 admin.site.register(PicLogin)

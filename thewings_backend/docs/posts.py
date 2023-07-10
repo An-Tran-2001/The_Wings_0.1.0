@@ -1,8 +1,6 @@
-from drf_spectacular.utils import extend_schema , extend_schema_field
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from drf_spectacular.openapi import OpenApiTypes
 from thewings_backend.posts.serializers import *
-
-
 
 
 def get_all_post_docs():
@@ -23,7 +21,7 @@ def get_all_post_docs():
                             "$ref": "#/components/schemas/Posts",
                         },
                     }
-                }
+                },
             }
         },
-    )                   
+    )
