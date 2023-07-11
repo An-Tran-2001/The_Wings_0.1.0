@@ -25,6 +25,9 @@ class TestUserAdmin:
                 "username": "test",
                 "password1": "My_R@ndom-P@ssw0rd",
                 "password2": "My_R@ndom-P@ssw0rd",
+                "phone_number": "+123456789",
+                "name": "Test User",
+                "tc": True,
             },
         )
         assert response.status_code == 302
