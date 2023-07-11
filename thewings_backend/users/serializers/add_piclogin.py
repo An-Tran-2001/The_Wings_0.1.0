@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, FileField
-from ..models import PicLogin
+from thewings_backend.users.models import PicLogin
 
 
 class AddPicsLoginSerializer(ModelSerializer):
