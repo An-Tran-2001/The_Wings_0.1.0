@@ -1,4 +1,4 @@
-from .env_variables import *
+from thewings_backend.users.processing.env_variables import redis_instance
 import datetime
 import random
 from functools import wraps
@@ -6,7 +6,7 @@ import json
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import send_mail
-from ....utils import Util
+from thewings_backend.utils import Util
 
 
 # bỏ cách dùng decorator làm processing vì không đúng nguyên tắc phải kiểm tra is_valid trước ms xử lý

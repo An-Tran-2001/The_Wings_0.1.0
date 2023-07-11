@@ -3,9 +3,9 @@ from celery import shared_task
 
 
 from config import celery_app
-from .views.processing.env_variables import redis_cache, redis_instance
+from thewings_backend.users.processing.env_variables import redis_cache, redis_instance
 import random
-from ..utils import Util
+from thewings_backend.utils import Util
 import json
 
 User = get_user_model()

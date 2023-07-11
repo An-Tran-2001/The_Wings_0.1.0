@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..renderers import UserRenderer
-from ..serializers import UserLoginSerializer
-from .processing.env_variables import get_token_for_user
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.users.serializers import UserLoginSerializer
+from thewings_backend.users.processing.env_variables import get_token_for_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 import datetime

@@ -1,11 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..renderers import UserRenderer
-from ..serializers import UserLogoutSerializer
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.users.serializers import UserLogoutSerializer
 from rest_framework.permissions import IsAuthenticated
 import datetime
-from .processing.env_variables import get_token_expiration_time, redis_instance
+from thewings_backend.users.processing.env_variables import (
+    get_token_expiration_time,
+    redis_instance,
+)
 from thewings_backend.custom_permission import IsAcessToken
 from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser

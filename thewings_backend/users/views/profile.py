@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from ..renderers import UserRenderer
-from ..serializers import UserCreateProfileSerializer
-from ..models import Profile
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.users.serializers import UserCreateProfileSerializer
+from thewings_backend.users.models import Profile
 from thewings_backend.custom_permission import IsAcessToken
 from rest_framework.permissions import IsAuthenticated
 

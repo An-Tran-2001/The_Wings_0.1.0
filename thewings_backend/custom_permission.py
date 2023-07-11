@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .users.views.processing.env_variables import redis_instance
+from thewings_backend.users.processing.env_variables import redis_instance
 from thewings_backend.posts.models import Post, Comment
 from thewings_backend.friends.models import Friend
 from django.db.models import Q

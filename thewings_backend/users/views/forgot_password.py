@@ -1,11 +1,14 @@
 from rest_framework.views import APIView
-from ..serializers import ResetPasswordSerializer, SendMailForgotPasswordSerializer
+from thewings_backend.users.serializers import (
+    ResetPasswordSerializer,
+    SendMailForgotPasswordSerializer,
+)
 from rest_framework.response import Response
 from rest_framework import status
-from ..renderers import UserRenderer
-from ...utils import Util
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.utils import Util
 import random
-from .processing.env_variables import redis_instance
+from thewings_backend.users.processing.env_variables import redis_instance
 from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
