@@ -8,7 +8,7 @@
 
 {% block inner %}
 
-<h1>{% translate "Sign In" %}</h1>
+<h1 style="color: #fff">{% translate "Sign In" %}</h1>
 
 {% get_providers as socialaccount_providers %}
 
@@ -17,7 +17,7 @@
     {% translate "Please sign in with one of your existing third party accounts:" %}
     {% if ACCOUNT_ALLOW_REGISTRATION %}
       {% blocktranslate trimmed %}
-        Or, <a href="{{ signup_url }}">sign up</a>
+        Or, <a href="{{ signup_url }}" style="color: #aqua">sign up</a>
         for a {{ site_name }} account and sign in below:
       {% endblocktranslate %}
     {% endif %}
@@ -40,7 +40,7 @@
     <p>
       {% blocktranslate trimmed %}
         If you have not created an account yet, then please
-        <a href="{{ signup_url }}">sign up</a> first.
+        <a href="{{ signup_url }} " style="color: #fff">sign up</a> first.
       {% endblocktranslate %}
     </p>
   {% endif %}
@@ -52,7 +52,7 @@
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
   {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
+  <a class="button secondaryAction" href="{% url 'account_reset_password' %}" style="color: #fff">{% translate "Forgot Password?" %}</a>
   <button class="primaryAction btn btn-primary" type="submit">{% translate "Sign In" %}</button>
 </form>
 
