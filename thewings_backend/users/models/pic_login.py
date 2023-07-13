@@ -1,4 +1,4 @@
-from django.db.models import Model, FileField, CharField
+from django.db.models import FileField, Model
 
 
 class PicLogin(Model):

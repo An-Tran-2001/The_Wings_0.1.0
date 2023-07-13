@@ -17,5 +17,5 @@ class UserLogoutSerializer(serializers.Serializer):
     def save(self, **kwargs):
         try:
             RefreshToken(self.token).blacklist()
-        except Exception as e:
+        except Exception:
             self.fail("bad_token")

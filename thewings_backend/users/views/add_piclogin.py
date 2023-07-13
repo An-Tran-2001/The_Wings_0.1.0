@@ -1,11 +1,11 @@
-from rest_framework.views import APIView
-from thewings_backend.users.serializers.add_piclogin import AddPicsLoginSerializer
-from thewings_backend.users.renderers import UserRenderer
-from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-import base64
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from thewings_backend.users.models import PicLogin
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.users.serializers.add_piclogin import AddPicsLoginSerializer
 from thewings_backend.users.tasks import save_image_login
 
 

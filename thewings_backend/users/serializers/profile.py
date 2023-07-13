@@ -1,14 +1,7 @@
-import datetime
-from rest_framework.serializers import (
-    ModelSerializer,
-    ImageField,
-    SerializerMethodField,
-    CharField,
-    ValidationError,
-)
 from django.contrib.auth import get_user_model
-from ..models.profile import Profile
+from rest_framework.serializers import ImageField, ModelSerializer, ValidationError
 
+from thewings_backend.users.models.profile import Profile
 
 User = get_user_model()
 

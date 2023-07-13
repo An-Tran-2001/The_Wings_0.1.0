@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+        "name": "Docker TheWings",
+        "type": "docker",
+        "request": "launch",
+        "preLaunchTask": "docker-compose -f local.yml up -d --build",
+        "platform": "python",
+        "python": {
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "thewings_backend"
+                }
+            ],
+            "projectType": "django"
+        }
+    }
+
+    ]
+}

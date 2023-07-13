@@ -1,20 +1,19 @@
-from rest_framework.views import APIView
-from thewings_backend.users.serializers import (
-    UserRegisterSerializer,
-    SubmitCodeSerializer,
-    SendNewCodeSerializer,
-)
-from thewings_backend.users.processing.email import email, code, recode
-from rest_framework.response import Response
-from rest_framework import status
-from thewings_backend.users.renderers import UserRenderer
-from thewings_backend.utils import Util
-import random
-from thewings_backend.users.processing.env_variables import redis_cache, redis_instance
 import json
-from thewings_backend.users.tasks import send_email_signup, resend_email_signup
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
+from rest_framework import status
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from thewings_backend.docs.auth import register_docs
+from thewings_backend.users.processing.env_variables import redis_instance
+from thewings_backend.users.renderers import UserRenderer
+from thewings_backend.users.serializers import (
+    SendNewCodeSerializer,
+    SubmitCodeSerializer,
+    UserRegisterSerializer,
+)
+from thewings_backend.users.tasks import resend_email_signup, send_email_signup
 
 
 class UserRegisterView(APIView):

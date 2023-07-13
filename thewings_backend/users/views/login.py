@@ -1,14 +1,15 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import datetime
+
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from thewings_backend.docs.auth import login_docs
+from thewings_backend.users.processing.env_variables import get_token_for_user
 from thewings_backend.users.renderers import UserRenderer
 from thewings_backend.users.serializers import UserLoginSerializer
-from thewings_backend.users.processing.env_variables import get_token_for_user
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
-import datetime
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from thewings_backend.docs.auth import login_docs
 
 User = get_user_model()
 

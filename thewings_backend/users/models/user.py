@@ -1,16 +1,9 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db.models import (
-    CharField,
-    EmailField,
-    DateTimeField,
-    BooleanField,
-    Index,
-    UUIDField,
-)
-from django.core.validators import RegexValidator, MinLengthValidator
+from django.core.validators import RegexValidator
+from django.db.models import BooleanField, CharField, DateTimeField, EmailField, Index
 from django.urls import reverse
-from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserManager(BaseUserManager):
@@ -96,7 +89,7 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d](?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-                message="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character",
+                message="Password must be at least 8 characters long, contain at least one uppercase letter, one lower case letter, one number and one special character",
                 code="invalid_password",
             )
         ],

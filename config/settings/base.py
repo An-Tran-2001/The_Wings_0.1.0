@@ -349,10 +349,13 @@ SOCIALACCOUNT_FORMS = {"signup": "thewings_backend.users.forms.UserSocialSignupF
 # custom
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
 }
 
 
@@ -447,7 +450,6 @@ SWAGGER_SETTINGS = {  # thiết lập cấu hình cho swagger UI
     "DEFAULT_MODEL_RENDERING": "model",  # hiển thị model
     "DEFAULT_MODEL_DEPTH": 3,  # độ sâu của model
     "DISPLAY_OPERATION_ID": False,  # không hiển thị operation id
-    "DOC_EXPANSION": "none",  # không mở rộng các phần của API
     "MAX_ITEMS_TO_LIST": 2000,  # số lượng item tối đa được hiển thị
     "SWAGGER_UI_SETTINGS": {  # cấu hình cho swagger UI
         "deepLinking": True,  # cho phép deep linking

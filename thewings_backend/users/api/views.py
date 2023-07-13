@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from thewings_backend.custom_permission import IsAcessToken
-from .serializers import UserSerializer
+from thewings_backend.users.api.serializers import UserSerializer
 
 User = get_user_model()
 

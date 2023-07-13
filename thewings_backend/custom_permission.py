@@ -1,8 +1,10 @@
-from rest_framework import permissions
-from thewings_backend.users.processing.env_variables import redis_instance
-from thewings_backend.posts.models import Post, Comment
-from thewings_backend.friends.models import Friend
+
 from django.db.models import Q
+from rest_framework import permissions
+
+from thewings_backend.friends.models import Friend
+from thewings_backend.posts.models import Post
+from thewings_backend.users.processing.env_variables import redis_instance
 
 
 class IsAcessToken(permissions.BasePermission):

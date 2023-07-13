@@ -1,15 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.db.models import (
-    CharField,
-    OneToOneField,
     CASCADE,
-    TextField,
-    ImageField,
+    CharField,
     DateField,
+    ImageField,
     ManyToManyField,
     Model,
+    OneToOneField,
+    TextField,
 )
-from django.core.validators import RegexValidator, MinLengthValidator
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

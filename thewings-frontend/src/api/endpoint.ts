@@ -1,8 +1,8 @@
 const Endpoint = {
-  LOGIN: "",
-  REGISTER: "",
+  LOGIN: "users/login",
+  REGISTER: "user/register",
   CONFIRM_CODE: "",
-  FORGOT_PASSWORD: "",
+  FORGOT_PASSWORD: "user/forgot-password",
 };
 
 export default Endpoint;

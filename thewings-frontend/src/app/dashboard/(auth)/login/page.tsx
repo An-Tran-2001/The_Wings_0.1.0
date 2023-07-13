@@ -7,6 +7,9 @@ import Logo from "public/images/logo.png";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
 import { HttpStatusCode } from "axios";
+import { FORGOT_PASSWORD_PATH } from "constant/path";
+import Link from "next/link";
+
 
 type Credentials = {
   username: string;
@@ -71,9 +74,13 @@ const Page = () => {
           </button>
           <p className="text-white text-center mt-2">
             {`Can't remember an account? `}
-            <a href="/dashboard/forgotpassword" className="text-blue-600">
+            <Link
+              className="navbar-brand text-blue-600"
+              key="3"
+              href={FORGOT_PASSWORD_PATH}
+            >
               Forgot Password
-            </a>
+            </Link>
           </p>
         </form>
       </div>

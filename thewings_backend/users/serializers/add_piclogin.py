@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer, FileField
+from rest_framework.serializers import FileField, ModelSerializer
+
 from thewings_backend.users.models import PicLogin
 
 

@@ -1,11 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework.serializers import (
-    ModelSerializer,
-    ValidationError,
     CharField,
     EmailField,
+    ModelSerializer,
+    ValidationError,
 )
-from django.contrib.auth import get_user_model
-
 
 User = get_user_model()
 

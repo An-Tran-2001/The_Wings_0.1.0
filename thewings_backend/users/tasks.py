@@ -1,12 +1,12 @@
-from django.contrib.auth import get_user_model
-from celery import shared_task
+import json
+import random
 
+from celery import shared_task
+from django.contrib.auth import get_user_model
 
 from config import celery_app
 from thewings_backend.users.processing.env_variables import redis_cache, redis_instance
-import random
 from thewings_backend.utils import Util
-import json
 
 User = get_user_model()
 
