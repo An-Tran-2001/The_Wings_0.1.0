@@ -18,7 +18,7 @@ const Navbar = () => {
           {LINKS.map((link) => (
             <Link
               className="navbar-brand text-white"
-              key={link.id}
+              key={`navbar_${link.id}`}
               href={link.url}
             >
               {link.text}

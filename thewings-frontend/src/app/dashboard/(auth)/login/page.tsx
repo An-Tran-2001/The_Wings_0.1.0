@@ -64,6 +64,7 @@ const Page = () => {
               validated={validatePassword}
               value={creds.password}
               ref={inputRef}
+              type="password"
             />
           </div>
           <button

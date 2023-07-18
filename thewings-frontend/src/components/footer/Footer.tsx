@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="container grid mx-auto grid-cols-4 content-center text-center font-mono font-light text-2xl p-5">
           {LINKS.map((link) => (
             <Link
-              key={link.id}
+              key={`footer_${link.id}`}
               href={link.url}
               className="text-white hover:text-gray-500"
             >
@@ -34,17 +34,17 @@ const LINKS = [
     url: LOGIN_PATH,
   },
   {
-    id: 1,
+    id: 2,
     text: "Services",
     url: LOGIN_PATH,
   },
   {
-    id: 1,
+    id: 3,
     text: "Rules",
     url: LOGIN_PATH,
   },
   {
-    id: 1,
+    id: 4,
     text: "Relationships",
     url: LOGIN_PATH,
   },

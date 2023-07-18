@@ -6,8 +6,9 @@ import Input, {
   validateEmail,
   validatePassword,
 } from "components/Input";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FormEvent, MouseEvent, useState } from "react";
+import { CODE_COFIRM } from "constant/path";
 
 type Credentials = {
   email: string;
@@ -29,7 +30,8 @@ const Page = () => {
     try {
       const res = await client.post(Endpoint.FORGOT_PASSWORD, creds);
       localStorage.setItem("token", res.data.token);
-      push("/", undefined, { shallow: true });
+      // push("/", undefined, { shallow: true });
+      push(CODE_COFIRM)
     } catch (err) {
       console.log(err);
       setError(error);
