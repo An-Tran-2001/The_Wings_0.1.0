@@ -1,7 +1,11 @@
-from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiExample
 from drf_spectacular.openapi import OpenApiTypes
-from thewings_backend.users.serializers import *
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework import status
+
+from thewings_backend.users.serializers import (
+    UserLoginSerializer,
+    UserRegisterSerializer,
+)
 
 
 def login_docs() -> extend_schema:

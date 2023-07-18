@@ -1,20 +1,19 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from thewings_backend.custom_permission import IsAcessToken
+from thewings_backend.users.renderers import UserRenderer
+
 from .serializer import (
     AddFriendSerializer,
-    ListFriendSerializer,
-    UserRequestFriendSerializer,
-    UserBlockFriendSerializer,
     BlockUserSerializer,
+    ListFriendSerializer,
+    UserBlockFriendSerializer,
+    UserRequestFriendSerializer,
 )
-from rest_framework.response import Response
-from rest_framework import status
-from thewings_backend.users.renderers import UserRenderer
-from .models import Friend
-from django.db.models import Q
-from rest_framework.permissions import IsAuthenticated
-from thewings_backend.custom_permission import IsAcessToken
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 
 class AddFriendView(APIView):

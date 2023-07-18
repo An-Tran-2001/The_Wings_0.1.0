@@ -1,9 +1,9 @@
-from drf_spectacular.utils import extend_schema, extend_schema_field
-from drf_spectacular.openapi import OpenApiTypes
-from thewings_backend.posts.serializers import *
+from drf_spectacular.utils import extend_schema
+
+from thewings_backend.posts.serializers import PostsSerializer
 
 
-def get_all_post_docs():
+def get_all_post_docs() -> extend_schema:
     """
     Posts is serializer Post main
     """

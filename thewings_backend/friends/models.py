@@ -1,15 +1,14 @@
+import uuid
+
+from django.contrib.auth import get_user_model
 from django.db.models import (
     CASCADE,
-    Model,
-    ForeignKey,
     BooleanField,
     DateTimeField,
-    OneToOneField,
+    ForeignKey,
+    Model,
     UUIDField,
 )
-from django.contrib.auth import get_user_model
-import uuid
-from rest_framework.response import Response
 
 User = get_user_model()
 
