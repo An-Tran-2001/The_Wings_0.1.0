@@ -27,7 +27,7 @@ drf-spectacular==0.26.3  # https://github.com/tfranzel/drf-spectacular
 #Validate
 django-phonenumber-field==7.1.0  
 phonenumbers==8.13.9
-phonenumberslite==8.13.15
+phonenumberslite==8.13.17
 django-advanced-password-validation==1.1.1
 #jwt
 djangorestframework==3.14.0
