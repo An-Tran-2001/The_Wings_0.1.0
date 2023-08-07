@@ -38,6 +38,7 @@ type InputProps = {
   label: string;
   validated?(value: string): string;
   value?: string;
+  type: string;
 } & HTMLAttributes<HTMLInputElement>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(

@@ -55,6 +55,7 @@ const Page = () => {
               onChange={onChangeCreds("username")}
               validated={validateUserName}
               value={creds.username}
+              type="text"
             />
           </div>
           <div className="flex flex-col w-full mt-5">
