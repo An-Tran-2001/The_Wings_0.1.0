@@ -1,11 +1,11 @@
 # dev.Dockerfile for development
 
-FROM node:19-alpine
+FROM node:20.5.0-alpine
 
-WORKDIR /thewings-frontend
+WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY thewings-frontend/package.json thewings-frontend/yarn.lock* thewings-frontend/package-lock.json* thewings-frontend/pnpm-lock.yaml* ./
+COPY thewings-frontend/package*.json ./
 
 RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -16,4 +16,7 @@ RUN \
 
 COPY ./thewings-frontend/ .
 
-CMD yarn dev
+CMD \
+    if [ "$NODE_ENV" = "production" ]; then yarn build; \
+    else yarn start; \
+    fi
