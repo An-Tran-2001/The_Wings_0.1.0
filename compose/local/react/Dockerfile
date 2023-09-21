@@ -17,6 +17,6 @@ RUN \
 COPY ./thewings-frontend/ .
 
 CMD \
-    if [ "$NODE_ENV" = "production" ]; then yarn build; \
-    else yarn start; \
+    if [ "$NODE_ENV" = "production" ]; then yarn build && yarn start; \
+    else yarn dev; \
     fi
