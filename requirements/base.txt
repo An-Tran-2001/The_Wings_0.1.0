@@ -31,7 +31,7 @@ phonenumberslite==8.13.19
 django-advanced-password-validation==1.1.1
 #jwt
 djangorestframework==3.14.0
-djangorestframework-simplejwt==5.2.2
+djangorestframework-simplejwt==5.3.0
 #loadenv
 django-dotenv==1.4.2
 # add websockets with channels
