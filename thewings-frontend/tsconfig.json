@@ -28,7 +28,10 @@
       "app/*": ["./src/app/*"],
       "public/*": ["./public/*"],
       "api": ["./src/api"],
-      "api/*": ["./src/api/*"]
+      "api/*": ["./src/api/*"],
+      "screens": ["./src/screens"],
+      "screens/*": ["./src/screens/*"],
+      "styles/*": ["./src/styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -103,8 +103,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-3001.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-8000.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-5050.app.github.dev"
 ]
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:8000"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:8000", "https://fuzzy-space-succotash-rvqwgrxp9r72q66-3001.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-8000.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-5050.app.github.dev"]
 
 # #setting csrf trusted origins
 CSRF_COOKIE_SECURE = False  # tắt cookie secure để có thể gửi request từ localhost:3000
@@ -114,4 +119,6 @@ CSRF_COOKIE_HTTPONLY = (
 
 CSRF_DISABLE_TOKEN = True
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000", "https://fuzzy-space-succotash-rvqwgrxp9r72q66-3001.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-8000.app.github.dev",
+    "https://fuzzy-space-succotash-rvqwgrxp9r72q66-5050.app.github.dev"]

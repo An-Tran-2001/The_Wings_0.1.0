@@ -1,5 +1,4 @@
-import React, { HTMLAttributes } from "react";
-import { forwardRef } from "react";
+import { InputHTMLAttributes, forwardRef } from "react";
 
 const pattern =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
@@ -35,40 +34,52 @@ const validateCode = (value: string): string => {
 };
 
 type InputProps = {
-  label: string;
+  label?: string;
   validated?(value: string): string;
   value?: string;
   type: string;
-} & HTMLAttributes<HTMLInputElement>;
+} & InputHTMLAttributes<HTMLInputElement>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (props: InputProps, ref) => {
-    const { label, value, validated, autoFocus = false, ...rest } = props;
+    const {
+      name,
+      label,
+      value,
+      validated,
+      autoFocus = false,
+      className,
+      ...rest
+    } = props;
 
     return (
-      <div className="relative">
-        <label className="text-white font-semibold ">{label}</label>
+      <div className="flex flex-col space-y-1">
+        {label && <label className="text-white font-semibold ">{label}</label>}
         <input
+          name={name}
           autoFocus={autoFocus}
           ref={ref}
-          className="w-full h-12 px-5 rounded-lg bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition duration-300"
+          className={
+            "w-full h-12 px-5 rounded-lg bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition duration-300 " +
+            className
+          }
           {...rest}
         />
-        <span className="absolute text-xs r-0 w-40 bg-gray-600 mx-3 z-10">
+        <span className="text-xs text-red-500">
           {validated && validated(value || "")}
         </span>
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";
 
 export default Input;
 export {
-  validateUserName,
-  validatePassword,
-  validateEmail,
-  validatePhone,
   validateCode,
+  validateEmail,
+  validatePassword,
+  validatePhone,
+  validateUserName,
 };
