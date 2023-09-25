@@ -10,7 +10,6 @@ const Header = () => {
       py={2}
       alignItems="center"
       justifyContent="space-between"
-      className="fixed top-0 left-0 w-full z-10"
     >
       <Stack direction="row" spacing={3} alignItems="center">
         <Stack className="bg-blue-400 w-[40px] h-[40px] rounded-full" />
