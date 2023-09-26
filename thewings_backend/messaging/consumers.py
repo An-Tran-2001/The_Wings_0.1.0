@@ -37,6 +37,8 @@ class ChatConsumer(JsonWebsocketConsumer):
         if not self.user.is_authenticated:
             return
 
+        self.scope["request"] = self.scope.get("request")
+        
         self.accept()
         self.conversation_name = (
             f"{self.scope['url_route']['kwargs']['conversation_name']}"
