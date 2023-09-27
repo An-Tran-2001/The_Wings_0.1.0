@@ -1,12 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit';
-
+import AuthReducer, { AuthState } from "./auth/reducer";
 export interface IRootState {
     auth: any;
 }
 
 export const store = configureStore({
     reducer: {
-        auth: () => ({})
+        auth: AuthReducer,
     }
 });
 

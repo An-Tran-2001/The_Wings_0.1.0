@@ -3,7 +3,7 @@ import { AN_ERROR_TRY_AGAIN } from "constant";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
 
-interface LoginInfo {
+export interface LoginInfo {
     username_email: string;
     password: string;
 }
