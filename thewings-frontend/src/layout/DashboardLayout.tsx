@@ -8,11 +8,22 @@ type IProps = {
 
 const DashboardLayout = ({ children }: IProps) => {
   return (
-    <Stack flex={1} width="100vw" height="100vh">
+    <Stack
+      flex={1}
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
       <Header />
       <Stack direction="row" flex={1}>
         <Sidebar />
-        {children}
+        <Stack flex={1} overflow="auto">
+          {children}
+        </Stack>
       </Stack>
     </Stack>
   );

@@ -2,9 +2,15 @@ import { ReactElement } from "react";
 import { DashboardLayout } from "../../layout";
 import { Stack } from "@mui/material";
 
-const Home = () => {
+const Page = () => {
   return (
-    <Stack flex={1} bgcolor="green" justifyContent="center" alignItems="center">
+    <Stack
+      minHeight="min-content"
+      height="1000px"
+      bgcolor="green"
+      justifyContent="center"
+      alignItems="center"
+    >
       <p style={{ fontSize: 80, fontFamily: "cursive", letterSpacing: 30 }}>
         FAKEBOOK
       </p>
@@ -12,8 +18,8 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Page;
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };

@@ -20,13 +20,12 @@ const Search = () => {
       component="form"
       onSubmit={handleSubmit}
       direction="row"
-      p={0}
       alignItems="center"
       justifyContent="center"
       className="bg-gray-700 rounded-lg"
     >
       <Input
-        className="px-3 py-2 h-auto text-white w-[600px] border-white"
+        className="px-3 py-2 h-auto text-white w-[600px] border-white outline-none"
         name="search"
         type="text"
         value={search}

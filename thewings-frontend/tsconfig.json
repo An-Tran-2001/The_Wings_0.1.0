@@ -31,7 +31,9 @@
       "api/*": ["./src/api/*"],
       "screens": ["./src/screens"],
       "screens/*": ["./src/screens/*"],
-      "styles/*": ["./src/styles/*"]
+      "styles/*": ["./src/styles/*"],
+      "context/*": ["./src/context/*"],
+      "context": ["./src/context"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

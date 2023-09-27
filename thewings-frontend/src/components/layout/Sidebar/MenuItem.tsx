@@ -2,6 +2,7 @@ import { Stack } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, memo } from "react";
+import { twMerge } from "tailwind-merge";
 
 type MenuItemProps = {
   label: string;
@@ -16,10 +17,10 @@ const MenuItem = (props: MenuItemProps) => {
     <Stack component="li">
       <Link
         href={path}
-        className={
+        className={twMerge(
           "flex items-center text-white rounded-md p-2 font-semibold min-w-[200px] hover:bg-blue-300 hover:text-black " +
-          (pathname === path ? "bg-blue-300 text-black" : "")
-        }
+            (pathname === path && "bg-blue-300 text-black"),
+        )}
       >
         {icon}
         {label}

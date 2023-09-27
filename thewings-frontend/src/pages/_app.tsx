@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import { ThemeProvider } from "context";
 import "styles/global.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -16,8 +17,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <div className="bg-black opacity-90">
-      {getLayout(<Component {...pageProps} />)}
-    </div>
+    <ThemeProvider>{getLayout(<Component {...pageProps} />)}</ThemeProvider>
   );
 }
