@@ -1,14 +1,15 @@
-import { IconButton, Stack } from "@mui/material";
-import Input from "components/Input";
+import { IconButton, Stack, StackProps } from "@mui/material";
+import Input, { InputProps } from "components/Input";
 import { FormEvent, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { twMerge } from "tailwind-merge";
 
-interface PropsSearch{
-  className?: string;
-  props?: any;
-}
+type PropsSearch = {
+  inputProps?: InputProps;
+} & StackProps;
 
 const Search = (props: PropsSearch) => {
+  const { inputProps } = props;
   const [search, setSearch] = useState("");
   const { className, ...rest } = props;
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -27,15 +28,17 @@ const Search = (props: PropsSearch) => {
       direction="row"
       alignItems="center"
       justifyContent="center"
-      className="bg-gray-700 rounded-lg"
+      className={twMerge("bg-gray-700 rounded-lg", className)}
+      {...rest}
     >
       <Input
-        className={className}
+        className="w-[100%] h-[40px]"
         name="search"
         type="text"
         value={search}
         onChange={handleChange}
         placeholder="Search something..."
+        {...inputProps}
       />
       <IconButton>
         <SearchIcon className="text-white" />
