@@ -17,11 +17,6 @@ import { Image as ImageIcon, PersonAdd, InsertEmoticon, WhereToVote, GifBox } fr
 import { blue, pink, yellow } from '@mui/material/colors';
 
 const options = ["Public", "Private", "Only me"];
-export interface ICreateProps {
-  id: string;
-  title: string;
-  content: string;
-}
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -31,7 +26,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const CreatePost = (props: ICreateProps) => {
+const CreatePost = () => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState<string | null>(options[0]);
   const [inputValue, setInputValue] = React.useState("");
@@ -42,7 +37,6 @@ const CreatePost = (props: ICreateProps) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const { id, title } = props;
 
   return (
     <div className="flex p-3 bg-neutral-900 rounded-lg">

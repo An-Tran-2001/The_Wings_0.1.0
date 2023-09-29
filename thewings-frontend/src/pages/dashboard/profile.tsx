@@ -104,7 +104,7 @@ const Page = () => {
                 </div>
               </div>
               <div className="col-span-2">
-                <CreatePost id="1" title="title"/>
+                <CreatePost />
               </div>
             </div>
           </header>

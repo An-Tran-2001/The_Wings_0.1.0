@@ -1,6 +1,8 @@
 import { ReactElement } from "react";
 import { DashboardLayout } from "../../layout";
 import { Stack } from "@mui/material";
+import CreatePost from "../../components/post/CreatePost";
+import Post from "../../components/post/Post";
 
 const Page = () => {
   return (
@@ -11,9 +13,8 @@ const Page = () => {
       justifyContent="center"
       alignItems="center"
     >
-      <p style={{ fontSize: 80, fontFamily: "cursive", letterSpacing: 30 }}>
-        FAKEBOOK
-      </p>
+      <CreatePost />
+      <Post title="Title" content="Content" file="File" createdAt="CreatedAt" updatedAt="UpdatedAt" tags={["Tags"]} user={{ name: "Name", profile: "Profile" }} />
     </Stack>
   );
 };
