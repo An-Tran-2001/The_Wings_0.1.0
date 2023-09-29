@@ -4,6 +4,7 @@ import VideoIcon from "@mui/icons-material/OndemandVideoOutlined";
 import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 const iconStyles = {
   fontSize: "1.75rem",
@@ -18,48 +19,13 @@ export const SIDEBAR_ITEMS = [
     path: "/dashboard",
   },
   {
+    label: "Message",
+    icon: <QuestionAnswerIcon sx={iconStyles} />,
+    path: "/dashboard/message",
+  },
+  {
     label: "Friends",
     icon: <PeopleIcon sx={iconStyles} />,
-    path: "/friends",
-  },
-  {
-    label: "Videos",
-    icon: <VideoIcon sx={iconStyles} />,
-    path: "/watch",
-  },
-  {
-    label: "Archives",
-    icon: <BookmarkIcon sx={iconStyles} />,
-    path: "/archives",
-  },
-  {
-    label: "Groups",
-    icon: <GroupsRoundedIcon sx={iconStyles} />,
-    path: "/groups",
-  },
-  {
-    label: "Games",
-    icon: <SportsEsportsIcon sx={iconStyles} />,
-    path: "/games",
-  },
-  // {
-  //   label: "Dashboard",
-  //   icon: <DashboardOutlined sx={iconStyles} />,
-  //   path: "/dashboard",
-  // },
-  // {
-  //   label: "Dashboard",
-  //   icon: <DashboardOutlined sx={iconStyles} />,
-  //   path: "/dashboard",
-  // },
-  // {
-  //   label: "Dashboard",
-  //   icon: <DashboardOutlined sx={iconStyles} />,
-  //   path: "/dashboard",
-  // },
-  // {
-  //   label: "Dashboard",
-  //   icon: <DashboardOutlined sx={iconStyles} />,
-  //   path: "/dashboard",
-  // },
+    path: "/dashboard/friend",
+  }
 ];

@@ -3,9 +3,14 @@ import Input from "components/Input";
 import { FormEvent, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
-const Search = () => {
-  const [search, setSearch] = useState("");
+interface PropsSearch{
+  className?: string;
+  props?: any;
+}
 
+const Search = (props: PropsSearch) => {
+  const [search, setSearch] = useState("");
+  const { className, ...rest } = props;
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
@@ -25,7 +30,7 @@ const Search = () => {
       className="bg-gray-700 rounded-lg"
     >
       <Input
-        className="px-3 py-2 h-auto text-white w-[600px] border-white outline-none"
+        className={className}
         name="search"
         type="text"
         value={search}

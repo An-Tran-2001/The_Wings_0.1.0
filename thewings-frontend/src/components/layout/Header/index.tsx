@@ -16,7 +16,7 @@ const Header = () => {
         <p className="text-white text-2xl font-semibold">TheWings</p>
       </Stack>
 
-      <Search />
+      <Search className="px-3 py-2 h-auto text-white w-[600px] border-white outline-none"/>
       <Nav />
     </Stack>
   );

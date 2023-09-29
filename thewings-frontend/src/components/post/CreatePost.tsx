@@ -12,6 +12,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import Stack from "@mui/material/Stack";
+import { Image as ImageIcon, PersonAdd, InsertEmoticon, WhereToVote, GifBox } from '@mui/icons-material';
+import { blue, pink, yellow } from '@mui/material/colors';
 
 const options = ["Public", "Private", "Only me"];
 export interface ICreateProps {
@@ -48,7 +51,7 @@ const CreatePost = (props: ICreateProps) => {
         className="text-gray-300 font-normal w-full px-3 py-2 rounded-3xl  bg-gray-800"
         onClick={handleClickOpen}
       >
-        What's on your mind?
+        What&apos;s on your mind?
       </Button>
       <BootstrapDialog
         onClose={handleClose}
@@ -102,22 +105,39 @@ const CreatePost = (props: ICreateProps) => {
           <Typography gutterBottom>
             <TextField
               id="standard-multiline-flexible"
-              label="Multiline"
+              label="What are you thinking ?"
               multiline
               maxRows={8}
               variant="standard"
               className="w-full h-[100px] border-none"
             />
           </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-          </Typography>
+          <Stack direction="row" className="p-2 border-solid border border-stone-500 rounded-lg">
+            <Button className="mr-20 text-white">Add to your article</Button>
+            <IconButton>
+              <ImageIcon color="success"/>
+            </IconButton>
+            <IconButton>
+              <PersonAdd sx={{ color: blue[500] }}/>
+            </IconButton>
+            <IconButton>
+              <InsertEmoticon sx={{ color: yellow[500] }}/>
+            </IconButton> 
+            <IconButton>
+              <WhereToVote sx={{ color: pink[500] }}/>
+            </IconButton> 
+            <IconButton>
+              <GifBox color="action"/>
+            </IconButton> 
+          </Stack>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
+        <DialogActions className="flex justify-center px-4">
+          <Button 
+            variant="contained" 
+            onClick={handleClose} 
+            className="w-full text-white px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-700"
+          >
+            Post
           </Button>
         </DialogActions>
       </BootstrapDialog>

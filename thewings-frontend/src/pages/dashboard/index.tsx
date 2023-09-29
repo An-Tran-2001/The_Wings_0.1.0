@@ -7,7 +7,7 @@ const Page = () => {
     <Stack
       minHeight="min-content"
       height="1000px"
-      bgcolor="green"
+      bgcolor="#202b2e61"
       justifyContent="center"
       alignItems="center"
     >
