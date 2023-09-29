@@ -8,6 +8,7 @@ from thewings_backend.users.views import (
     user_forgot_password_view,
     user_reset_password_view,
     user_logout_view,
+    search_user_view,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path("forgot-password/", view=user_forgot_password_view, name="forgot"),
     path("reset-password/", view=user_reset_password_view, name="reset"),
     path("logout/", view=user_logout_view, name="logout"),
+    path("search/", view=search_user_view, name="search")
 ]
