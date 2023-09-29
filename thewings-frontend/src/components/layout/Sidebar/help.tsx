@@ -1,10 +1,6 @@
-import DashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
 import PeopleIcon from "@mui/icons-material/People";
-import VideoIcon from "@mui/icons-material/OndemandVideoOutlined";
-import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import DashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
 
 const iconStyles = {
   fontSize: "1.75rem",
@@ -27,5 +23,5 @@ export const SIDEBAR_ITEMS = [
     label: "Friends",
     icon: <PeopleIcon sx={iconStyles} />,
     path: "/dashboard/friend",
-  }
+  },
 ];
