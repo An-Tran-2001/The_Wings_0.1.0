@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useCallback } from "react";
-import { login, LoginInfo } from "./actions";
+import { login, LoginInfo, register, RegisterInfo } from "./actions";
+import { logout } from "./reducer";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,18 @@ export const useAuth = () => {
     },
     [dispatch],
   );
+
+  const onLogout = useCallback(async () => {
+    dispatch(logout());
+  }, [dispatch]);
+
+  const onRegister = useCallback(
+    async (info: RegisterInfo) => {
+      await dispatch(register(info));
+    },
+    [dispatch],
+  );
+
   return {
     user,
     status,
@@ -25,5 +38,7 @@ export const useAuth = () => {
     refresh_token,
     access_token,
     onLogin,
+    onLogout,
+    onRegister,
   };
 };
