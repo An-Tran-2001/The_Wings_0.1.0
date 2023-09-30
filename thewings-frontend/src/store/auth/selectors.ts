@@ -1,6 +1,13 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useCallback } from "react";
-import { login, LoginInfo, register, RegisterInfo } from "./actions";
+import {
+  confirmCode,
+  ConfirmInfo,
+  login,
+  LoginInfo,
+  register,
+  RegisterInfo,
+} from "./actions";
 import { logout } from "./reducer";
 
 export const useAuth = () => {
@@ -31,6 +38,13 @@ export const useAuth = () => {
     [dispatch],
   );
 
+  const onConfirmCode = useCallback(
+    async (info: ConfirmInfo) => {
+      await dispatch(confirmCode(info));
+    },
+    [dispatch],
+  );
+
   return {
     user,
     status,
@@ -40,5 +54,6 @@ export const useAuth = () => {
     onLogin,
     onLogout,
     onRegister,
+    onConfirmCode,
   };
 };

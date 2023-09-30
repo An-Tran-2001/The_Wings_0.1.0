@@ -3,11 +3,14 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import { useAuth } from "store/auth";
+import { useRouter } from "next/router";
+import { HOME_PATH } from "constant/path";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const { onLogout } = useAuth();
+  const router = useRouter();
 
   const handleMenuClick = (event: MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,6 +27,7 @@ const Nav = () => {
       await onLogout();
     } finally {
       handleClose();
+      router.push(HOME_PATH);
     }
   };
 

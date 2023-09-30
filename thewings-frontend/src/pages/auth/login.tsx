@@ -1,20 +1,12 @@
-import React, { ChangeEvent, FormEvent, ReactElement } from "react";
-import { useState, useRef } from "react";
-import Image from "next/image";
-import Input, { validateUserName, validatePassword } from "components/Input";
-import Logo from "public/images/logo.png";
-import { AN_ERROR_TRY_AGAIN } from "constant";
-import { Endpoint, client } from "api";
-import { HttpStatusCode } from "axios";
-import {
-  DASHBOARD_PATH,
-  FORGOT_PASSWORD_PATH,
-  LOGIN_PATH,
-} from "constant/path";
-import Link from "next/link";
+import Input, { validatePassword, validateUserName } from "components/Input";
+import { DASHBOARD_PATH, FORGOT_PASSWORD_PATH } from "constant/path";
 import { AuthLayout } from "layout";
-import { useAuth } from "store/auth";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import Logo from "public/images/logo.png";
+import { ChangeEvent, FormEvent, ReactElement, useRef, useState } from "react";
+import { useAuth } from "store/auth";
 
 type Credentials = {
   username_email: string;
