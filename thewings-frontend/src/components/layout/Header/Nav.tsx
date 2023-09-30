@@ -4,7 +4,7 @@ import { IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import { useAuth } from "store/auth";
 import { useRouter } from "next/router";
-import { HOME_PATH } from "constant/path";
+import { HOME_PATH, PROFILE_PATH } from "constant/path";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -20,6 +20,11 @@ const Nav = () => {
   const handleClose = () => {
     setAnchorEl(null);
     setOpen(false);
+  };
+
+  const handleOpenProfile = () => {
+    handleClose();
+    router.push(PROFILE_PATH);
   };
 
   const handleLogout = async () => {
@@ -49,7 +54,7 @@ const Nav = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleOpenProfile}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>

@@ -1,116 +1,166 @@
 import Button from "components/Button";
 import CreatePost from "components/post/CreatePost";
+import { MESSAGE_PATH } from "constant/path";
+import { DashboardLayout } from "layout";
+import Image from "next/image";
+import Link from "next/link";
+import { ReactElement } from "react";
+import { useAuth } from "store/auth";
+import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
 
 const Page = () => {
+  const { user } = useAuth();
   return (
     <div className="flex justify-center items-center">
       <div className="container">
-        <form>
-          <header className="">
-            <div className="relative h-96 bg-neutral-900 rounded m-3">
-              <div className="flex items-end absolute translate-y-1/2 translate-x-1/2 bottom-0 left-0">
-                <div className="w-[150px] h-[150px] bg-neutral-900 rounded-full outline-black outline-[5px] outline"></div>
-                <h1 className="text-white font-bold text-[20px]">Name</h1>
-              </div>
-            </div>
-            <div className="flex items-center justify-end h-[100px] border-b-[1px]  border-stone-500">
-              <div className="flex ">
-                <Button type="submit" className="mx-2" content="Message" />
-                <Button type="submit" className="mx-2" content="Add Friend" />
-                <Button type="submit" className="mx-2" content="Edit Profile" />
-              </div>
-            </div>
-            <div className="border-b-1 border-white grid grid-cols-3 gap-4 mt-4">
-              <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
-                <h2 className="font-bold text-[1.1rem]">Intro</h2>
-                <p className="text-center p-3">Some text</p>
-                <Button
-                  type="submit"
-                  className="w-full bg-gray-800"
-                  content="Edit Bio"
+        <header className="">
+          <div className="relative h-96 bg-transparent rounded m-3">
+            {user?.cover_image ? (
+              <Image
+                src={"http://localhost:8000" + user?.cover_image}
+                alt="cover image"
+                width={100}
+                height={100}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <></>
+            )}
+            <div className="flex items-end absolute translate-y-1/2 translate-x-1/2 bottom-0 left-0">
+              <div className="relative w-[150px] h-[150px] bg-neutral-900 rounded-full outline-black outline-[5px] outline overflow-hidden">
+                <Image
+                  src={"http://localhost:8000" + user?.avatar}
+                  alt="123"
+                  width={300}
+                  height={300}
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                    height: "100%",
+                  }}
                 />
-                <div className="py-2 text-[0.9rem] flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <p className="mx-3">User name: ..........</p>
+                <div className="w-full h-full flex items-center justify-center absolute inset-0 opacity-0 bg-black/70 z-10 cursor-pointer hover:opacity-100">
+                  <FlipCameraIosIcon
+                    sx={{ color: "white", width: 30, height: 30 }}
+                  />
                 </div>
-                <div className="py-2 text-[0.9rem] flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m8.839 2.51l-4.66-2.51m0 0l-1.023-.55a2.25 2.25 0 00-2.134 0l-1.022.55m0 0l-4.661 2.51m16.5 1.615a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V8.844a2.25 2.25 0 011.183-1.98l7.5-4.04a2.25 2.25 0 012.134 0l7.5 4.04a2.25 2.25 0 011.183 1.98V19.5z"
-                    />
-                  </svg>
-                  <p className="mx-3">Email: ..........</p>
-                </div>
-                <div className="py-2 text-[0.9rem] flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m15-3.38a48.474 48.474 0 00-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.17c0 .62-.504 1.124-1.125 1.124H4.125A1.125 1.125 0 013 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 016 13.12M12.265 3.11a.375.375 0 11-.53 0L12 2.845l.265.265zm-3 0a.375.375 0 11-.53 0L9 2.845l.265.265zm6 0a.375.375 0 11-.53 0L15 2.845l.265.265z"
-                    />
-                  </svg>
-                  <p className="mx-3">Brithday: ..........</p>
-                </div>
-                <div className="py-2 text-[0.9rem] flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-                    />
-                  </svg>
-                  <p className="mx-3">Locations: ..........</p>
-                </div>
+                <form>
+                  <input type="file" disabled className="hidden" />
+                </form>
               </div>
-              <div className="col-span-2">
-                <CreatePost />
+              <h1 className="text-white font-bold text-[20px]">
+                {user?.name || user?.email || "Name"}
+              </h1>
+            </div>
+          </div>
+          <div className="flex items-center justify-end h-[100px] border-b-[1px]  border-stone-500">
+            <div className="flex ">
+              <Link href={MESSAGE_PATH}>
+                <Button className="mx-2" content="Message" />
+              </Link>
+              <Button className="mx-2" content="Add Friend" />
+              <Button className="mx-2" content="Edit Profile" />
+            </div>
+          </div>
+          <div className="border-b-1 border-white grid grid-cols-3 gap-4 mt-4">
+            <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
+              <h2 className="font-bold text-[1.1rem]">Intro</h2>
+              <p className="text-center p-3">Some text</p>
+              <Button className="w-full bg-gray-800" content="Edit Bio" />
+              <div className="py-2 text-[0.9rem] flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <p className="mx-3">User name: {user?.name}</p>
+              </div>
+              <div className="py-2 text-[0.9rem] flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m8.839 2.51l-4.66-2.51m0 0l-1.023-.55a2.25 2.25 0 00-2.134 0l-1.022.55m0 0l-4.661 2.51m16.5 1.615a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V8.844a2.25 2.25 0 011.183-1.98l7.5-4.04a2.25 2.25 0 012.134 0l7.5 4.04a2.25 2.25 0 011.183 1.98V19.5z"
+                  />
+                </svg>
+                <p className="mx-3">Email: {user?.email}</p>
+              </div>
+              <div className="py-2 text-[0.9rem] flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m15-3.38a48.474 48.474 0 00-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.17c0 .62-.504 1.124-1.125 1.124H4.125A1.125 1.125 0 013 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 016 13.12M12.265 3.11a.375.375 0 11-.53 0L12 2.845l.265.265zm-3 0a.375.375 0 11-.53 0L9 2.845l.265.265zm6 0a.375.375 0 11-.53 0L15 2.845l.265.265z"
+                  />
+                </svg>
+                <p className="mx-3">Brithday: {user?.birthday}</p>
+              </div>
+              <div className="py-2 text-[0.9rem] flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                  />
+                </svg>
+                <p className="mx-3">Locations: {user?.address || "..."}</p>
               </div>
             </div>
-          </header>
-        </form>
+            <div className="col-span-2">
+              <CreatePost />
+            </div>
+          </div>
+        </header>
       </div>
     </div>
   );
 };
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
+};

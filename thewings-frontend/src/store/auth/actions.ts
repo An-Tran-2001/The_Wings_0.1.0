@@ -23,6 +23,17 @@ export interface ConfirmInfo {
   code: string;
 }
 
+export interface ForgotPasswordInfo {
+  email: string;
+}
+
+export interface ResetPasswordInfo {
+  email: string;
+  code: string;
+  password: string;
+  password2: string;
+}
+
 export const login = createAsyncThunk("auth/login", async (info: LoginInfo) => {
   try {
     const response = await client.post(Endpoint.LOGIN, info);
@@ -85,3 +96,36 @@ export const confirmCode = createAsyncThunk(
   },
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (info: ForgotPasswordInfo) => {
+    try {
+      const response = await client.post(Endpoint.FORGOT_PASSWORD, info);
+      if (response.status === HttpStatusCode.Ok) {
+        return response.data;
+      }
+      throw AN_ERROR_TRY_AGAIN;
+    } catch (error) {
+      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+        throw AN_ERROR_TRY_AGAIN;
+      throw error;
+    }
+  },
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (info: ResetPasswordInfo) => {
+    try {
+      const response = await client.put(Endpoint.RESET_PASSWORD, info);
+      if (response.status === HttpStatusCode.Ok) {
+        return response.data;
+      }
+      throw AN_ERROR_TRY_AGAIN;
+    } catch (error) {
+      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+        throw AN_ERROR_TRY_AGAIN;
+      throw error;
+    }
+  },
+);

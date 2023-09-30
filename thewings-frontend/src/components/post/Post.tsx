@@ -3,9 +3,9 @@ import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
-import AvatarGroup from '@mui/material/AvatarGroup'
+import AvatarGroup from "@mui/material/AvatarGroup";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -60,7 +60,11 @@ const Post = ({
 }: PostProps) => {
   const { name, profile } = user;
   return (
-    <Stack flex="1" justifyContent="space-between" className="w-[600px] box-border m-3 bg-neutral-950 rounded-2xl">
+    <Stack
+      flex="1"
+      justifyContent="space-between"
+      className="w-[600px] box-border m-3 bg-neutral-950 rounded-2xl"
+    >
       <Stack direction="row" p={2}>
         <StyledBadge
           overlap="circular"
@@ -71,8 +75,7 @@ const Post = ({
           <Avatar alt="" src="" />
         </StyledBadge>
         <Stack>
-          <h1>{name}
-          </h1>
+          <h1>{name}</h1>
           <p className="text-[12px]">{createdAt}</p>
         </Stack>
         <CloseIcon className="ml-auto text-[25px]" />
