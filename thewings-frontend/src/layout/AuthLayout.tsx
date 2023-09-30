@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import Navbar from "./Navbar";
-import Footer from "./layout/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/layout/Footer";
 
-const LayoutAuth = ({ children }: { children: ReactNode }) => {
+const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -11,4 +11,4 @@ const LayoutAuth = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-export default LayoutAuth;
+export default AuthLayout;

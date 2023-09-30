@@ -7,9 +7,9 @@ import Input, {
   validatePhone,
   validateUserName,
 } from "components/Input";
-import LayoutAuth from "components/LayoutAuth";
 import { AN_ERROR_TRY_AGAIN } from "constant";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { AuthLayout } from "layout";
+import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 
 type Credentials = {
   username: string;
@@ -42,7 +42,6 @@ const Page = () => {
   };
 
   return (
-    <LayoutAuth>
     <div className="w-full h-screen flex justify-center items-center">
       <form onSubmit={onSubmit} className="w-3/5 p-10 bg-gray-900">
         <div className="grid grid-cols-2 gap-2">
@@ -99,11 +98,14 @@ const Page = () => {
         </div>
       </form>
     </div>
-    </LayoutAuth>
   );
 };
 
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout>{page}</AuthLayout>;
+};
 
 const INITIAL_VALUES = {
   username: "",

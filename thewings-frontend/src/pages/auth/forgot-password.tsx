@@ -7,11 +7,11 @@ import Input, {
   validatePassword,
 } from "components/Input";
 import { useRouter } from "next/navigation";
-import { FormEvent, MouseEvent, useState } from "react";
+import { FormEvent, MouseEvent, ReactElement, useState } from "react";
 import { CODE_COFIRM } from "constant/path";
 import { REGISTER_PATH } from "constant/path";
 import Link from "next/link";
-import LayoutAuth from "components/LayoutAuth";
+import { AuthLayout } from "layout";
 
 type Credentials = {
   email: string;
@@ -34,7 +34,7 @@ const Page = () => {
       const res = await client.post(Endpoint.FORGOT_PASSWORD, creds);
       localStorage.setItem("token", res.data.token);
       // push("/", undefined, { shallow: true });
-      push(CODE_COFIRM)
+      push(CODE_COFIRM);
     } catch (err) {
       console.log(err);
       setError(error);
@@ -47,7 +47,6 @@ const Page = () => {
       setCreds((prev) => ({ ...prev, [name]: event.currentTarget.value }));
 
   return (
-    <LayoutAuth>
     <div className="w-full h-screen flex justify-center items-center">
       <div className="3xl flex flex-col items-center justify-center p-10 bg-gray-900">
         <h1 className="text-3xl text-white font-serif font-light tracking-wide">
@@ -71,12 +70,14 @@ const Page = () => {
             onChange={onChangeCreds("password")}
             validated={validatePassword}
             value={creds.password}
+            type="password"
           />
           <Input
             label="Confirm Password"
             onChange={onChangeCreds("confirmPassword")}
             validated={validatePassword}
             value={creds.confirmPassword}
+            type="password"
           />
         </div>
         <p className="text-red-500">{error}</p>
@@ -91,11 +92,14 @@ const Page = () => {
         </p>
       </div>
     </div>
-    </LayoutAuth>
   );
 };
 
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout>{page}</AuthLayout>;
+};
 
 const INITIAL_VALUES = {
   email: "",

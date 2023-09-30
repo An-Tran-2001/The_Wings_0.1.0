@@ -38,7 +38,6 @@ export type InputProps = {
   label?: string;
   validated?(value?: string): string;
   value?: string;
-  type: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -50,6 +49,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       validated,
       autoFocus = false,
       className,
+      type = "text",
       ...rest
     } = props;
 
@@ -60,6 +60,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           name={name}
           autoFocus={autoFocus}
           ref={ref}
+          type={type}
           className={
             "w-full h-12 px-5 rounded-lg bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition duration-300 " +
             className

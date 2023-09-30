@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent, FormEvent, ReactElement } from "react";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Input, { validateUserName, validatePassword } from "components/Input";
@@ -9,8 +9,7 @@ import { Endpoint, client } from "api";
 import { HttpStatusCode } from "axios";
 import { FORGOT_PASSWORD_PATH } from "constant/path";
 import Link from "next/link";
-import LayoutAuth from "components/LayoutAuth";
-
+import { AuthLayout } from "layout";
 
 type Credentials = {
   username_email: string;
@@ -41,7 +40,6 @@ const Page = () => {
   };
 
   return (
-    <LayoutAuth>
     <div className="w-full h-screen flex justify-center items-center">
       <div className="flex flex-row w-4/5 justify-between items-center">
         <div className="w-1/2 flex flex-col items-center">
@@ -90,11 +88,14 @@ const Page = () => {
         </form>
       </div>
     </div>
-    </LayoutAuth>
   );
 };
 
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout>{page}</AuthLayout>;
+};
 
 const INITIAL_VALUES = {
   username_email: "",
