@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import ImageField, ModelSerializer, ValidationError, TextField
+from rest_framework.serializers import ImageField, ModelSerializer, ValidationError, CharField
 
 from thewings_backend.users.models.profile import Profile
 
@@ -43,8 +43,8 @@ class UserUpdateProfile(ModelSerializer):
     cover_image = ImageField(
         max_length=None, use_url=True, required=False, allow_empty_file=True
     )
-    sex = TextField(required=False)
-    birth_date = TextField(required=False)
+    sex = CharField(required=False)
+    birth_date = CharField(required=False)
     class Meta:
         model = Profile
         fields = ["bio", "sex", "birth_date", "address", "avatar", "cover_image"]
