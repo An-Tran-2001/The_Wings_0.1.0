@@ -36,6 +36,7 @@ const Page = () => {
     event.preventDefault();
     try {
       await onLogin(creds);
+      // console.log(creds)
     } catch (error) {
       console.log(error);
     } finally {
