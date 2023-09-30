@@ -5,7 +5,7 @@ const nextConfig = {
       images: {
         remotePatterns: [{
           protocol: "https",
-          hostname: "https://tbi.sb-cd.com/"
+          hostname: "th.bing.com"
         }]
       }
 }

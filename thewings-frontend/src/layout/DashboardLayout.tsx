@@ -17,9 +17,10 @@ const DashboardLayout = ({ children }: IProps) => {
         right: 0,
         bottom: 0,
       }}
+      maxHeight="100vh"
     >
       <Header />
-      <Stack direction="row" flex={1}>
+      <Stack direction="row" flex={1} height="92vh">
         <Sidebar />
         <Stack flex={1} overflow="auto">
           {children}
