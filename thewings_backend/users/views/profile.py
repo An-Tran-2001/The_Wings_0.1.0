@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from thewings_backend.custom_permission import IsAcessToken
 from thewings_backend.users.models import Profile
 from thewings_backend.users.renderers import UserRenderer
-from thewings_backend.users.serializers import UserCreateProfileSerializer
+from thewings_backend.users.serializers import UserCreateProfileSerializer, UserUpdateProfile
 
 
 class UserCreateProfileView(APIView):
@@ -37,6 +37,16 @@ class UserCreateProfileView(APIView):
             )
         except Profile.DoesNotExist:
             return Response({"msg": "no profile"}, status=status.HTTP_404_NOT_FOUND)
-
+    
+    def patch(self, request, format=None):
+        serializer = UserUpdateProfile(instance=request.user.profile,
+            data=request.data, context={"user": request.user},
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"msg": "Profile Successfully Change"}, status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 user_create_profile_view = UserCreateProfileView.as_view()

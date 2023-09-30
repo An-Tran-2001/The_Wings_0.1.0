@@ -79,7 +79,7 @@ const Post = ({
       </Stack>
       <Stack>
         <p>{content}</p>
-        <Image src="https://th.bing.com/th/id/OIP.GFE8Wykppv-pGDw_CV4OeQAAAA?pid=ImgDet&rs=1" alt="" width={600} height={300} className="object-cover w-full h-[750px]" />
+        {/* <Image src="https://th.bing.com/th/id/OIP.GFE8Wykppv-pGDw_CV4OeQAAAA?pid=ImgDet&rs=1" alt="" width={600} height={300} className="object-cover w-full h-[750px]" /> */}
       </Stack>
       <Stack className="grid grid-cols-2 b-0 p-4">
         <Stack className="col-span-1 text-center">

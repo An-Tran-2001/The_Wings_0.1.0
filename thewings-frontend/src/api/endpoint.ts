@@ -4,6 +4,7 @@ const Endpoint = {
   CONFIRM_CODE: "users/register-confirm/",
   FORGOT_PASSWORD: "users/forgot-password",
   GETINFO: "api/user/me/",
+  SEARCH_USER: "users/search/",
 };
 
 export default Endpoint;
