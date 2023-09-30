@@ -15,7 +15,7 @@ const Page = () => {
       <div className="container">
         <header className="">
           <div className="relative h-96 bg-transparent rounded m-3">
-            {user?.cover_image ? (
+            {user?.cover_image && (
               <Image
                 src={"http://localhost:8000" + user?.cover_image}
                 alt="cover image"
@@ -32,22 +32,22 @@ const Page = () => {
                   objectFit: "cover",
                 }}
               />
-            ) : (
-              <></>
             )}
             <div className="flex items-end absolute translate-y-1/2 translate-x-1/2 bottom-0 left-0">
               <div className="relative w-[150px] h-[150px] bg-neutral-900 rounded-full outline-black outline-[5px] outline overflow-hidden">
-                <Image
-                  src={"http://localhost:8000" + user?.avatar}
-                  alt="123"
-                  width={300}
-                  height={300}
-                  style={{
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                    height: "100%",
-                  }}
-                />
+                {user?.avatar && (
+                  <Image
+                    src={"http://localhost:8000" + user?.avatar}
+                    alt="123"
+                    width={300}
+                    height={300}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      height: "100%",
+                    }}
+                  />
+                )}
                 <div className="w-full h-full flex items-center justify-center absolute inset-0 opacity-0 bg-black/70 z-10 cursor-pointer hover:opacity-100">
                   <FlipCameraIosIcon
                     sx={{ color: "white", width: 30, height: 30 }}
