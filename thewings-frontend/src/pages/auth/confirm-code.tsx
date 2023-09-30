@@ -1,11 +1,11 @@
 "use client";
-import React, { FormEvent } from "react";
+import React, { FormEvent, ReactElement } from "react";
 import { useState } from "react";
 import Input, { validateCode } from "components/Input";
 import { HttpStatusCode } from "axios";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
-import LayoutAuth from "components/LayoutAuth";
+import { AuthLayout } from "layout";
 
 const Page = () => {
   const [code, setCode] = useState<string>("");
@@ -28,7 +28,6 @@ const Page = () => {
   };
 
   return (
-    <LayoutAuth>
     <div className="w-full h-screen flex justify-center items-center">
       <div className="3xl flex flex-col items-center justify-center p-10 bg-gray-900">
         <h1 className="text-3xl text-white font-serif font-light tracking-wide">
@@ -52,8 +51,11 @@ const Page = () => {
         </form>
       </div>
     </div>
-    </LayoutAuth>
   );
 };
 
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout>{page}</AuthLayout>;
+};

@@ -1,5 +1,4 @@
-"use client";
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent, FormEvent, ReactElement } from "react";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Input, { validateUserName, validatePassword } from "components/Input";
@@ -7,10 +6,15 @@ import Logo from "public/images/logo.png";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
 import { HttpStatusCode } from "axios";
-import { FORGOT_PASSWORD_PATH } from "constant/path";
+import {
+  DASHBOARD_PATH,
+  FORGOT_PASSWORD_PATH,
+  LOGIN_PATH,
+} from "constant/path";
 import Link from "next/link";
-import LayoutAuth from "components/LayoutAuth";
-
+import { AuthLayout } from "layout";
+import { useAuth } from "store/auth";
+import { useRouter } from "next/router";
 
 type Credentials = {
   username_email: string;
@@ -20,6 +24,8 @@ type Credentials = {
 const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { onLogin } = useAuth();
+  const router = useRouter();
 
   const onChangeCreds = (name: string) => {
     return (event: ChangeEvent<HTMLInputElement>) =>
@@ -29,19 +35,15 @@ const Page = () => {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await client.post(Endpoint.LOGIN, creds);
-      if (response.status === HttpStatusCode.Ok) {
-        console.log(response.data);
-        return response.data;
-      }
-      throw AN_ERROR_TRY_AGAIN;
+      await onLogin(creds);
     } catch (error) {
       console.log(error);
+    } finally {
+      router.push(DASHBOARD_PATH);
     }
   };
 
   return (
-    <LayoutAuth>
     <div className="w-full h-screen flex justify-center items-center">
       <div className="flex flex-row w-4/5 justify-between items-center">
         <div className="w-1/2 flex flex-col items-center">
@@ -55,7 +57,7 @@ const Page = () => {
             <Input
               label="Username"
               autoFocus
-              onChange={onChangeCreds("username")}
+              onChange={onChangeCreds("username_email")}
               validated={validateUserName}
               value={creds.username_email}
               type="text"
@@ -90,11 +92,14 @@ const Page = () => {
         </form>
       </div>
     </div>
-    </LayoutAuth>
   );
 };
 
 export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout>{page}</AuthLayout>;
+};
 
 const INITIAL_VALUES = {
   username_email: "",

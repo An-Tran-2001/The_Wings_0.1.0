@@ -33,7 +33,10 @@
       "screens/*": ["./src/screens/*"],
       "styles/*": ["./src/styles/*"],
       "context/*": ["./src/context/*"],
-      "context": ["./src/context"]
+      "context": ["./src/context"],
+      "store/*": ["./src/store/*"],
+      "layout": ["./src/layout"],
+      "layout/*": ["./src/layout/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

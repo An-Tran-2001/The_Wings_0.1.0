@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material";
 import { InputHTMLAttributes, forwardRef } from "react";
 
 const pattern =
@@ -33,11 +34,10 @@ const validateCode = (value: string): string => {
     : "";
 };
 
-type InputProps = {
+export type InputProps = {
   label?: string;
-  validated?(value: string): string;
+  validated?(value?: string): string;
   value?: string;
-  type: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -49,26 +49,28 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       validated,
       autoFocus = false,
       className,
+      type = "text",
       ...rest
     } = props;
 
     return (
-      <div className="flex flex-col space-y-1">
+      <Stack flex={1} spacing={1}>
         {label && <label className="text-white font-semibold ">{label}</label>}
         <input
           name={name}
           autoFocus={autoFocus}
           ref={ref}
+          type={type}
           className={
             "w-full h-12 px-5 rounded-lg bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition duration-300 " +
             className
           }
           {...rest}
         />
-        <span className="text-xs text-red-500">
-          {validated && validated(value || "")}
-        </span>
-      </div>
+        {validated && validated(value) && (
+          <span className="text-sm text-red-500">{validated(value)}</span>
+        )}
+      </Stack>
     );
   },
 );

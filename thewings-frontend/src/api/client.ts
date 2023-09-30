@@ -1,9 +1,24 @@
 import axios from "axios";
 import { API_TIMEOUT, API_URL } from "constant/index";
+import { TOKEN_KEY } from "constant/path";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.timeout = API_TIMEOUT;
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    // Do something with request error
+    return Promise.reject(error);
+  },
+);
 
 const client = {
   get: async (endpoint: string, params = {}) => {
