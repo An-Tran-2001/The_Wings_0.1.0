@@ -8,3 +8,4 @@ export const TOKEN_KEY = "token";
 export const AN_ERROR_TRY_AGAIN = "An error occurred. Please try again.";
 export const PROFILE_PATH = "/dashboard/profile";
 export const CONFIRM_CODE_PATH = "/auth/confirm-code";
+export const MESSAGE_PATH = "/dashboard/message";

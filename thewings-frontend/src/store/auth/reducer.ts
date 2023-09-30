@@ -10,19 +10,19 @@ export interface User {
   url: string;
   avatar: string;
   bio: string;
-  birthday: string,
-  address?: string,
-  cover_image: string,
-  sex: string,
+  birthday: string;
+  address?: string;
+  cover_image: string;
+  sex: string;
+  email: string;
 }
 
 export interface UserResponse {
   user: User;
   token: {
     refresh: string;
-    access
-    : string;
-  }
+    access: string;
+  };
 }
 
 export interface AuthState {
@@ -37,7 +37,6 @@ export interface AuthState {
 const initialState: AuthState = {
   userStatus: DataStatus.IDLE,
 };
-
 
 const authSlice = createSlice({
   name: "auth",

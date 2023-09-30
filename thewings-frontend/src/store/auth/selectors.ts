@@ -3,10 +3,14 @@ import { useCallback } from "react";
 import {
   confirmCode,
   ConfirmInfo,
+  forgotPassword,
+  ForgotPasswordInfo,
   login,
   LoginInfo,
   register,
   RegisterInfo,
+  resetPassword,
+  ResetPasswordInfo,
 } from "./actions";
 import { logout } from "./reducer";
 
@@ -45,6 +49,20 @@ export const useAuth = () => {
     [dispatch],
   );
 
+  const onForgotPassword = useCallback(
+    async (info: ForgotPasswordInfo) => {
+      await dispatch(forgotPassword(info));
+    },
+    [dispatch],
+  );
+
+  const onResetPassword = useCallback(
+    async (info: ResetPasswordInfo) => {
+      await dispatch(resetPassword(info));
+    },
+    [dispatch],
+  );
+
   return {
     user,
     status,
@@ -55,5 +73,7 @@ export const useAuth = () => {
     onLogout,
     onRegister,
     onConfirmCode,
+    onForgotPassword,
+    onResetPassword,
   };
 };

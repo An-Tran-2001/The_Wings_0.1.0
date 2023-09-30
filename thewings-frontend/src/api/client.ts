@@ -9,7 +9,6 @@ axios.defaults.timeout = API_TIMEOUT;
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(TOKEN_KEY);
-    console.log(token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

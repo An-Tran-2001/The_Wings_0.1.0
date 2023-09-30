@@ -16,7 +16,15 @@ const Page = () => {
       <Stack width="600px" margin={3} className="bg-black">
         <CreatePost />
       </Stack>
-      <Post title="Title" content="Content" file="File" createdAt="CreatedAt" updatedAt="UpdatedAt" tags={["Tags"]} user={{ name: "Name", profile: "Profile" }} />
+      <Post
+        title="Title"
+        content="Content"
+        file="File"
+        createdAt="CreatedAt"
+        updatedAt="UpdatedAt"
+        tags={["Tags"]}
+        user={{ name: "Name", profile: "Profile" }}
+      />
     </Stack>
   );
 };
