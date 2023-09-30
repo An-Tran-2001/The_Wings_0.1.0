@@ -53,10 +53,11 @@ class UserResetPasswordView(APIView):
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def put(self, request):
-        serializer = ResetPasswordSerializer(data=request.data)
+        user = User.objects.get(email=request.data.get("email"))
+        serializer = ResetPasswordSerializer(instance=user,data=request.data)
         if serializer.is_valid():
-            email = serializer.data.get("email")
-            code = serializer.data.get("code")
+            email = serializer.validated_data.get("email")
+            code = serializer.validated_data.get("code")
             key = f"{email}_code_forgot"
             if redis_instance.ttl(key) == -1:
                 return Response(
