@@ -6,6 +6,9 @@ import { HttpStatusCode } from "axios";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
 import { AuthLayout } from "layout";
+interface Login extends React.Component {
+  history: any;
+}
 
 const Page = () => {
   const [code, setCode] = useState<string>("");
@@ -26,6 +29,7 @@ const Page = () => {
     event.preventDefault();
     setCode(event.currentTarget.value);
   };
+
 
   return (
     <div className="w-full h-screen flex justify-center items-center">

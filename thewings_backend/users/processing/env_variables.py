@@ -48,7 +48,7 @@ def redis_cache(email, code, data):
 
         redis_instance.set(key, code)
         redis_instance.set(value, json.dumps(data))
-        redis_instance.expire(key, 30)
+        redis_instance.expire(key, 3000)
         redis_instance.expire(value, 3000)
     except Exception as e:
         return Response(

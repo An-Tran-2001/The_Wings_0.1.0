@@ -9,6 +9,11 @@ export interface User {
   name: string;
   url: string;
   avatar: string;
+  bio: string;
+  birthday: string;
+  address: string;
+  cover_image: string;
+  sex:string;
 }
 
 export interface UserResponse {
@@ -65,7 +70,7 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.userStatus = DataStatus.FAILED;
         state.userError = action.error?.message || AN_ERROR_TRY_AGAIN;
-      }),
+      })
 });
 
 export const { logout } = authSlice.actions;

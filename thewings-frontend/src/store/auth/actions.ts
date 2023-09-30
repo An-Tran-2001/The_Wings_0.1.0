@@ -48,3 +48,20 @@ export const register = createAsyncThunk(
     }
   },
 );
+
+export const getInfo = createAsyncThunk(
+  "auth/getinfo",
+  async () => {
+    try {
+      const response = await client.get(Endpoint.GETINFO);
+      if (response.status === HttpStatusCode.Created) {
+        return response.data;
+      }
+      throw AN_ERROR_TRY_AGAIN;
+    } catch (error) {
+      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+        throw AN_ERROR_TRY_AGAIN;
+      throw error;
+    }
+  },
+);
