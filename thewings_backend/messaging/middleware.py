@@ -4,6 +4,8 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import InvalidToken
+from typing import Any
 
 User = get_user_model()
 
@@ -23,9 +25,9 @@ class TokenAuthentication:
     def get_model(self):
         if self.model is not None:
             return self.model
-        from rest_framework.authtoken.models import Token
+        from rest_framework_simplejwt.tokens import AccessToken
 
-        return Token
+        return AccessToken
 
     """
     A custom token model may be used, but must have the following properties.
@@ -37,18 +39,21 @@ class TokenAuthentication:
     def authenticate_credentials(self, key):
         model = self.get_model()
         try:
-            token = model.objects.select_related("user").get(key=key)
-        except model.DoesNotExist:
-            raise AuthenticationFailed(_("Invalid token."))
+            token = model(key)
+            user = User.objects.get(id=token.payload["user_id"])
+            print(user)
+        except InvalidToken:
+            raise AuthenticationFailed(_("Invalid token."), code="invalid_token")
+        except User.DoesNotExist:
+            raise AuthenticationFailed(_("User does not exist."), code="user_not_found")
 
-        if not token.user.is_active:
-            raise AuthenticationFailed(_("User inactive or deleted."))
-
-        return token.user
+        if not user.is_active:
+            raise AuthenticationFailed(_("User inactive or deleted."), code="user_inactive")
+        return user
 
 
 @database_sync_to_async
-def get_user(scope):
+def get_user(scope: dict[Any]):
     """
     Return the user model instance associated with the given scope.
     If no user is retrieved, return an instance of `AnonymousUser`.
@@ -62,7 +67,7 @@ def get_user(scope):
             "Cannot find token in scope. You should wrap your consumer in "
             "TokenAuthMiddleware."
         )
-    token = scope["token"]
+    token = scope.get("token")
     user = None
     try:
         auth = TokenAuthentication()
@@ -75,7 +80,7 @@ def get_user(scope):
 class TokenAuthMiddleware:
     """
     Custom middleware that takes a token from the query string and authenticates via
-    Django Rest Framework authtoken.
+    Django Rest Framework simple JWT token authentication
     """
 
     def __init__(self, app):
@@ -87,7 +92,7 @@ class TokenAuthMiddleware:
         # checking if it is a valid user ID, or if scope["user"] is already
         # populated).
         query_params = parse_qs(scope["query_string"].decode())
-        token = query_params["token"][0]
+        token = query_params.get("token", [None])[0]
         scope["token"] = token
         scope["user"] = await get_user(scope)
         return await self.app(scope, receive, send)

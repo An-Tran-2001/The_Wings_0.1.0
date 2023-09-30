@@ -20,3 +20,16 @@ class UserSerializer(serializers.ModelSerializer):
             return obj.profile.avatar.url if obj.profile.avatar else None
         except:
             return None
+
+
+class UserSerializerASGI(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ["id", "username", "name", "avatar"]
+
+    def get_avatar(self, obj):
+        try:
+            return obj.profile.avatar.url if obj.profile.avatar else None
+        except:
+            return None

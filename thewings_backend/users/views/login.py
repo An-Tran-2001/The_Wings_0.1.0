@@ -10,6 +10,7 @@ from thewings_backend.docs.auth import login_docs
 from thewings_backend.users.processing.env_variables import get_token_for_user
 from thewings_backend.users.renderers import UserRenderer
 from thewings_backend.users.serializers import UserLoginSerializer
+from thewings_backend.users.api.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -34,7 +35,7 @@ class UserLoginView(APIView):
                 return Response(
                     {"detail": "User is not valid"}, status=status.HTTP_400_BAD_REQUEST
                 )
-            else:
+            else: 
                 user = authenticate(username=user.username, password=password)
                 if user is not None:
                     token = get_token_for_user(user)
@@ -42,7 +43,7 @@ class UserLoginView(APIView):
                     user.is_active = True
                     user.save()
                     return Response(
-                        {"message": "Login success", "token": token},
+                        {"message": "Login success", "user": UserSerializer(user, context={"request": request}).data ,"token": token},
                         status=status.HTTP_200_OK,
                     )
                 else:

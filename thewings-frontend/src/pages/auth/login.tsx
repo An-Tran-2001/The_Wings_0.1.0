@@ -13,7 +13,7 @@ import LayoutAuth from "components/LayoutAuth";
 
 
 type Credentials = {
-  username: string;
+  username_email: string;
   password: string;
 };
 
@@ -31,6 +31,7 @@ const Page = () => {
     try {
       const response = await client.post(Endpoint.LOGIN, creds);
       if (response.status === HttpStatusCode.Ok) {
+        console.log(response.data);
         return response.data;
       }
       throw AN_ERROR_TRY_AGAIN;
@@ -56,7 +57,7 @@ const Page = () => {
               autoFocus
               onChange={onChangeCreds("username")}
               validated={validateUserName}
-              value={creds.username}
+              value={creds.username_email}
               type="text"
             />
           </div>
@@ -96,6 +97,6 @@ const Page = () => {
 export default Page;
 
 const INITIAL_VALUES = {
-  username: "",
+  username_email: "",
   password: "",
 };

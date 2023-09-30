@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from thewings_backend.messaging.models import Message, Conversation
-from thewings_backend.users.api.serializers import UserSerializer
+from thewings_backend.users.api.serializers import UserSerializerASGI
 
 
 User = get_user_model()
@@ -28,10 +28,10 @@ class MessageSerializer(serializers.ModelSerializer):
         return str(obj.conversation.id)
 
     def get_from_user(self, obj):
-        return UserSerializer(obj.from_user).data
+        return UserSerializerASGI(obj.from_user).data
 
     def get_to_user(self, obj):
-        return UserSerializer(obj.to_user).data
+        return UserSerializerASGI(obj.to_user).data
 
 
 class ConversationSerializer(serializers.ModelSerializer):
@@ -56,4 +56,4 @@ class ConversationSerializer(serializers.ModelSerializer):
             if username != self.context["user"].username:
                 # This is the other participant
                 other_user = User.objects.get(username=username)
-                return UserSerializer(other_user, context=context).data
+                return UserSerializerASGI(other_user, context=context).data

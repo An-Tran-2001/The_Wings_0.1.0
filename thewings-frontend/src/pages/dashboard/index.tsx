@@ -1,11 +1,28 @@
-import { Header } from "components/home";
+import { ReactElement } from "react";
+import { DashboardLayout } from "../../layout";
+import { Stack } from "@mui/material";
+import CreatePost from "../../components/post/CreatePost";
+import Post from "../../components/post/Post";
 
-const Home = () => {
+const Page = () => {
   return (
-    <main className="h-[100vh]">
-      <Header />
-    </main>
+    <Stack
+      minHeight="min-content"
+      height="1000px"
+      bgcolor="#202b2e61"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Stack width="600px" margin={3} className="bg-black">
+        <CreatePost />
+      </Stack>
+      <Post title="Title" content="Content" file="File" createdAt="CreatedAt" updatedAt="UpdatedAt" tags={["Tags"]} user={{ name: "Name", profile: "Profile" }} />
+    </Stack>
   );
 };
 
-export default Home;
+export default Page;
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
+};

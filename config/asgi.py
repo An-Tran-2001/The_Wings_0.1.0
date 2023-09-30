@@ -50,20 +50,9 @@ from channels.security.websocket import AllowedHostsOriginValidator  # noqa isor
 from thewings_backend.messaging.middleware import TokenAuthMiddleware
 
 
-# application = ProtocolTypeRouter(
-#     {
-#         "http": get_asgi_application(),
-#         "websocket": AllowedHostsOriginValidator(
-#             AuthMiddlewareStack(URLRouter(websocket_routing.websocket_urlpatterns))
-#         ),
-#     }
-# )
-
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": TokenAuthMiddleware(
-            URLRouter(websocket_routing.websocket_urlpatterns)
-        ),
+        "websocket":  TokenAuthMiddleware(AuthMiddlewareStack(URLRouter(websocket_routing.websocket_urlpatterns)))
     }
 )

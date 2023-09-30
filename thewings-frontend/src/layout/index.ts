@@ -1,3 +1,3 @@
-import SidebarLayout from "./SidebarLayout";
+import DashboardLayout from "./DashboardLayout";
 
-export { SidebarLayout };
+export { DashboardLayout };
