@@ -1,39 +1,31 @@
 "use client";
-import { Endpoint, client } from "api";
-import { HttpStatusCode } from "axios";
 import Input, {
   validateEmail,
   validatePassword,
   validatePhone,
   validateUserName,
 } from "components/Input";
-import { AN_ERROR_TRY_AGAIN } from "constant";
 import { AuthLayout } from "layout";
 import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import { useAuth } from "store/auth";
 
 type Credentials = {
   username: string;
-  name: string;
   email: string;
-  phone: string;
+  phone_number: string;
+  name: string;
+  tc?: boolean;
   password: string;
-  confirmPassword: string;
+  password2: string;
 };
 
 const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
+  const { onRegister } = useAuth();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const response = await client.post(Endpoint.LOGIN, creds);
-      if (response.status === HttpStatusCode.Ok) {
-        return response.data;
-      }
-      throw AN_ERROR_TRY_AGAIN;
-    } catch (error) {
-      console.log(error);
-    }
+    await onRegister(creds);
   };
 
   const onChangeCreds = (name: string) => {
@@ -64,21 +56,23 @@ const Page = () => {
           />
           <Input
             label="Phone"
-            onChange={onChangeCreds("phone")}
+            onChange={onChangeCreds("phone_number")}
             validated={validatePhone}
-            value={creds.phone}
+            value={creds.phone_number}
           />
           <Input
             label="Password"
             onChange={onChangeCreds("password")}
             validated={validatePassword}
             value={creds.password}
+            type="password"
           />
           <Input
             label="Confirm Password"
-            onChange={onChangeCreds("confirmPassword")}
+            onChange={onChangeCreds("password2")}
             validated={validatePassword}
-            value={creds.confirmPassword}
+            value={creds.password2}
+            type="password"
           />
         </div>
         <div className="p-5 w-full flex flex-col items-center">
@@ -111,7 +105,7 @@ const INITIAL_VALUES = {
   username: "",
   name: "",
   email: "",
-  phone: "",
+  phone_number: "",
   password: "",
-  confirmPassword: "",
+  password2: "",
 };

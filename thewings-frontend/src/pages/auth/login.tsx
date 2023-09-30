@@ -1,4 +1,3 @@
-"use client";
 import React, { ChangeEvent, FormEvent, ReactElement } from "react";
 import { useState, useRef } from "react";
 import Image from "next/image";
@@ -10,6 +9,7 @@ import { HttpStatusCode } from "axios";
 import { FORGOT_PASSWORD_PATH } from "constant/path";
 import Link from "next/link";
 import { AuthLayout } from "layout";
+import { useAuth } from "store/auth";
 
 type Credentials = {
   username_email: string;
@@ -19,6 +19,7 @@ type Credentials = {
 const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { onLogin } = useAuth();
 
   const onChangeCreds = (name: string) => {
     return (event: ChangeEvent<HTMLInputElement>) =>
@@ -27,16 +28,7 @@ const Page = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const response = await client.post(Endpoint.LOGIN, creds);
-      if (response.status === HttpStatusCode.Ok) {
-        console.log(response.data);
-        return response.data;
-      }
-      throw AN_ERROR_TRY_AGAIN;
-    } catch (error) {
-      console.log(error);
-    }
+    await onLogin(creds);
   };
 
   return (
@@ -53,7 +45,7 @@ const Page = () => {
             <Input
               label="Username"
               autoFocus
-              onChange={onChangeCreds("username")}
+              onChange={onChangeCreds("username_email")}
               validated={validateUserName}
               value={creds.username_email}
               type="text"
