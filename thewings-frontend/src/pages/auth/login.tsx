@@ -6,10 +6,15 @@ import Logo from "public/images/logo.png";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
 import { HttpStatusCode } from "axios";
-import { FORGOT_PASSWORD_PATH } from "constant/path";
+import {
+  DASHBOARD_PATH,
+  FORGOT_PASSWORD_PATH,
+  LOGIN_PATH,
+} from "constant/path";
 import Link from "next/link";
 import { AuthLayout } from "layout";
 import { useAuth } from "store/auth";
+import { useRouter } from "next/router";
 
 type Credentials = {
   username_email: string;
@@ -20,6 +25,7 @@ const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const inputRef = useRef<HTMLInputElement>(null);
   const { onLogin } = useAuth();
+  const router = useRouter();
 
   const onChangeCreds = (name: string) => {
     return (event: ChangeEvent<HTMLInputElement>) =>
@@ -28,7 +34,13 @@ const Page = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onLogin(creds);
+    try {
+      await onLogin(creds);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      router.push(DASHBOARD_PATH);
+    }
   };
 
   return (
