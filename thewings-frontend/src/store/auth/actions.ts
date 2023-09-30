@@ -18,6 +18,11 @@ export interface RegisterInfo {
   password2: string;
 }
 
+export interface ConfirmInfo {
+  email: string;
+  code: string;
+}
+
 export const login = createAsyncThunk("auth/login", async (info: LoginInfo) => {
   try {
     const response = await client.post(Endpoint.LOGIN, info);
@@ -49,12 +54,26 @@ export const register = createAsyncThunk(
   },
 );
 
-export const getInfo = createAsyncThunk(
-  "auth/getinfo",
-  async () => {
+export const getInfo = createAsyncThunk("auth/getinfo", async () => {
+  try {
+    const response = await client.get(Endpoint.GETINFO);
+    if (response.status === HttpStatusCode.Created) {
+      return response.data;
+    }
+    throw AN_ERROR_TRY_AGAIN;
+  } catch (error) {
+    if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+      throw AN_ERROR_TRY_AGAIN;
+    throw error;
+  }
+});
+
+export const confirmCode = createAsyncThunk(
+  "auth/confirmCode",
+  async (info: ConfirmInfo) => {
     try {
-      const response = await client.get(Endpoint.GETINFO);
-      if (response.status === HttpStatusCode.Created) {
+      const response = await client.post(Endpoint.CONFIRM_CODE, info);
+      if (response.status === HttpStatusCode.Ok) {
         return response.data;
       }
       throw AN_ERROR_TRY_AGAIN;

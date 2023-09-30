@@ -1,7 +1,5 @@
-import { AuthLayout } from "layout";
 import Image from "next/image";
 import Logo from "public/images/logo.png";
-import { ReactElement } from "react";
 
 const Home = () => {
   return (
@@ -12,7 +10,3 @@ const Home = () => {
 };
 
 export default Home;
-
-Home.getLayout = function getLayout(page: ReactElement) {
-  return <AuthLayout>{page}</AuthLayout>;
-};

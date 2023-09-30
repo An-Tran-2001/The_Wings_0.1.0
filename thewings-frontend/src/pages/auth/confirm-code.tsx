@@ -1,35 +1,37 @@
-"use client";
-import React, { FormEvent, ReactElement } from "react";
+import React, { FormEvent, ReactElement, useMemo } from "react";
 import { useState } from "react";
 import Input, { validateCode } from "components/Input";
 import { HttpStatusCode } from "axios";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { Endpoint, client } from "api";
 import { AuthLayout } from "layout";
-interface Login extends React.Component {
-  history: any;
-}
+import { useRouter } from "next/router";
+import { useAuth } from "store/auth";
+import { LOGIN_PATH } from "constant/path";
 
 const Page = () => {
   const [code, setCode] = useState<string>("");
 
+  const router = useRouter();
+  const email = useMemo(() => router.query.email as string, []);
+
+  const { onConfirmCode } = useAuth();
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await client.post(Endpoint.CONFIRM_CODE, { code });
-      if (response.status === HttpStatusCode.Ok) {
-        return response.data;
-      }
-
-      throw AN_ERROR_TRY_AGAIN;
-    } catch (error) {}
+      await onConfirmCode({ email, code });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      router.push(LOGIN_PATH);
+    }
   };
 
   const onChange = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
     setCode(event.currentTarget.value);
   };
-
 
   return (
     <div className="w-full h-screen flex justify-center items-center">

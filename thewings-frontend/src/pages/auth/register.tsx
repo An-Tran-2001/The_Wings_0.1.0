@@ -5,7 +5,9 @@ import Input, {
   validatePhone,
   validateUserName,
 } from "components/Input";
+import { CONFIRM_CODE_PATH } from "constant/path";
 import { AuthLayout } from "layout";
+import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import { useAuth } from "store/auth";
 
@@ -22,10 +24,22 @@ type Credentials = {
 const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const { onRegister } = useAuth();
+  const router = useRouter();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onRegister(creds);
+    try {
+      await onRegister(creds);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      router.push({
+        pathname: CONFIRM_CODE_PATH,
+        query: {
+          email: creds.email,
+        },
+      });
+    }
   };
 
   const onChangeCreds = (name: string) => {
@@ -105,6 +119,7 @@ const INITIAL_VALUES = {
   username: "",
   name: "",
   email: "",
+  tc: true,
   phone_number: "",
   password: "",
   password2: "",

@@ -7,11 +7,18 @@ import Input, {
   validatePassword,
 } from "components/Input";
 import { useRouter } from "next/navigation";
-import { FormEvent, MouseEvent, ReactElement, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
+  ReactElement,
+  useState,
+} from "react";
 import { CODE_COFIRM } from "constant/path";
 import { REGISTER_PATH } from "constant/path";
 import Link from "next/link";
 import { AuthLayout } from "layout";
+import { Button } from "@mui/material";
 
 type Credentials = {
   email: string;
@@ -42,9 +49,17 @@ const Page = () => {
     setLoading(false);
   };
 
+  const onSubmitEmail = async () => {
+    try {
+      console.log("send");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onChangeCreds =
-    (name: string) => (event: FormEvent<HTMLInputElement>) =>
-      setCreds((prev) => ({ ...prev, [name]: event.currentTarget.value }));
+    (name: string) => (event: ChangeEvent<HTMLInputElement>) =>
+      setCreds((prev) => ({ ...prev, [name]: event.target.value }));
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -53,12 +68,17 @@ const Page = () => {
           FORGOT PASSWORD
         </h1>
         <div className="flex flex-col w-full mt-5">
-          <Input
-            label="Email"
-            onChange={onChangeCreds("email")}
-            validated={validateEmail}
-            value={creds.email}
-          />
+          <div className="flex w-full">
+            <Input
+              label="Email"
+              onChange={onChangeCreds("email")}
+              validated={validateEmail}
+              value={creds.email}
+            />
+            {creds.email && validateEmail(creds.email) && (
+              <Button onClick={onSubmitEmail}>Send code</Button>
+            )}
+          </div>
           <Input
             label="Code"
             onChange={onChangeCreds("code")}
