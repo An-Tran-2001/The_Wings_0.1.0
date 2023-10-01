@@ -13,24 +13,24 @@ export interface CreatePostPayload {
   content: string;
   files: FilePayload[];
   status: PostStatus;
-  tags: string[];
+  tags: number[];
 }
 
 export const createPost = createAsyncThunk(
   "post/createPost",
   async (payload: CreatePostPayload) => {
     try {
+      console.log(payload);
       const formData = new FormData();
       formData.append("content", payload.content);
       formData.append("status", payload.status);
-      payload.tags.forEach((tag) => {
-        formData.append("tags", tag);
+      formData.append("tags", JSON.stringify(payload.tags));
+      payload.files.forEach((filePayload, index) => {
+        formData.append(`files[${index}][file]`, filePayload.file);
+        formData.append(`files[${index}][name]`, filePayload.name);
       });
-      payload.files.forEach((filePayload) => {
-        const { file, name } = filePayload;
-        formData.append("files", file, name);
-      });
-      const response = await client.post(Endpoint.CREATE_POST, formData);
+      console.log(formData);
+      const response = await client.post(Endpoint.CREATE_POST, payload);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;

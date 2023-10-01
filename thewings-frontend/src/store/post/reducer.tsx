@@ -1,5 +1,5 @@
 import { LikeStatus, PostStatus } from "constant/enum";
-import { FilePayload } from "./actions";
+import { FilePayload, createPost } from "./actions";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "store/auth";
 import { DataStatus } from "constant/enum";
@@ -43,19 +43,55 @@ export interface Comment {
 }
 
 export interface Post {
-    id: number;
-    url: string;
+    id?: number;
+    url?: string;
     files?: File[];
-    content: string;
-    created_at: string;
-    status: PostStatus;
-    author: string;
-    tags: number[];
-    likes: Like[];
-    comments: Comment[];
+    content?: string;
+    created_at?: string;
+    status?: PostStatus;
+    author?: string;
+    tags?: number[];
+    likes?: Like[];
+    comments?: Comment[];
 }
-export interface messageState {
-  posts: Post;
-  userStatus: DataStatus;
-  userError?: string;
+
+export interface postState {
+    post: Post;
+    postState: DataStatus;
+    error: string | null;
 }
+
+const initialState: postState = {
+    post: {},
+    postState: DataStatus.IDLE,
+    error: null,
+};
+
+const postSlice = createSlice({
+    name: "post",
+    initialState,
+    reducers: {
+        resetState: (state) => {
+            state.post = {};
+            state.postState = DataStatus.IDLE;
+            state.error = null;
+        },
+    },
+    extraReducers: {
+        [createPost.pending.type]: (state) => {
+            state.postState = DataStatus.LOADING;
+            state.error = null;
+        },
+        [createPost.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+            state.postState = DataStatus.SUCCESS;
+            state.post = action.payload;
+        },
+        [createPost.rejected.type]: (state, action: PayloadAction<string>) => {
+            state.postState = DataStatus.FAILED;
+            state.error = action.payload;
+        },
+    },
+});
+
+export const { resetState } = postSlice.actions;
+export default postSlice.reducer;

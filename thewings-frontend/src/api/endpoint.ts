@@ -6,7 +6,7 @@ const Endpoint = {
   RESET_PASSWORD: "users/reset-password/",
   GETINFO: "api/user/me/",
   SEARCH_USER: "users/search/",
-  CREATE_POST: "posts/my-post/create/",
+  CREATE_POST: "posts/my-posts/creat/",
 };
 
 export default Endpoint;

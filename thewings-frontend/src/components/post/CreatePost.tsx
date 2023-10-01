@@ -26,9 +26,22 @@ import { blue, pink, yellow } from "@mui/material/colors";
 import { User, useAuth } from "store/auth";
 import Image from "next/image";
 import Search from "components/layout/Header/Search";
+import { usePost } from "store/post/selector";
+import { PostStatus } from "constant/enum";
+
+export interface FilePayload {
+  file: File;
+  name: string;
+}
+export interface Credentials {
+  content: string;
+  status: string;
+  files: File[];
+  tags: number[];
+}
+
 
 // Simple dialog
-const emails = ["username@gmail.com", "user02@gmail.com"];
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
@@ -49,7 +62,7 @@ function SimpleDialog(props: SimpleDialogProps) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Tags Users</DialogTitle>
-      <List sx={{ pt: 0 }}>
+      <List sx={{ p: 2 }}>
         <Search onClick={handleListItemClick} />
       </List>
     </Dialog>
@@ -57,7 +70,6 @@ function SimpleDialog(props: SimpleDialogProps) {
 }
 
 //  Bosstrap dialog
-const options = ["Public", "Private", "Only me"];
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -68,11 +80,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const CreatePost = () => {
+  const { onCreatePost } = usePost();
+  const [creds, setCreds] = React.useState<Credentials>(INITIAL_VALUES);
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string | null>(options[0]);
+  const [status, setStatus] = React.useState<string | null>(PostStatus.PUBLIC);
   const [inputValue, setInputValue] = React.useState("");
   const { user } = useAuth();
-  const [selectedFile, setSelectedFile] = React.useState(null);
   const [imagePreview, setImagePreview] = React.useState(null);
   const handleClickOpen = () => {
     setOpen(true);
@@ -92,14 +105,30 @@ const CreatePost = () => {
     setOpenTags(false);
     setSelectedValueTags((prevTags: User[]) => [...prevTags, user]);
   };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setSelectedFile(file);
+    const name = event.target.files[0].name;
+    const files: FilePayload[] = [{ file, name }];
+    console.log(files);
+    setCreds((prev) => ({ ...prev, files: files }));
     const previewURL = URL.createObjectURL(file);
     setImagePreview(previewURL);
   };
-  console.log(selectedFile);
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const userIds = selectedValueTags.map((user) => Number(user.id));
+      creds.tags = userIds;
+      creds.status = status;
+      console.log(creds);
+      await onCreatePost(creds);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpen(false);
+    }
+  };
+
   return (
     <div className="flex p-3 bg-neutral-900 rounded-lg">
       {user?.avatar ? (
@@ -168,9 +197,9 @@ const CreatePost = () => {
             <div>
               <span className="font-bold px-2 text-[1.1rem]">{user?.name}</span>
               <Autocomplete
-                value={value}
+                value={status}
                 onChange={(event: any, newValue: string | null) => {
-                  setValue(newValue);
+                  setStatus(newValue);
                 }}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {
@@ -178,7 +207,7 @@ const CreatePost = () => {
                 }}
                 size="small"
                 id="controllable-states-demo"
-                options={options}
+                options={[PostStatus.PUBLIC, PostStatus.PRIVATE, PostStatus.PRIVATE_ONLY]}
                 sx={{ width: 200 }}
                 renderInput={(params) => (
                   <TextField {...params} label="State" />
@@ -193,16 +222,20 @@ const CreatePost = () => {
               multiline
               maxRows={8}
               variant="standard"
-              className="w-full h-[100px] border-none"
+              className="w-full m-3 border-none"
+              onChange={(event) => { setCreds((prev) => ({ ...prev, content: event.target.value })); }}
             />
           </Typography>
-          <div className="flex flex-row py-3">
-            <IconButton>
-              <SupervisedUserCircleIcon sx={{ color: yellow[500] }} />
-            </IconButton>
-            {selectedValueTags.length > 0 &&
-              selectedValueTags.map((user) => (
-                <div className="flex flex-row justify-center items-center">
+          {selectedValueTags.length > 0 && (
+            <div className="flex flex-row py-3">
+              <IconButton>
+                <SupervisedUserCircleIcon sx={{ color: yellow[500] }} />
+              </IconButton>
+              {selectedValueTags.map((user) => (
+                <div
+                  className="flex flex-row justify-center items-center"
+                  key={user.id}
+                >
                   <Avatar
                     src={"http://localhost:8000" + user.avatar}
                     alt={user.name}
@@ -211,7 +244,8 @@ const CreatePost = () => {
                   <span className="px-2">{user.name}</span>
                 </div>
               ))}
-          </div>
+            </div>
+          )}
           {imagePreview && (
             <Typography gutterBottom>
               {" "}
@@ -245,7 +279,7 @@ const CreatePost = () => {
         <DialogActions className="flex justify-center px-4">
           <Button
             variant="contained"
-            onClick={handleClose}
+            onClick={onSubmit}
             className="w-full text-white px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-700"
           >
             Post
@@ -262,3 +296,9 @@ const CreatePost = () => {
 };
 
 export default memo(CreatePost);
+const INITIAL_VALUES = {
+  content: "",
+  status: "",
+  files: [],
+  tags: [],
+};
