@@ -9,12 +9,15 @@ from rest_framework.serializers import (
     IntegerField,
     IntegerField,
     ImageField,
+    ListField,
+    CharField,
 )
 from .models import *
 from thewings_backend.friends.models import Friend
 from thewings_backend.users.api.serializers import UserSerializer
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 User = get_user_model()
 
@@ -165,7 +168,8 @@ class CommentCreateSerializer(ModelSerializer):
 
 class Posts(ModelSerializer):
     url = HyperlinkedIdentityField(view_name="posts:post-detail", lookup_field="id")
-    files = FileSerializer(many=True, required=False)
+    files = serializers.ListField(child=serializers.ImageField(max_length=None, use_url=True, required=False, allow_empty_file=True), required=False)
+    tags = serializers.ListField(child=PrimaryKeyRelatedField(queryset=User.objects.all()), required=False, write_only=True)
 
     class Meta:
         model = Post
@@ -181,26 +185,29 @@ class Posts(ModelSerializer):
 
 class CreatePostSerializer(Posts):
     def validate(self, attrs):
+        print(attrs)
         if attrs.get("tags"):
-            for id in attrs.get("tags"):
-                if id == self.context.get("request").user:
+            current_user = self.context.get("request").user
+            black_friends = current_user.black_friends.values_list("black_friend", flat=True)
+            for tag in attrs.get("tags"):
+                if tag == current_user:
                     raise ValidationError("You can't tag yourself")
-                elif id in self.context.get("request").user.black_friends.values(
-                    "black_friend"
-                ):
+                elif tag.id in black_friends:
                     raise ValidationError("You can't tag this user")
         return attrs
 
     def create(self, validated_data):
         if not validated_data.get("content"):
-            raise ValidationError("You can't post empty post")
+            raise ValidationError("You can't post an empty post")
         files = validated_data.pop("files", None)
         tags = validated_data.pop("tags", None)
         post = Post.objects.create(**validated_data)
         if isinstance(tags, list):
-            post.tags.add(*tags)
-        if isinstance(files, list):
-            post.post_files.add(*files)
+            tagsId = [tag.id for tag in tags]
+            post.tags.add(*tagsId)
+        if files:
+            for file in files:
+                File.objects.create(post=post, file=file).save()
         return post
 
 

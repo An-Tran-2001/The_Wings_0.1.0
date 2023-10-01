@@ -28,11 +28,6 @@ import Image from "next/image";
 import Search from "components/layout/Header/Search";
 import { usePost } from "store/post/selector";
 import { PostStatus } from "constant/enum";
-
-export interface FilePayload {
-  file: File;
-  name: string;
-}
 export interface Credentials {
   content: string;
   status: string;
@@ -106,13 +101,13 @@ const CreatePost = () => {
     setSelectedValueTags((prevTags: User[]) => [...prevTags, user]);
   };
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const name = event.target.files[0].name;
-    const files: FilePayload[] = [{ file, name }];
-    console.log(files);
+    const files = event.target.files;
     setCreds((prev) => ({ ...prev, files: files }));
-    const previewURL = URL.createObjectURL(file);
-    setImagePreview(previewURL);
+    console.log(files);
+    const previewURLs = Array.from(files).map((file) =>
+      URL.createObjectURL(file),
+    );
+    setImagePreview(previewURLs);
   };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -246,12 +241,12 @@ const CreatePost = () => {
               ))}
             </div>
           )}
-          {imagePreview && (
+          {imagePreview &&  imagePreview.length > 0 && imagePreview.map((imagePreview) => (
             <Typography gutterBottom>
               {" "}
               <img src={imagePreview} alt="preview" />{" "}
             </Typography>
-          )}
+          ))}
           <Stack
             direction="row"
             className="p-2 justify-between border-solid border border-stone-500 rounded-lg"
@@ -260,6 +255,7 @@ const CreatePost = () => {
             <Stack direction="row">
               <input
                 type="file"
+                multiple
                 id="upload-file"
                 style={{ position: "absolute", top: "-9999px" }}
                 onChange={handleFileChange}

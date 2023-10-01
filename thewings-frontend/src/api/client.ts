@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { API_TIMEOUT, API_URL } from "constant/index";
 import { TOKEN_KEY } from "constant/path";
 
@@ -30,9 +30,9 @@ const client = {
     }
   },
 
-  post: async (endpoint: string, body: {}) => {
+  post: async (endpoint: string, body: {}, config?: AxiosRequestConfig) => {
     try {
-      const response = await axios.post(endpoint, body);
+      const response = await axios.post(endpoint, body, config);
 
       return response;
     } catch (error) {

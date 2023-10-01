@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
-import { FilePayload, createPost } from "./actions";
+import { createPost } from "./actions";
 import { PostStatus } from "constant/enum";
 
 export interface CreatePostPayload {
     content: string;
-    files: FilePayload[];
+    files: File[];
     status: PostStatus;
     tags: number[];
 }

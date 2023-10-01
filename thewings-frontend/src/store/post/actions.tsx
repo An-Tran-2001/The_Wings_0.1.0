@@ -4,14 +4,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
 import { PostStatus } from "constant/enum";
 
-export interface FilePayload {
-  file: File;
-  name: string;
-}
-
 export interface CreatePostPayload {
   content: string;
-  files: FilePayload[];
+  files: File[];
   status: PostStatus;
   tags: number[];
 }
@@ -23,14 +18,21 @@ export const createPost = createAsyncThunk(
       console.log(payload);
       const formData = new FormData();
       formData.append("content", payload.content);
-      formData.append("status", payload.status);
-      formData.append("tags", JSON.stringify(payload.tags));
-      payload.files.forEach((filePayload, index) => {
-        formData.append(`files[${index}][file]`, filePayload.file);
-        formData.append(`files[${index}][name]`, filePayload.name);
-      });
+      formData.append("status", payload.status);    
+        payload.tags.forEach((tag) => {
+            formData.append("tags", tag.toString());
+        });
+
+        for (let i = 0; i < payload.files.length; i++) {
+            formData.append("files", payload.files[i]);
+        }
+
       console.log(formData);
-      const response = await client.post(Endpoint.CREATE_POST, payload);
+      const response = await client.post(Endpoint.CREATE_POST, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -41,3 +43,4 @@ export const createPost = createAsyncThunk(
     }
   },
 );
+

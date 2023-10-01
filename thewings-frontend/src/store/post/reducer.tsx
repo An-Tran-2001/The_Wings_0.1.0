@@ -1,14 +1,9 @@
 import { LikeStatus, PostStatus } from "constant/enum";
-import { FilePayload, createPost } from "./actions";
+import { createPost } from "./actions";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "store/auth";
 import { DataStatus } from "constant/enum";
 import { AN_ERROR_TRY_AGAIN } from "constant";
-
-export interface DataFile {
-    count: number;
-    data: FilePayload[];
-};
 
 export interface DataLike {
     id: number,
