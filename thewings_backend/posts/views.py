@@ -145,7 +145,7 @@ class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
 
 
 class LikeViewSet(APIView):
-    permission_classes = [IsAuthenticated & IsAcessToken & PostStatus]
+    permission_classes = [IsAuthenticated & IsAcessToken]
     renderer_classes = [UserRenderer]
     parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = LikeSerializer

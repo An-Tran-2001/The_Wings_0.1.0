@@ -4,15 +4,15 @@ import { FormEvent, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { twMerge } from "tailwind-merge";
 import { useMessage } from "store/message/selectors";
-import Image from "next/image";
-
+import { User } from "store/auth";
+import { MouseEventHandler } from "react";
 type PropsSearch = {
   inputProps?: InputProps;
+  onClick: (user: User) => MouseEventHandler;
 } & StackProps;
 
 const Search = (props: PropsSearch) => {
-  const { inputProps } = props;
-  const { className, ...rest } = props;
+  const { inputProps, className, onClick, ...rest } = props;
   const [value, setValue] = useState("");
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,42 +53,45 @@ const Search = (props: PropsSearch) => {
         </IconButton>
       </Stack>
       <Stack padding={1} spacing={1}>
-        {value && users?.map((user) => (
-          <Stack
-            key={user.id}
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            className="w-[100%] h-[40px] bg-slate-300 p-3 rounded-xl"
-          >
-            {user.avatar ? (
-              <Avatar
-                src={"http://localhost:8000" + user.avatar}
-                alt={user.name}
-                sx={{ width: 32, height: 32 }}
-              />
-            ) : (
-              <Avatar sx={{ width: 32, height: 32 }} />
-            )}
+        {value &&
+          users?.map((user) => (
             <Stack
-              direction="column"
+              key={user.id}
+              direction="row"
               alignItems="center"
-              justifyContent="center"
+              justifyContent="space-between"
+              className="w-[100%] h-[40px] bg-slate-300 p-3 rounded-xl"
+              onClick={() => onClick(user)}
             >
+              {user.avatar ? (
+                <Avatar
+                  src={"http://localhost:8000" + user.avatar}
+                  alt={user.name}
+                  sx={{ width: 32, height: 32 }}
+                />
+              ) : (
+                <Avatar sx={{ width: 32, height: 32 }} />
+              )}
               <Stack
-                direction="row"
+                direction="column"
                 alignItems="center"
                 justifyContent="center"
               >
-                <span className="font-bold">{user.name}</span>
-                <span className="text-gray-400">@{user.username}</span>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <span className="font-bold">{user.name}</span>
+                  <span className="text-gray-400">@{user.username}</span>
+                </Stack>
               </Stack>
             </Stack>
-          </Stack>
-        ))}
+          ))}
       </Stack>
     </Stack>
   );
 };
 
 export default Search;
+

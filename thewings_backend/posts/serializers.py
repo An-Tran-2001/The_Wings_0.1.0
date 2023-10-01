@@ -8,6 +8,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
     IntegerField,
     IntegerField,
+    ImageField,
 )
 from .models import *
 from thewings_backend.friends.models import Friend
@@ -92,9 +93,12 @@ class DocLikesSerializer(DocsLikesSerializer):
 
 
 class FileSerializer(ModelSerializer):
+    file = ImageField(
+        max_length=None, use_url=True, required=False, allow_empty_file=True
+    )
     class Meta:
         model = File
-        fields = "__all__"
+        fields = ["file", "name"]
         extra_kwargs = {"post": {"write_only": True}}
 
 
@@ -107,7 +111,7 @@ class Comments(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     users = SerializerMethodField()
     likes = SerializerMethodField()
-
+    parent = SerializerMethodField()
     class Meta:
         model = Comment
         fields = "__all__"
@@ -120,11 +124,13 @@ class CommentSerializer(ModelSerializer):
     @extend_schema_field(DocLikesSerializer)
     def get_likes(self, obj):
         return dict(
-            count=obj.likes.count(),
+            count=obj.likes.count(),    
             data=GetPostLikeSerializer(
                 obj.comment_likes.all(), many=True, context=self.context
             ).data,
         )
+    def get_parent(self, obj):
+        return CommentSerializer(obj.parent_comments.all(), context=self.context, many=True).data
 
 
 class DocsCommentSerializer(ModelSerializer):

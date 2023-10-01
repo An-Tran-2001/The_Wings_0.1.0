@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ReactElement } from "react";
 import { useAuth } from "store/auth";
 import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
+import { Avatar } from "@mui/material";
 
 const Page = () => {
   const { user } = useAuth();
@@ -37,17 +38,25 @@ const Page = () => {
             )}
             <div className="flex items-end absolute translate-y-1/2 translate-x-1/2 bottom-0 left-0">
               <div className="relative w-[150px] h-[150px] bg-neutral-900 rounded-full outline-black outline-[5px] outline overflow-hidden">
-                <Image
-                  src={"http://localhost:8000" + user?.avatar}
-                  alt="123"
-                  width={300}
-                  height={300}
-                  style={{
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                    height: "100%",
-                  }}
-                />
+                {user?.avatar ? (
+                  <Image
+                    src={"http://localhost:8000" + user?.avatar}
+                    alt="123"
+                    width={300}
+                    height={300}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      height: "100%",
+                    }}
+                  />
+                ) : (
+                  <Avatar
+                    sx={{ width: 150, height: 150 }}
+                    className="absolute inset-0"
+                  />
+                )}
+
                 <div className="w-full h-full flex items-center justify-center absolute inset-0 opacity-0 bg-black/70 z-10 cursor-pointer hover:opacity-100">
                   <FlipCameraIosIcon
                     sx={{ color: "white", width: 30, height: 30 }}
