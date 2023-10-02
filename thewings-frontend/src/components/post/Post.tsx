@@ -9,6 +9,8 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import { usePost } from "store/post/selector";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import AddCommentIcon from "@mui/icons-material/AddComment";
+import { LikeSet } from "store/post/actions";
+import { LikeStatus } from "constant/enum";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -41,6 +43,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const Post = () => {
   const { post } = usePost();
+  const {onLikePost} = usePost();
+  const [creds, setCreds] = React.useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
+  const handleLikePost = (payload: LikeSet) => {
+    onLikePost(payload);
+  };
   
   return (
     <Stack>
@@ -68,13 +75,14 @@ const Post = () => {
                 <h1>{item.author.name}</h1>
                 <p className="text-[12px]">{item.created_at}</p>
               </Stack>
-              <Stack>
-                <AvatarGroup max={3}>
+              <Stack direction="row" className="flex items-center">
+                <AvatarGroup max={3} className="mx-2">
                   {item.tags?.data.map((user) => (
                     <Avatar
                       key={user.id}
                       alt={user.name}
                       src={"http://localhost:8000" + user.avatar}
+                      sx={{ width: 24, height: 24 }}
                     />
                   ))}
                 </AvatarGroup>
@@ -82,21 +90,55 @@ const Post = () => {
               <CloseIcon className="ml-auto text-[25px]" />
             </Stack>
             <Stack>
-              <p>{item.content}</p>
-              {item.files?.data.map((file) => (
+              <p className="p-3">{item.content}</p>
+              {item.files?.data.length === 1 ? (
                 <Image
-                  key={file.id}
-                  src={file.file}
-                  width={200}
-                  height={200}
-                  alt={file.name || "image"}
+                  key={item.files.data[0].id}
+                  src={item.files.data[0].file}
+                  width={600}
+                  height={600}
+                  alt={item.files.data[0].name || "image"}
                 />
-              ))}
+              ) : (
+                <div className="grid grid-cols-3 gap-4">
+                  {item.files?.data.map((file) => (
+                    <Image
+                      key={file.id}
+                      src={file.file}
+                      width={300}
+                      height={300}
+                      alt={file.name || "image"}
+                    />
+                  ))}
+                </div>
+              )}
             </Stack>
             <div className="grid grid-cols-2 b-0 p-4">
               <div className="col-span-1 text-center">
-                <div className="flex items-center justify-center space-x-2">
+                <div
+                  className="flex items-center justify-center space-x-2"
+                  onClick={() =>
+                    handleLikePost({
+                      status: LikeStatus.LIKE,
+                      post: item.id,
+                    })
+                  }
+                >
                   <ThumbUpOffAltIcon />
+                  {item.likes?.data && item.likes?.data.length > 0 ? (
+                    <AvatarGroup max={3} className="mx-2">
+                      {item.likes?.data.map((info) => (
+                        <Avatar
+                          key={info.user.id}
+                          alt={info.user.name}
+                          src={"http://localhost:8000" + info.user.avatar}
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      ))}
+                    </AvatarGroup>
+                  ) : (
+                    <></>
+                  )}
                   <p>Like {item.likes?.count}</p>
                 </div>
               </div>
@@ -115,3 +157,7 @@ const Post = () => {
 };
 
 export default Post;
+const INITIAL_VALUES_LIKE_POST = {
+  status: LikeStatus.DISLIKE,
+  post: 0,
+};

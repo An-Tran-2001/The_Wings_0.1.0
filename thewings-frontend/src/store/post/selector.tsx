@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
-import { createPost, getOrtherPosts, getPosts, getPostsHome } from "./actions";
+import { LikeSet, createPost, getOrtherPosts, getPosts, getPostsHome, postLike } from "./actions";
 import { PostStatus } from "constant/enum";
 
 export interface CreatePostPayload {
@@ -33,9 +33,9 @@ export const usePost = () => {
         [dispatch],
     );
     const onGetPostsHome = useCallback(
-        async (username: string) => {
+        async () => {
         try {
-            await dispatch(getPostsHome(username)).unwrap();
+            await dispatch(getPostsHome()).unwrap();
         } catch (error) {
             throw error;
         }
@@ -52,12 +52,23 @@ export const usePost = () => {
       },
       [dispatch],
     );
+    const onLikePost = useCallback(
+        async (payload: LikeSet) => {
+        try {
+            await dispatch(postLike(payload)).unwrap();
+        } catch (error) {
+            throw error;
+        }
+        },
+        [dispatch],
+    );
     return {
         post,
         postState,
         onCreatePost,
         onGetPosts,
         onGetPostsHome,
-        onGetOrtherPosts
+        onGetOrtherPosts,
+        onLikePost,
     };
     };

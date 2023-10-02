@@ -10,7 +10,7 @@ import { MESSAGE_PATH } from "constant/path";
 
 export interface Ionic {
     users_info: User;
-    onSubmit: () => void;
+    onSubmit?: () => void;
 }
 
 
@@ -175,7 +175,9 @@ const Profile = (props: Ionic) => {
               </div>
               <div className="col-span-2">
                 <CreatePost onPosts={onSubmit} />
-                <Post />
+                <Stack className="justify-center items-center mt-3">
+                  <Post />
+                </Stack>
               </div>
             </div>
           </header>

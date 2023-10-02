@@ -18,7 +18,7 @@ const Message = () => {
           <h1 className="p-3 text-center text-2xl font-serif font-bold text-white ">
             Message
           </h1>
-          <Search justifyContent="space-between" />
+          <Search justifyContent="space-between" className="relative" />
         </div>
         <div className="h-full w-full bg-[#1e1e1ecf] col-span-3 relative">
           <form>

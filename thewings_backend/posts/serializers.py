@@ -28,37 +28,30 @@ class LikeSerializer(ModelSerializer):
         fields = "__all__"
         extra_kwargs = {
             "user": {"read_only": True, "required": False},
-            "posts": {"required": False},
-            "comments": {"required": False},
+            "post": {"required": False},
+            "comment": {"required": False},
         }
 
     def create(self, validated_data):
-        if Like.objects.filter(
-            Q(user=validated_data.get("user"))
-            & Q(
-                Q(post=validated_data.get("post"))
-                | Q(comment=validated_data.get("comment"))
-            )
-        ).exists():
-            raise ValidationError("You already liked this post")
-        return Like.objects.create(**validated_data)
+        user = validated_data.get("user")
+        post = validated_data.get("post")
+        comment = validated_data.get("comment")
+        status = validated_data.get("status")
+        if not comment:
+            existing_like_post = Like.objects.filter(user=user, post=post, comment__isnull=True).first()
+            if existing_like_post:
+                existing_like_post.status = status
+                existing_like_post.save()
+                return existing_like_post
+            
+        existing_like_comment = Like.objects.filter(user=user, post=post, comment=comment).first()
+        if existing_like_comment:
+            existing_like_comment.status = status
+            existing_like_comment.save()
+            return existing_like_comment
 
-    def update(self, instance, validated_data):
-        if instance := Like.objects.filter(
-            Q(user=validated_data.get("user"))
-            & Q(
-                Q(post=validated_data.get("post"))
-                | Q(comment=validated_data.get("comment"))
-            )
-        ).first():
-            print(instance)
-            instance.status = validated_data.get("status", instance.status)
-            if instance.status == "dislike":
-                instance.delete()
-            else:
-                instance.save()
-            return instance
-        raise ValidationError("Empty Post or Comment")
+        new_like = Like.objects.create(**validated_data)
+        return new_like
 
 
 class LikeCreateSerializer(LikeSerializer):

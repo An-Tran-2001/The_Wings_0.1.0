@@ -8,11 +8,11 @@ import { useAuth } from "store/auth";
 
 const Page = () => {
   const { user } = useAuth();
-  const { post, onGetPostsHome } = usePost();
+  const { onGetPostsHome } = usePost();
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        await onGetPostsHome(user.username);
+        await onGetPostsHome();
       }
     };
 

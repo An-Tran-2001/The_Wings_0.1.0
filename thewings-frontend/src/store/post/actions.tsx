@@ -3,7 +3,7 @@ import { AN_ERROR_TRY_AGAIN } from "constant";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
 import { LikeStatus, PostStatus } from "constant/enum";
-import { DataLike } from "./reducer";
+import { DataLike, Post } from "./reducer";
 
 export interface CreatePostPayload {
   content: string;
@@ -65,10 +65,9 @@ export const getPosts = createAsyncThunk(
 
 export const getPostsHome = createAsyncThunk(
   "post/getPostsHome",
-  async (username: string) => {
+  async () => {
     try {
-      const endpoint = Endpoint.GET_HOME_POSTS +  username +"/";
-      const response = await client.get(endpoint);
+      const response = await client.get(Endpoint.GET_HOME_POSTS);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -98,9 +97,9 @@ export const getOrtherPosts = createAsyncThunk(
 );
 
 export interface LikeSet {
-  status: LikeStatus;
-  post: number;
-  comment: number;
+  status: LikeStatus.LIKE | LikeStatus.DISLIKE;
+  post: Post;
+  comment?: number;
 }
 
 
@@ -108,7 +107,7 @@ export const postLike = createAsyncThunk(
   "post/postLike",
   async (props: LikeSet) => {
     try {
-      const response = await client.get(Endpoint.POST_LIKE, props);
+      const response = await client.post(Endpoint.POST_LIKE, props);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;

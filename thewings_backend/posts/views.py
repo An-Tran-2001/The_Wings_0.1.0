@@ -115,6 +115,15 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
                 context={"request": request},
             )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+    
+    @action(detail=False, methods=["get"])
+    def all(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+                Post.objects.filter(status="public"),
+                many=True,
+                context={"request": request},
+            )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
 class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
@@ -156,20 +165,10 @@ class LikeViewSet(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user)
+        post = Post.objects.get(id=serializer.data["post"])
         return Response(
             status=status.HTTP_201_CREATED,
-            data={"message": "Like created successfully", "post": serializer.data},
-        )
-
-    def patch(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
-            instance=request.data, data=request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
-        return Response(
-            status=status.HTTP_201_CREATED,
-            data={"message": "Like change successfully", "post": serializer.data},
+            data={"post": PostsSerializer(post, context={"request": request}).data}
         )
 
 

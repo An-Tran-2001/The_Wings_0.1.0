@@ -138,20 +138,21 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    // [postLike.fulfilled.type]: (state, action: PayloadAction<Post>) => {
-    //     state.postState = DataStatus.SUCCESS;
-    //     const likes = action.payload;
-    //     state.post = state.post.map((post) => {
-    //     if (post.id === likes.post) {
-    //         return {
-    //         ...post,
-    //         likes: likes.likes,
-    //         };
-    //     }
-    //     return post;
-    //     }
-    //     );
-    // }
+    [postLike.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+        state.postState = DataStatus.SUCCESS;
+        const id_post = action.payload.post.id
+        state.post = state.post.map((post) => {
+        if (post.id === id_post) {
+            return action.payload.post
+        }
+        return post;
+        }
+        );
+    },
+    [postLike.rejected.type]: (state, action: PayloadAction<string>) => {
+      state.postState = DataStatus.FAILED;
+      state.error = action.payload;
+    },
   },
 });
 

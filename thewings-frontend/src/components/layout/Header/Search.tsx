@@ -40,7 +40,7 @@ const Search = (props: PropsSearch) => {
     } catch (error) {
       console.log(error);
     } finally {
-      await router.push("orther_profile");
+      await router.push("dashboard/orther_profile");
     }
   };
 
@@ -52,7 +52,7 @@ const Search = (props: PropsSearch) => {
         direction="row"
         alignItems="center"
         justifyContent="center"
-        className={twMerge("bg-gray-700 rounded-lg", className)}
+        className={twMerge("bg-gray-700 rounded-lg relative", className)}
         {...rest}
       >
         <Input
@@ -66,47 +66,52 @@ const Search = (props: PropsSearch) => {
         <IconButton>
           <SearchIcon className="text-white" />
         </IconButton>
-      </Stack>
-      <Stack padding={1} spacing={1}>
-        {value &&
-          users?.map((user) => (
-            <Stack
-              key={user.id}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              className="w-[100%] h-[40px] bg-slate-300 p-3 rounded-xl"
-            >
-              <Stack onClick={() => onClick(user)}>
-                {user.avatar ? (
-                  <Avatar
-                    src={"http://localhost:8000" + user.avatar}
-                    alt={user.name}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                ) : (
-                  <Avatar sx={{ width: 32, height: 32 }} />
-                )}
+        <Stack padding={1} spacing={1} className="absolute top-[40px] w-full">
+          {value &&
+            users?.map((user) => (
+              <Stack
+                key={user.id}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                className="w-full h-[40px] bg-slate-300 p-3 rounded-xl z-10"
+              >
                 <Stack
-                  direction="column"
-                  alignItems="center"
-                  justifyContent="center"
+                  onClick={() => onClick(user)}
+                  direction="row"
+                  color="black"
                 >
+                  {user.avatar ? (
+                    <Avatar
+                      src={"http://localhost:8000" + user.avatar}
+                      alt={user.name}
+                      sx={{ width: 32, height: 32 }}
+                      className="mx-2"
+                    />
+                  ) : (
+                    <Avatar sx={{ width: 32, height: 32 }} className="mx-2" />
+                  )}
                   <Stack
-                    direction="row"
+                    direction="column"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <span className="font-bold">{user.name}</span>
-                    <span className="text-gray-400">@{user.username}</span>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <span className="font-bold">{user.name}</span>
+                      <span className="text-gray-400">@{user.username}</span>
+                    </Stack>
                   </Stack>
                 </Stack>
+                <PermContactCalendarIcon
+                  onClick={() => handleOpenProfile(user.username)}
+                />
               </Stack>
-              <PermContactCalendarIcon
-                onClick={() => handleOpenProfile(user.username)}
-              />
-            </Stack>
-          ))}
+            ))}
+        </Stack>
       </Stack>
     </Stack>
   );
