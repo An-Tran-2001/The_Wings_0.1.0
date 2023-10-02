@@ -6,6 +6,10 @@ import { twMerge } from "tailwind-merge";
 import { useMessage } from "store/message/selectors";
 import { User } from "store/auth";
 import { MouseEventHandler } from "react";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
+import { useRouter } from "next/router";
+import useProfiles from "store/profile/selector";
+import { usePost } from "store/post/selector";
 type PropsSearch = {
   inputProps?: InputProps;
   onClick: (user: User) => MouseEventHandler;
@@ -14,6 +18,8 @@ type PropsSearch = {
 const Search = (props: PropsSearch) => {
   const { inputProps, className, onClick, ...rest } = props;
   const [value, setValue] = useState("");
+  const router = useRouter();
+  const { onGetProfile } = useProfiles();
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
@@ -26,6 +32,15 @@ const Search = (props: PropsSearch) => {
       await onSearchUser(value);
     } catch (error) {
       console.log(error);
+    }
+  };
+  const handleOpenProfile = async (username: string) => {
+    try {
+      await onGetProfile(username);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await router.push("orther_profile");
     }
   };
 
@@ -61,31 +76,35 @@ const Search = (props: PropsSearch) => {
               alignItems="center"
               justifyContent="space-between"
               className="w-[100%] h-[40px] bg-slate-300 p-3 rounded-xl"
-              onClick={() => onClick(user)}
             >
-              {user.avatar ? (
-                <Avatar
-                  src={"http://localhost:8000" + user.avatar}
-                  alt={user.name}
-                  sx={{ width: 32, height: 32 }}
-                />
-              ) : (
-                <Avatar sx={{ width: 32, height: 32 }} />
-              )}
-              <Stack
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-              >
+              <Stack onClick={() => onClick(user)}>
+                {user.avatar ? (
+                  <Avatar
+                    src={"http://localhost:8000" + user.avatar}
+                    alt={user.name}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                ) : (
+                  <Avatar sx={{ width: 32, height: 32 }} />
+                )}
                 <Stack
-                  direction="row"
+                  direction="column"
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <span className="font-bold">{user.name}</span>
-                  <span className="text-gray-400">@{user.username}</span>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <span className="font-bold">{user.name}</span>
+                    <span className="text-gray-400">@{user.username}</span>
+                  </Stack>
                 </Stack>
               </Stack>
+              <PermContactCalendarIcon
+                onClick={() => handleOpenProfile(user.username)}
+              />
             </Stack>
           ))}
       </Stack>
@@ -94,4 +113,3 @@ const Search = (props: PropsSearch) => {
 };
 
 export default Search;
-

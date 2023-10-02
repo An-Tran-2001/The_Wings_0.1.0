@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import * as React from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -74,7 +74,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const CreatePost = () => {
+interface Status {
+  onPosts: () => void;
+}
+
+const CreatePost = (props: Status) => {
+  const { onPosts} = props;
   const { onCreatePost } = usePost();
   const [creds, setCreds] = React.useState<Credentials>(INITIAL_VALUES);
   const [open, setOpen] = React.useState(false);
@@ -121,6 +126,7 @@ const CreatePost = () => {
       console.log(error);
     } finally {
       setOpen(false);
+      await onPosts();
     }
   };
 
@@ -133,6 +139,7 @@ const CreatePost = () => {
           width={50}
           height={50}
           style={{ objectFit: "cover", borderRadius: "50%", height: "100%" }}
+          className="max-w-[60px] max-h-[60px]"
         />
       ) : (
         <Avatar sx={{ width: 40, height: 40 }} className="absolute inset-0" />
@@ -202,7 +209,11 @@ const CreatePost = () => {
                 }}
                 size="small"
                 id="controllable-states-demo"
-                options={[PostStatus.PUBLIC, PostStatus.PRIVATE, PostStatus.PRIVATE_ONLY]}
+                options={[
+                  PostStatus.PUBLIC,
+                  PostStatus.PRIVATE,
+                  PostStatus.PRIVATE_ONLY,
+                ]}
                 sx={{ width: 200 }}
                 renderInput={(params) => (
                   <TextField {...params} label="State" />
@@ -218,7 +229,9 @@ const CreatePost = () => {
               maxRows={8}
               variant="standard"
               className="w-full m-3 border-none"
-              onChange={(event) => { setCreds((prev) => ({ ...prev, content: event.target.value })); }}
+              onChange={(event) => {
+                setCreds((prev) => ({ ...prev, content: event.target.value }));
+              }}
             />
           </Typography>
           {selectedValueTags.length > 0 && (
@@ -241,12 +254,14 @@ const CreatePost = () => {
               ))}
             </div>
           )}
-          {imagePreview &&  imagePreview.length > 0 && imagePreview.map((imagePreview) => (
-            <Typography gutterBottom>
-              {" "}
-              <img src={imagePreview} alt="preview" />{" "}
-            </Typography>
-          ))}
+          {imagePreview &&
+            imagePreview.length > 0 &&
+            imagePreview.map((imagePreview) => (
+              <Typography gutterBottom>
+                {" "}
+                <img src={imagePreview} alt="preview" />{" "}
+              </Typography>
+            ))}
           <Stack
             direction="row"
             className="p-2 justify-between border-solid border border-stone-500 rounded-lg"

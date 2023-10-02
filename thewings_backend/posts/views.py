@@ -89,7 +89,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         serializer = self.serializer_class(
             self.get_queryset(), many=True, context={"request": request}
         )
-        return Response(status=status.HTTP_200_OK, data={"posts": serializer.data})
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
     @action(detail=False, methods=["get"], url_path="(?P<username>[^/.]+)")
     def your_post(self, request, *args, **kwargs):
@@ -110,11 +110,11 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             )
         else:
             serializer = self.serializer_class(
-                self.get_queryset().filter(Q(author=user_id) | Q(status="public")),
+                Post.objects.filter(author=user_id, status="public"),
                 many=True,
                 context={"request": request},
             )
-        return Response(status=status.HTTP_200_OK, data={"posts": serializer.data})
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
 class CreatePostViewSet(UpdateModelMixin, GenericViewSet):

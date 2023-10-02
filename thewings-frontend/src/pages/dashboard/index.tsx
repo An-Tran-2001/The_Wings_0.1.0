@@ -1,30 +1,35 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { DashboardLayout } from "../../layout";
 import { Stack } from "@mui/material";
 import CreatePost from "../../components/post/CreatePost";
 import Post from "../../components/post/Post";
+import { usePost } from "store/post/selector";
+import { useAuth } from "store/auth";
 
 const Page = () => {
+  const { user } = useAuth();
+  const { post, onGetPostsHome } = usePost();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user?.username) {
+        await onGetPostsHome(user.username);
+      }
+    };
+
+    fetchData();
+  }, [onGetPostsHome]);
+    
   return (
     <Stack
       minHeight="min-content"
-      height="1000px"
-      bgcolor="#202b2e61"
       justifyContent="center"
       alignItems="center"
+      className="bg-neutral-950"
     >
-      <Stack width="600px" margin={3} className="bg-black">
-        <CreatePost />
+      <Stack width="600px" margin={3}>
+        <CreatePost onPosts={onGetPostsHome} />
       </Stack>
-      <Post
-        title="Title"
-        content="Content"
-        file="File"
-        createdAt="CreatedAt"
-        updatedAt="UpdatedAt"
-        tags={["Tags"]}
-        user={{ name: "Name", profile: "Profile" }}
-      />
+      <Post />
     </Stack>
   );
 };

@@ -6,6 +6,9 @@ import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import AvatarGroup from "@mui/material/AvatarGroup";
+import { usePost } from "store/post/selector";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import AddCommentIcon from "@mui/icons-material/AddComment";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -36,62 +39,77 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-type PostProps = {
-  title: string;
-  content: string;
-  file: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-  user: {
-    name: string;
-    profile: string;
-  };
-};
-
-const Post = ({
-  title,
-  content,
-  file,
-  createdAt,
-  updatedAt,
-  tags,
-  user,
-}: PostProps) => {
-  const { name, profile } = user;
+const Post = () => {
+  const { post } = usePost();
+  
   return (
-    <Stack
-      flex="1"
-      justifyContent="space-between"
-      className="w-[600px] box-border m-3 bg-neutral-950 rounded-2xl"
-    >
-      <Stack direction="row" p={2}>
-        <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          variant="dot"
-          className="mr-3"
-        >
-          <Avatar alt="" src="" />
-        </StyledBadge>
-        <Stack>
-          <h1>{name}</h1>
-          <p className="text-[12px]">{createdAt}</p>
-        </Stack>
-        <CloseIcon className="ml-auto text-[25px]" />
-      </Stack>
-      <Stack>
-        <p>{content}</p>
-        {/* <Image src="https://th.bing.com/th/id/OIP.GFE8Wykppv-pGDw_CV4OeQAAAA?pid=ImgDet&rs=1" alt="" width={600} height={300} className="object-cover w-full h-[750px]" /> */}
-      </Stack>
-      <Stack className="grid grid-cols-2 b-0 p-4">
-        <Stack className="col-span-1 text-center">
-          <p>Like</p>
-        </Stack>
-        <Stack className="col-span-1 text-center">
-          <p>Comment</p>
-        </Stack>
-      </Stack>
+    <Stack>
+      {post?.length > 0 ? (
+        post.map((item) => (
+          <Stack
+            key={item.id}
+            flex="1"
+            justifyContent="space-between"
+            className="w-[600px] box-border m-3 bg-neutral-900 rounded-2xl"
+          >
+            <Stack direction="row" p={2}>
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+                className="mr-3"
+              >
+                <Avatar
+                  alt=""
+                  src={"http://localhost:8000" + item.author.avatar}
+                />
+              </StyledBadge>
+              <Stack>
+                <h1>{item.author.name}</h1>
+                <p className="text-[12px]">{item.created_at}</p>
+              </Stack>
+              <Stack>
+                <AvatarGroup max={3}>
+                  {item.tags?.data.map((user) => (
+                    <Avatar
+                      key={user.id}
+                      alt={user.name}
+                      src={"http://localhost:8000" + user.avatar}
+                    />
+                  ))}
+                </AvatarGroup>
+              </Stack>
+              <CloseIcon className="ml-auto text-[25px]" />
+            </Stack>
+            <Stack>
+              <p>{item.content}</p>
+              {item.files?.data.map((file) => (
+                <Image
+                  key={file.id}
+                  src={file.file}
+                  width={200}
+                  height={200}
+                  alt={file.name || "image"}
+                />
+              ))}
+            </Stack>
+            <div className="grid grid-cols-2 b-0 p-4">
+              <div className="col-span-1 text-center">
+                <div className="flex items-center justify-center space-x-2">
+                  <ThumbUpOffAltIcon />
+                  <p>Like {item.likes?.count}</p>
+                </div>
+              </div>
+              <div className="col-span-1 text-center space-x-2 flex justify-center items-center">
+                <AddCommentIcon />
+                <p>Comment {item.comments?.count}</p>
+              </div>
+            </div>
+          </Stack>
+        ))
+      ) : (
+        <></>
+      )}
     </Stack>
   );
 };

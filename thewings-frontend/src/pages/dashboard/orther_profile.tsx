@@ -1,22 +1,22 @@
 import { DashboardLayout } from "layout";
 import { ReactElement, useEffect } from "react";
-import { useAuth } from "store/auth";
 import { usePost } from "store/post/selector";
 import Profile from "components/layout/Profile";
+import useProfiles from "store/profile/selector";
 
 const Page = () => {
-  const { user } = useAuth();
-  const { post, onGetPosts } = usePost();
+  const { user } = useProfiles();
+  const { onGetOrtherPosts } = usePost();
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        await onGetPosts();
+        await onGetOrtherPosts(user?.username);
       }
     };
 
     fetchData();
-  }, [onGetPosts, user?.username]);
-  return <Profile users_info={user} onSubmit={onGetPosts} />;
+  }, [onGetOrtherPosts, user?.username]);
+  return <Profile users_info={user} onSubmit={onGetOrtherPosts} />;
 };
 export default Page;
 

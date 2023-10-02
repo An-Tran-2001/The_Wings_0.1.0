@@ -2,7 +2,8 @@ import { client, Endpoint } from "api";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
-import { PostStatus } from "constant/enum";
+import { LikeStatus, PostStatus } from "constant/enum";
+import { DataLike } from "./reducer";
 
 export interface CreatePostPayload {
   content: string;
@@ -44,3 +45,77 @@ export const createPost = createAsyncThunk(
   },
 );
 
+
+export const getPosts = createAsyncThunk(
+  "post/getPosts",
+  async () => {
+    try {
+      const response = await client.get(Endpoint.GET_MY_POSTS);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);
+
+
+export const getPostsHome = createAsyncThunk(
+  "post/getPostsHome",
+  async (username: string) => {
+    try {
+      const endpoint = Endpoint.GET_HOME_POSTS +  username +"/";
+      const response = await client.get(endpoint);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);
+
+export const getOrtherPosts = createAsyncThunk(
+  "post/getOrtherPosts",
+  async (username: string) => {
+    try {
+      const endpoint = Endpoint.GET_OTHER_POSTS + username + "/";
+      const response = await client.get(endpoint);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);
+
+export interface LikeSet {
+  status: LikeStatus;
+  post: number;
+  comment: number;
+}
+
+
+export const postLike = createAsyncThunk(
+  "post/postLike",
+  async (props: LikeSet) => {
+    try {
+      const response = await client.get(Endpoint.POST_LIKE, props);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);

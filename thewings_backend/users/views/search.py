@@ -33,5 +33,25 @@ class SearchUser(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetUser(APIView):
+    enderer_classes = (UserRenderer,)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            return Response(
+                UserSerializer(
+                    user,
+                    context={"request": request},
+                ).data,
+                status=status.HTTP_200_OK,
+            )
+        except:
+            return Response(
+                {"message": "User not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
 
 search_user_view = SearchUser().as_view()
+get_user_view = GetUser().as_view()

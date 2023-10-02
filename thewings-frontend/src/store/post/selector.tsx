@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
-import { createPost } from "./actions";
+import { createPost, getOrtherPosts, getPosts, getPostsHome } from "./actions";
 import { PostStatus } from "constant/enum";
 
 export interface CreatePostPayload {
@@ -9,7 +9,6 @@ export interface CreatePostPayload {
     status: PostStatus;
     tags: number[];
 }
-
 export const usePost = () => {
     const dispatch = useAppDispatch();
     const { post, postState } = useAppSelector((state) => state.post);
@@ -23,9 +22,42 @@ export const usePost = () => {
         },
         [dispatch],
     );
+    const onGetPosts = useCallback(
+        async () => {
+        try {
+            await dispatch(getPosts()).unwrap();
+        } catch (error) {
+            throw error;
+        }
+        },
+        [dispatch],
+    );
+    const onGetPostsHome = useCallback(
+        async (username: string) => {
+        try {
+            await dispatch(getPostsHome(username)).unwrap();
+        } catch (error) {
+            throw error;
+        }
+        },
+        [dispatch],
+    );
+    const onGetOrtherPosts = useCallback(
+      async (username: string) => {
+        try {
+          await dispatch(getOrtherPosts(username)).unwrap();
+        } catch (error) {
+          throw error;
+        }
+      },
+      [dispatch],
+    );
     return {
         post,
         postState,
         onCreatePost,
+        onGetPosts,
+        onGetPostsHome,
+        onGetOrtherPosts
     };
     };

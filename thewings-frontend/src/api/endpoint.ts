@@ -4,9 +4,14 @@ const Endpoint = {
   CONFIRM_CODE: "users/register-confirm/",
   FORGOT_PASSWORD: "users/forgot-password/",
   RESET_PASSWORD: "users/reset-password/",
-  GETINFO: "api/user/me/",
+  GETINFO: "api/users/me/",
   SEARCH_USER: "users/search/",
   CREATE_POST: "posts/my-posts/creat/",
+  GET_MY_POSTS: "posts/my_post_all/",
+  GET_HOME_POSTS: "posts/",
+  GET_ORTHER_INFO: "users/get/",
+  GET_OTHER_POSTS: "posts/", 
+  POST_LIKE: "posts/like/"
 };
 
 export default Endpoint;
