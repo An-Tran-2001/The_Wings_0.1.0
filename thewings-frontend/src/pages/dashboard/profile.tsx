@@ -6,7 +6,7 @@ import Profile from "components/layout/Profile";
 
 const Page = () => {
   const { user } = useAuth();
-  const { post, onGetPosts } = usePost();
+  const { posts , onGetPosts } = usePost();
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {

@@ -7,6 +7,7 @@ import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
 import Link from "next/link";
 import Button from "components/Button";
 import { MESSAGE_PATH } from "constant/path";
+import { memo } from "react";
 
 export interface Ionic {
     users_info: User;
@@ -176,7 +177,7 @@ const Profile = (props: Ionic) => {
               <div className="col-span-2">
                 <CreatePost onPosts={onSubmit} />
                 <Stack className="justify-center items-center mt-3">
-                  <Post />
+                  <Post link_post="post"/>
                 </Stack>
               </div>
             </div>
@@ -186,4 +187,4 @@ const Profile = (props: Ionic) => {
     );
 }
 
-export default Profile
+export default memo(Profile);

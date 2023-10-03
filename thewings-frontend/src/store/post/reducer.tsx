@@ -1,5 +1,5 @@
 import { LikeStatus, PostStatus } from "constant/enum";
-import { createPost, getOrtherPosts, getPosts, getPostsHome, postLike } from "./actions";
+import { createPost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike } from "./actions";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "store/auth";
 import { DataStatus } from "constant/enum";
@@ -22,7 +22,7 @@ export interface Like {
 
 export interface DataComment {
     id: number,
-    user: User,
+    users: User,
     content: string,
     created_at: string,
     updated_at: string,
@@ -64,25 +64,30 @@ export interface Post {
     comments?: Comment;
 }
 export interface postState {
-    post: Post[];
+    posts: Post[];
+    post: Post | undefined;
     postState: DataStatus;
     error: string | null;
 }
 
 const initialState: postState = {
-    post: [],
+    post: undefined,
+    posts: [],
     postState: DataStatus.IDLE,
     error: null,
 };
 
 const postSlice = createSlice({
-  name: "post",
+  name: "posts",
   initialState,
   reducers: {
     resetState: (state) => {
-      state.post = [];
+      state.posts = [];
       state.postState = DataStatus.IDLE;
       state.error = null;
+    },
+    viewPost: (state, action: PayloadAction<Post>) => {
+      state.post = action.payload;
     },
   },
   extraReducers: {
@@ -92,7 +97,7 @@ const postSlice = createSlice({
     },
     [createPost.fulfilled.type]: (state, action: PayloadAction<Post>) => {
       state.postState = DataStatus.SUCCESS;
-      state.post = action.payload;
+      state.posts = action.payload;
     },
     [createPost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -104,7 +109,7 @@ const postSlice = createSlice({
     },
     [getPosts.fulfilled.type]: (state, action: PayloadAction<Post>) => {
       state.postState = DataStatus.SUCCESS;
-      state.post = action.payload;
+      state.posts = action.payload;
     },
     [getPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -116,7 +121,7 @@ const postSlice = createSlice({
     },
     [getPostsHome.fulfilled.type]: (state, action: PayloadAction<Post>) => {
       state.postState = DataStatus.SUCCESS;
-      state.post = action.payload;
+      state.posts = action.payload;
     },
     [getPostsHome.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -128,7 +133,7 @@ const postSlice = createSlice({
     },
     [getOrtherPosts.fulfilled.type]: (state, action: PayloadAction<Post>) => {
       state.postState = DataStatus.SUCCESS;
-      state.post = action.payload;
+      state.posts = action.payload;
     },
     [getOrtherPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -141,7 +146,7 @@ const postSlice = createSlice({
     [postLike.fulfilled.type]: (state, action: PayloadAction<Post>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
-        state.post = state.post.map((post) => {
+        state.posts = state.posts.map((post) => {
         if (post.id === id_post) {
             return action.payload.post
         }
@@ -153,8 +158,28 @@ const postSlice = createSlice({
       state.postState = DataStatus.FAILED;
       state.error = action.payload;
     },
+    [postComment.pending.type]: (state) => {
+      state.postState = DataStatus.LOADING;
+      state.error = null;
+    },
+    [postComment.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+        state.postState = DataStatus.SUCCESS;
+        const id_post = action.payload.post.id
+        state.posts = state.posts.map((post) => {
+        if (post.id === id_post) {
+            return action.payload.post
+        }
+        return post;
+        }
+        );
+        state.post.comments = action.payload.post.comments
+    },
+    [postComment.rejected.type]: (state, action: PayloadAction<string>) => {
+      state.postState = DataStatus.FAILED;
+      state.error = action.payload;
+    },
   },
 });
 
-export const { resetState } = postSlice.actions;
+export const { resetState, viewPost } = postSlice.actions;
 export default postSlice.reducer;

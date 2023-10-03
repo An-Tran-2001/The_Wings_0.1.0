@@ -11,7 +11,8 @@ const Endpoint = {
   GET_HOME_POSTS: "posts/all/",
   GET_ORTHER_INFO: "users/get/",
   GET_OTHER_POSTS: "posts/",
-  POST_LIKE: "posts/like/"
+  POST_LIKE: "posts/like/",
+  POST_COMMENT: "posts/comment/"
 };
 
 export default Endpoint;

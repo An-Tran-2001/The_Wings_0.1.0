@@ -11,8 +11,11 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { LikeSet } from "store/post/actions";
 import { LikeStatus } from "constant/enum";
+import { DataComment } from "store/post/reducer";
+import { Router } from "next/router";
+import Link from "next/link";
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
+export const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     backgroundColor: "#44b700",
     color: "#44b700",
@@ -41,18 +44,28 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Post = () => {
-  const { post } = usePost();
-  const {onLikePost} = usePost();
+type NextLinkProps = {
+  link_post: string;
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+};
+
+const Post = (props: NextLinkProps) => {
+  const { link_post, children, className, onClick } = props;
+  const { posts } = usePost();
+  const {onLikePost, onViewPost} = usePost();
   const [creds, setCreds] = React.useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
-  const handleLikePost = (payload: LikeSet) => {
-    onLikePost(payload);
+  const handleLikePost = async  (payload: LikeSet) => {
+    await onLikePost(payload);
   };
-  
+  const handleViewPost = async (payload: Post) => {
+    await onViewPost(payload);
+  }
   return (
     <Stack>
-      {post?.length > 0 ? (
-        post.map((item) => (
+      {posts?.length > 0 ? (
+        posts.map((item) => (
           <Stack
             key={item.id}
             flex="1"
@@ -143,8 +156,15 @@ const Post = () => {
                 </div>
               </div>
               <div className="col-span-1 text-center space-x-2 flex justify-center items-center">
-                <AddCommentIcon />
-                <p>Comment {item.comments?.count}</p>
+                <Link
+                  href={link_post}
+                  passHref
+                  onClick={() => handleViewPost(item)}
+                  className="w-full flex justify-center items-center space-x-2 cursor-pointer hover:text-primary"
+                >
+                  <AddCommentIcon />
+                  <p>Comment {item.comments?.count}</p>
+                </Link>
               </div>
             </div>
           </Stack>
@@ -156,7 +176,7 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default React.memo(Post);
 const INITIAL_VALUES_LIKE_POST = {
   status: LikeStatus.DISLIKE,
   post: 0,

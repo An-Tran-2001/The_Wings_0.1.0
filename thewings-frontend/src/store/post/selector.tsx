@@ -1,7 +1,8 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
-import { LikeSet, createPost, getOrtherPosts, getPosts, getPostsHome, postLike } from "./actions";
+import { CreateCommentPayload, LikeSet, createPost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike } from "./actions";
 import { PostStatus } from "constant/enum";
+import { Post,  viewPost} from "./reducer";
 
 export interface CreatePostPayload {
     content: string;
@@ -11,7 +12,7 @@ export interface CreatePostPayload {
 }
 export const usePost = () => {
     const dispatch = useAppDispatch();
-    const { post, postState } = useAppSelector((state) => state.post);
+    const { posts, post, postState } = useAppSelector((state) => state.post);
     const onCreatePost = useCallback(
         async (payload: CreatePostPayload) => {
         try {
@@ -62,7 +63,24 @@ export const usePost = () => {
         },
         [dispatch],
     );
+    const onViewPost = useCallback(
+        async (post: Post) => {
+        dispatch(viewPost(post));
+    },
+        [dispatch],
+    );
+    const onCommentPost = useCallback(
+      async (payload: CreateCommentPayload) => {
+        try {
+          await dispatch(postComment(payload)).unwrap();
+        } catch (error) {
+          throw error;
+        }
+      },
+      [dispatch],
+    );
     return {
+        posts,
         post,
         postState,
         onCreatePost,
@@ -70,5 +88,7 @@ export const usePost = () => {
         onGetPostsHome,
         onGetOrtherPosts,
         onLikePost,
+        onViewPost,
+        onCommentPost,
     };
     };

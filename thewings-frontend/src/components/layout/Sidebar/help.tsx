@@ -12,7 +12,7 @@ export const SIDEBAR_ITEMS = [
   {
     label: "Dashboard",
     icon: <DashboardOutlined sx={iconStyles} />,
-    path: "/dashboard",
+    path: "/dashboard/",
   },
   {
     label: "Message",

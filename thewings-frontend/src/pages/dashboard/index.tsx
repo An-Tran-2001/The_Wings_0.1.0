@@ -29,7 +29,7 @@ const Page = () => {
       <Stack width="600px" margin={3}>
         <CreatePost onPosts={onGetPostsHome} />
       </Stack>
-      <Post />
+      <Post link_post="dashboard/post" />
     </Stack>
   );
 };

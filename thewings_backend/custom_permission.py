@@ -38,22 +38,20 @@ class IsFriend(permissions.BasePermission):
 
 class PostStatus(permissions.BasePermission):
     def has_permission(self, request, view):
-        try:
-            if post_id := view.kwargs[view.lookup_field]:
-                post = Post.objects.get(id=post_id)
-                return post.author == request.user
-        except:
-            if post_id := request.data.get("post"):
-                post = Post.objects.get(id=post_id)
-            elif post_id := request.data.get("posts"):
-                post = Post.objects.get(id=post_id[0])
-            if post.status == "public":
-                return True
-            elif post.status == "private":
-                friend = Friend.objects.filter(
-                    Q(Q(user=post.author) | Q(friend=post.author) & Q(is_accepted=True))
-                ).values("user", "friend")
-                return request.user in friend
-            elif post.status == "private_only":
-                return False
-        return True
+        if hasattr(view, 'lookup_field') and (post_id := view.kwargs.get(view.lookup_field)):
+            post = Post.objects.get(id=post_id)
+            return post.author == request.use
+        if hasattr(request.data, 'post') and (post_id := request.data.get("post")):
+            post = Post.objects.get(id=post_id)
+        elif post_id := request.data.get("posts"):
+            post = Post.objects.get(id=post_id)
+        if post.status == "public":
+            return True
+        elif post.status == "private":
+            friend = Friend.objects.filter(
+                Q(Q(user=post.author) | Q(friend=post.author) & Q(is_accepted=True))
+            ).values("user", "friend")
+            return request.user in friend
+        elif post.status == "private_only":
+            return False
+        return True 

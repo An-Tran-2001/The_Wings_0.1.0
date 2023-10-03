@@ -12,6 +12,12 @@ export interface CreatePostPayload {
   tags: number[];
 }
 
+export interface CreateCommentPayload {
+  content?: string;
+  posts: number;
+  parent?: number;
+}
+
 export const createPost = createAsyncThunk(
   "post/createPost",
   async (payload: CreatePostPayload) => {
@@ -108,6 +114,22 @@ export const postLike = createAsyncThunk(
   async (props: LikeSet) => {
     try {
       const response = await client.post(Endpoint.POST_LIKE, props);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);
+
+export const postComment = createAsyncThunk(
+  "post/postComment",
+  async (props: CreateCommentPayload) => {
+    try {
+      const response = await client.post(Endpoint.POST_COMMENT, props);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;

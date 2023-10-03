@@ -177,6 +177,7 @@ class CommentViewSet(APIView):
     renderer_classes = [UserRenderer]
     serializer_class = CommentCreateSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
+    lookup_field = 'id'
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -184,7 +185,8 @@ class CommentViewSet(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(users=request.user)
+        post = Post.objects.get(id=serializer.data["posts"])
         return Response(
             status=status.HTTP_201_CREATED,
-            data={"message": "Comment created successfully", "post": serializer.data},
+            data={"post": PostsSerializer(post, context={"request": request}).data}
         )
