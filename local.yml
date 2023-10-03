@@ -15,7 +15,6 @@
         - postgres
         - redis
         - mailhog
-        - react
       volumes:
         - .:/app:z
       env_file:
@@ -106,20 +105,3 @@
         - PGADMIN_DEFAULT_PASSWORD=admin
       ports:
         - "5050:80"
-
-    react:
-      build:
-        context: .
-        dockerfile: ./compose/local/react/Dockerfile
-      image: thewings_frontend_local_react
-      container_name: thewings_frontend_local_react
-      ports:
-        - "3000:3000"
-      volumes:
-        -  ./thewings-frontend:/thewings-frontend:z
-      restart: always
-      deploy:
-        resources:
-          limits:
-            cpus: '2'  
-            memory: 2G 

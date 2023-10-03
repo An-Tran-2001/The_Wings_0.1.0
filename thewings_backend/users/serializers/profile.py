@@ -25,15 +25,16 @@ class UserCreateProfileSerializer(ModelSerializer):
         model = Profile
         fields = ["bio", "sex", "birth_date", "address", "avatar", "cover_image"]
 
-    def validate(self, data):
-        user = self.context["user"]
-        if Profile.objects.filter(user=user).exists():
-            raise ValidationError("You have already created a profile")
-        return data
-
     def create(self, validated_data):
         user = self.context["user"]
-        profile = Profile.objects.create(user=user, **validated_data)
+        if Profile.objects.filter(user=user).exists():
+            profile = Profile.objects.get(user=user)
+            for key, value in validated_data.items():
+                if value is not None:
+                    setattr(profile, key, value)
+            profile.save()
+        else:
+            profile = Profile.objects.create(user=user, **validated_data)
         return profile
 
 class UserUpdateProfile(ModelSerializer):

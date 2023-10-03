@@ -25,21 +25,20 @@ const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const { onRegister } = useAuth();
   const router = useRouter();
-
+  const [isError, setIsError] = useState<string>("");
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       await onRegister(creds);
-    } catch (error) {
-      console.log(error);
-    } finally {
       router.push({
         pathname: CONFIRM_CODE_PATH,
         query: {
           email: creds.email,
         },
       });
-    }
+    } catch (error) {
+      setIsError("Error infomation not correct");
+    } 
   };
 
   const onChangeCreds = (name: string) => {
@@ -97,6 +96,7 @@ const Page = () => {
             />
             <p> I agree to the terms and conditions</p>
           </div>
+          <p className="text-red-500 text-center mt-2">{isError}</p>
           <button
             type="submit"
             className="h-12 px-5 mt-5 text-white font-semibold hover:bg-black transition duration-300"

@@ -87,6 +87,7 @@ const CreatePost = (props: Status) => {
   const [inputValue, setInputValue] = React.useState("");
   const { user } = useAuth();
   const [imagePreview, setImagePreview] = React.useState(null);
+  const [isError, setIsError] = React.useState<string>("");
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -122,11 +123,10 @@ const CreatePost = (props: Status) => {
       creds.status = status;
       console.log(creds);
       await onCreatePost(creds);
-    } catch (error) {
-      console.log(error);
-    } finally {
       setOpen(false);
       await onPosts();
+    } catch (error) {
+      setIsError("Error Not Content");
     }
   };
 
@@ -233,6 +233,7 @@ const CreatePost = (props: Status) => {
                 setCreds((prev) => ({ ...prev, content: event.target.value }));
               }}
             />
+            <p class="text-red-500 text-center mt-2">{isError}</p>
           </Typography>
           {selectedValueTags.length > 0 && (
             <div className="flex flex-row py-3">

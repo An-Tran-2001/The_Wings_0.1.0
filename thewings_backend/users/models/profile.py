@@ -23,5 +23,5 @@ class Profile(Model):
     address = CharField(max_length=100, null=True, blank=True)
     following = ManyToManyField(User, related_name="following", blank=True)
     followers = ManyToManyField(User, related_name="followers", blank=True)
-    sex = CharField(max_length=10, null=False, blank=False)
-    birth_date = DateField(null=False, blank=False)
+    sex = CharField(max_length=10, null=True, blank=False)
+    birth_date = DateField(null=True, blank=False)

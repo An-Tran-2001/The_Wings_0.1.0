@@ -16,6 +16,7 @@ type Credentials = {
 const Page = () => {
   const [creds, setCreds] = useState<Credentials>(INITIAL_VALUES);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isError, setIsError] = useState<boolean>(false);
   const { onLogin } = useAuth();
   const router = useRouter();
 
@@ -28,11 +29,11 @@ const Page = () => {
     event.preventDefault();
     try {
       await onLogin(creds);
-    } catch (error) {
-      console.log(error);
-    } finally {
       router.push(DASHBOARD_PATH);
-    }
+    } catch (error) {
+      setIsError(true);
+      inputRef.current?.focus();
+    } 
   };
 
   return (
@@ -65,6 +66,11 @@ const Page = () => {
               type="password"
             />
           </div>
+          {isError && (
+            <p className="text-red-500 text-center mt-2">
+              Username or password is incorrect
+            </p>
+          )}
           <button
             type="submit"
             className="h-12 px-5 mt-5 text-white font-semibold hover:bg-black transition duration-300"
