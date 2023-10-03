@@ -2,6 +2,7 @@ import { client, Endpoint } from "api";
 import { AN_ERROR_TRY_AGAIN } from "constant";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
+import { Sex } from "constant/enum";
 
 export interface LoginInfo {
   username_email: string;
@@ -33,6 +34,16 @@ export interface ResetPasswordInfo {
   password: string;
   password2: string;
 }
+
+export interface changeProfileInfo {
+  bio?: string;
+  sex?: Sex;
+  birth_date?: string;
+  address?: string;
+  avatar?: string;
+  cover_image?: string;
+}
+
 
 export const login = createAsyncThunk("auth/login", async (info: LoginInfo) => {
   try {
@@ -130,4 +141,30 @@ export const resetPassword = createAsyncThunk(
   },
 );
 
-
+export const changeProfile = createAsyncThunk(
+  "auth/changeProfile",
+  async (info: changeProfileInfo) => {
+    try {
+      const formData = new FormData();
+      formData.append("bio", info.bio || "");
+      formData.append("sex", info.sex || "");
+      formData.append("birth_date", info.birth_date || "");
+      formData.append("address", info.address || "");
+      formData.append("avatar", info.avatar || "");
+      formData.append("cover_image", info.cover_image || "");
+      const response = await client.post(Endpoint.CHANGE_PROFILE, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.status === HttpStatusCode.Created) {
+        return response.data;
+      }
+      throw AN_ERROR_TRY_AGAIN;
+    } catch (error) {
+      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+        throw AN_ERROR_TRY_AGAIN;
+      throw error;
+    }
+  },
+);

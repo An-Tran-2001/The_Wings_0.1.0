@@ -22,3 +22,8 @@ export enum LikeStatus {
   SAD = "sad",
   ANGRY = "angry",
 }
+
+export enum Sex {
+  MALE,
+  FEAMLE,
+}

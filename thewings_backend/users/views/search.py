@@ -7,6 +7,7 @@ from rest_framework import status
 from thewings_backend.users.serializers import SearchUserSerializer
 from thewings_backend.users.api.serializers import UserSerializer
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -21,10 +22,12 @@ class SearchUser(APIView):
             data=request.data, context={"request": request}
         )
         if serializer.is_valid():
+            current_user = request.user
+            key_name = serializer.data.get("key_name")
             return Response(
                 UserSerializer(
                     User.objects.filter(
-                        name__icontains=serializer.data.get("key_name")
+                        Q(name__icontains=key_name) & ~Q(id=current_user.id)
                     ),
                     many=True,
                     context={"request": request},

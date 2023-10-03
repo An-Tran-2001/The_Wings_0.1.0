@@ -74,7 +74,7 @@ const Search = (props: PropsSearch) => {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
-                className="w-full h-[40px] bg-slate-300 p-3 rounded-xl z-10"
+                className="w-full h-[40px] bg-slate-300 p-3 rounded-xl z-20"
               >
                 <Stack
                   onClick={() => onClick(user)}

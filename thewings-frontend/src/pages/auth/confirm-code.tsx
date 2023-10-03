@@ -1,4 +1,4 @@
-import React, { FormEvent, ReactElement, useMemo } from "react";
+import React, { FormEvent, ReactElement, useEffect, useMemo } from "react";
 import { useState } from "react";
 import Input, { validateCode } from "components/Input";
 import { HttpStatusCode } from "axios";
@@ -14,24 +14,37 @@ const Page = () => {
 
   const router = useRouter();
   const email = useMemo(() => router.query.email as string, []);
-
+  const [isError, setIsError] = useState<string>("");
   const { onConfirmCode } = useAuth();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       await onConfirmCode({ email, code });
+      router.push(LOGIN_PATH);
     } catch (error) {
       console.log(error);
-    } finally {
-      router.push(LOGIN_PATH);
-    }
+      setIsError(AN_ERROR_TRY_AGAIN);
+    } 
   };
 
   const onChange = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
     setCode(event.currentTarget.value);
   };
+  useEffect(() => {
+    const submit = async () => {
+    if (code.length === 6) {
+      try {
+        await onConfirmCode({ email, code });
+        router.push(LOGIN_PATH);
+      } catch (error) {
+        console.log(error);
+        setIsError(AN_ERROR_TRY_AGAIN);
+      } 
+    }}
+    submit();
+  }, [code]);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -46,6 +59,9 @@ const Page = () => {
             validated={validateCode}
             value={code}
           />
+          {isError && (
+            <p className="text-red-500 text-sm font-semibold">{isError}</p>
+          )}
           <div className="w-full flex flex-col items-center mt-5">
             <button
               type="submit"

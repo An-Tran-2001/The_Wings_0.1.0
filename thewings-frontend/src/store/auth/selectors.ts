@@ -1,6 +1,8 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useCallback } from "react";
 import {
+  changeProfile,
+  changeProfileInfo,
   confirmCode,
   ConfirmInfo,
   forgotPassword,
@@ -63,6 +65,13 @@ export const useAuth = () => {
     [dispatch],
   );
 
+  const onChangeProfile = useCallback(
+    async (info: changeProfileInfo) => {
+      await dispatch(changeProfile(info));
+    },
+    [dispatch],
+  );
+
   return {
     user,
     status,
@@ -75,5 +84,6 @@ export const useAuth = () => {
     onConfirmCode,
     onForgotPassword,
     onResetPassword,
+    onChangeProfile,
   };
 };

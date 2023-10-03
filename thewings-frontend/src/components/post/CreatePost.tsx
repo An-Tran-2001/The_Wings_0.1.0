@@ -77,7 +77,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface Status {
   onPosts: () => void;
 }
-
 const CreatePost = (props: Status) => {
   const { onPosts} = props;
   const { onCreatePost } = usePost();

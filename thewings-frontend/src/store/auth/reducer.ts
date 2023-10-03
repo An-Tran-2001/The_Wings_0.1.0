@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { login } from "./actions";
+import { changeProfile, login } from "./actions";
 import { TOKEN_KEY, AN_ERROR_TRY_AGAIN } from "constant/path";
 import { DataStatus } from "constant/enum";
 
@@ -67,6 +67,19 @@ const authSlice = createSlice({
         },
       )
       .addCase(login.rejected, (state, action) => {
+        state.userStatus = DataStatus.FAILED;
+        state.userError = action.error?.message || AN_ERROR_TRY_AGAIN;
+      })
+      .addCase(changeProfile.pending, (state) => {
+        state.userStatus = DataStatus.LOADING;
+      }
+      )
+      .addCase(changeProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.userStatus = DataStatus.SUCCESS;
+        state.userError = undefined;
+      })
+      .addCase(changeProfile.rejected, (state, action) => {
         state.userStatus = DataStatus.FAILED;
         state.userError = action.error?.message || AN_ERROR_TRY_AGAIN;
       }),
