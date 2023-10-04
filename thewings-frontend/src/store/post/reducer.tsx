@@ -146,6 +146,7 @@ const postSlice = createSlice({
     [postLike.fulfilled.type]: (state, action: PayloadAction<Post>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
+        state.post = action.payload.post
         state.posts = state.posts.map((post) => {
         if (post.id === id_post) {
             return action.payload.post

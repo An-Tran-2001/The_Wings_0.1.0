@@ -232,7 +232,7 @@ const CreatePost = (props: Status) => {
                 setCreds((prev) => ({ ...prev, content: event.target.value }));
               }}
             />
-            <p class="text-red-500 text-center mt-2">{isError}</p>
+            <p className="text-red-500 text-center mt-2">{isError}</p>
           </Typography>
           {selectedValueTags.length > 0 && (
             <div className="flex flex-row py-3">
@@ -271,11 +271,11 @@ const CreatePost = (props: Status) => {
               <input
                 type="file"
                 multiple
-                id="upload-file"
+                id="upload-file-post"
                 style={{ position: "absolute", top: "-9999px" }}
                 onChange={handleFileChange}
               />
-              <IconButton component="label" htmlFor="upload-file">
+              <IconButton component="label" htmlFor="upload-file-post">
                 <ImageIcon color="success" />
               </IconButton>
               <IconButton>

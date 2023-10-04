@@ -65,7 +65,7 @@ export const usePost = () => {
     );
     const onViewPost = useCallback(
         async (post: Post) => {
-        dispatch(viewPost(post));
+        await dispatch(viewPost(post));
     },
         [dispatch],
     );

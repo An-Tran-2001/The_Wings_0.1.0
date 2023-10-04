@@ -25,6 +25,7 @@ class ConversationViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 class MessageViewSet(ListModelMixin, GenericViewSet):
     serializer_class = MessageSerializer
     queryset = Message.objects.none()
+    lookup_field = "conversation"
     pagination_class = MessagePagination
 
     def get_queryset(self):

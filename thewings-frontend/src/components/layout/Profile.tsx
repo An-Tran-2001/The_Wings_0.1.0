@@ -76,11 +76,11 @@ const Profile = (props: Ionic) => {
                   <input
                     type="file"
                     multiple
-                    id="upload-file"
+                    id="upload-cover-avatar"
                     style={{ position: "absolute", top: "-9999px" }}
                     onChange={handleImageCoverChange}
                   />
-                  <label htmlFor="upload-file">
+                  <label htmlFor="upload-cover-avatar">
                     <Image
                       src={
                         ImageCoverPreview
@@ -108,11 +108,11 @@ const Profile = (props: Ionic) => {
                 <div>
                   <input
                     type="file"
-                    id="upload-file"
+                    id="upload-cover-avatar"
                     style={{ position: "absolute", top: "-9999px" }}
                     onChange={handleImageCoverChange}
                   />
-                  <label htmlFor="upload-file">
+                  <label htmlFor="upload-cover-avatar">
                     {ImageCoverPreview ? (
                       <>
                         <Image
@@ -133,33 +133,31 @@ const Profile = (props: Ionic) => {
                         />
                         <FlipCameraIosIconCustom />
                       </>
-                    ) : users_info?.cover_image ? (
-                      <>
-                        <Image
-                          src={
-                            "http://localhost:8000" + users_info?.cover_image
-                          }
-                          alt="cover image"
-                          width={100}
-                          height={100}
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </>
                     ) : (
-                      <></>
+                      <>
+                        <FlipCameraIosIconCustom />
+                      </>
                     )}
                   </label>
                 </div>
               )
+            ) : users_info?.cover_image ? (
+              <Image
+                src={"http://localhost:8000" + users_info?.cover_image}
+                alt="cover image"
+                width={100}
+                height={100}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
             ) : (
               <></>
             )}

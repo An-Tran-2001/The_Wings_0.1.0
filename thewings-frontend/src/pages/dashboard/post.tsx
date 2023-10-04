@@ -61,7 +61,7 @@ const Page = () => {
         >
           <div className="grid grid-cols-3 w-full h-full">
             <div className="col-span-2 relative w-full h-full overflow-hidden">
-              <Stack className="max-h-full w-full h-full">
+              <Stack className="max-h-full w-full h-full items-center justify-center pl-3 ">
                 {post?.files?.data.length === 0 ? (
                   <div className="flex justify-center items-center w-full h-full">
                     <p>No Image</p>
@@ -70,8 +70,8 @@ const Page = () => {
                   <Image
                     key={post?.files.data[0].id}
                     src={post?.files.data[0].file}
-                    width={1500}
-                    height={1000}
+                    width={2000}
+                    height={2000}
                     alt={post.files.data[0].name || "image"}
                   />
                 ) : (
@@ -81,13 +81,15 @@ const Page = () => {
                         <Image
                           key={file.name}
                           src={file.file}
-                          width={1500}
-                          height={1000}
+                          width={2000}
+                          height={2000}
                           alt={file.name || "image"}
                           style={{
                             display:
                               index === currentImageIndex ? "block" : "none",
+                            width: "100%",
                             height: "100%",
+                            objectFit: "cover",
                           }}
                         />
                         <NavigateBeforeIcon
@@ -111,7 +113,7 @@ const Page = () => {
                 <div className="flex flex-row justify-between">
                   <div className="flex flex-row">
                     <Avatar
-                      src={"http://localhost:8000" + post?.author.avatar}
+                      src={"http://localhost:8000" + post?.author?.avatar}
                       className="mx-3"
                     />
                     <div className="text-[12px] flex justify-center flex-col">
@@ -232,5 +234,5 @@ Page.getLayout = function getLayout(page: ReactElement) {
 const INITIAL_VALUES: CreateCommentPayload = {
     content: "",
     posts: 0,
-    parent: null,
+    parent: undefined,
 }

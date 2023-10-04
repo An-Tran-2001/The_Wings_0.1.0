@@ -21,9 +21,9 @@ axios.interceptors.request.use(
 );
 
 const client = {
-  get: async (endpoint: string, params = {}, config?: AxiosRequestConfig) => {
+  get: async (endpoint: string, params = {}) => {
     try {
-      const response = await axios.get(endpoint, { params }, config);
+      const response = await axios.get(endpoint, { params });
       return response;
     } catch (error) {
       throw error;

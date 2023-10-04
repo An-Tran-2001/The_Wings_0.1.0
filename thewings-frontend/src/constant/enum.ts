@@ -27,3 +27,12 @@ export enum Sex {
   MALE,
   FEAMLE,
 }
+
+export enum WebSocket {
+  READ_MESSAGE = "read_message",
+  TYPING = "typing",
+  CHAT_MESSAGE = "chat_message",
+  CHAT_MESSAGE_ECCHO = "chat_message_eccho",
+  UN_READ_COUNT = "unread_count",
+  NEW_MESSAGE_NOTIFICAL = "new_message_notifical",
+}

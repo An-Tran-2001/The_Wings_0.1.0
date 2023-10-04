@@ -13,7 +13,9 @@ const Endpoint = {
   GET_OTHER_POSTS: "posts/",
   POST_LIKE: "posts/like/",
   POST_COMMENT: "posts/comment/",
-  CHANGE_PROFILE: "users/create-profile/"
+  CHANGE_PROFILE: "users/create-profile/",
+  GET_CONVERSATIONS: "api/conversations/",
+  GET_MESSAGES: "api/messages/",
 };
 
 export default Endpoint;
