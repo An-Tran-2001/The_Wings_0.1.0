@@ -47,6 +47,8 @@ export interface messageState {
   userError?: string;
   messageStatus?: DataStatus;
   messageError?: string;
+  readyState?: string;
+  socket?: WebSocket;
 }
 
 const initialState: messageState = {
@@ -60,31 +62,38 @@ const messageSlice = createSlice({
   name: "message",
   initialState: initialState,
   reducers: {
-    SendMessage: (state, action: PayloadAction<Message>) => {
+    setSocket: (state, action) => {
+      state.socket = action.payload;
+    },
+    setReadyState: (state, action: PayloadAction<string>) => {
+      state.readyState = action.payload;
+    },
+    pushMessage: (state, action: PayloadAction<Message>) => {
       const message = action.payload;
-      state.messages?.results.push(message);
-    }
+      if (state.messages) {
+        if (!state.messages.results) {
+          state.messages.results = [];
+        }
+        state.messages.results.push(message);
+      }
+    },
   },
   extraReducers: (build) => {
     build
       .addCase(searchUser.pending, (state) => {
         state.userStatus = DataStatus.LOADING;
       })
-      .addCase(
-        searchUser.fulfilled,
-        (state, action: PayloadAction<User[]>) => {
-          const users  = action.payload;
-          state.users = users;
-        },
-      )
+      .addCase(searchUser.fulfilled, (state, action: PayloadAction<User[]>) => {
+        const users = action.payload;
+        state.users = users;
+      })
       .addCase(searchUser.rejected, (state, action) => {
         state.userStatus = DataStatus.FAILED;
         state.userError = action.error?.message || AN_ERROR_TRY_AGAIN;
       })
       .addCase(getConversations.pending, (state) => {
         state.userStatus = DataStatus.LOADING;
-      }
-      )
+      })
       .addCase(
         getConversations.fulfilled,
         (state, action: PayloadAction<conversations>) => {
@@ -111,5 +120,5 @@ const messageSlice = createSlice({
   },
 });
 
-export const { SendMessage } = messageSlice.actions;
+export const { pushMessage, setReadyState, setSocket } = messageSlice.actions;
 export default messageSlice.reducer;

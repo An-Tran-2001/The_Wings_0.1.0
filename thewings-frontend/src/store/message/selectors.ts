@@ -1,6 +1,26 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
 import { conversationParams, getConversations, getMessages, messageParams, searchUser } from "./actions";
+import useWebSocket from "react-use-websocket";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Message, pushMessage, setReadyState, setSocket } from "./reducer";
+import { WebSocketType } from "constant/enum";
+interface Socket {
+  sendJsonMessage: (message: any) => void;
+  lastJsonMessage: any;
+  readyState: ReadyState;
+}
+
+type SocketProps = {
+  url: string;
+  options?: object;
+};
+
+export interface SendMessagePayload {
+  type: WebSocketType.CHAT_MESSAGE;
+  message: string;
+}
 
 export const useMessage = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +46,16 @@ export const useMessage = () => {
     },
     [dispatch],
   );
-  return { users, conversations, messages, onSearchUser, onGetConversations, onGetMessages };
+
+  const onSendMessage = useCallback(
+    async (message: Message) => {
+      console.log(message);
+      console.log(pushMessage(message));
+      return await dispatch(pushMessage(message));
+    },
+    [dispatch],
+  );
+
+  return { users, conversations, messages, onSearchUser, onGetConversations, onGetMessages, onSendMessage };
 };
 

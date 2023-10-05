@@ -28,11 +28,13 @@ export enum Sex {
   FEAMLE,
 }
 
-export enum WebSocket {
+export enum WebSocketType {
   READ_MESSAGE = "read_message",
   TYPING = "typing",
   CHAT_MESSAGE = "chat_message",
-  CHAT_MESSAGE_ECCHO = "chat_message_eccho",
+  CHAT_MESSAGE_ECHO = "chat_message_echo",
   UN_READ_COUNT = "unread_count",
   NEW_MESSAGE_NOTIFICAL = "new_message_notifical",
+  TYPING_TRUE = "typing_true",
+  TYPING_FALSE = "typing_false",
 }
