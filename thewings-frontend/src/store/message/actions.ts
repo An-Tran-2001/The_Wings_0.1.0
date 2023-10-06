@@ -33,10 +33,9 @@ export const searchUser = createAsyncThunk(
 
 export const getConversations = createAsyncThunk(
   "message/getConversations",
-  async (params: conversationParams) => {
+  async () => {
     try {
-      const enpoint = Endpoint.GET_CONVERSATIONS + params.name;
-      const response = await client.get(enpoint);
+      const response = await client.get(Endpoint.GET_CONVERSATIONS);
       if (response.status === HttpStatusCode.Ok) {
         return response.data;
       }
@@ -66,3 +65,20 @@ export const getMessages = createAsyncThunk(
     }
   }
 )
+
+export const callMessages = () => async (params: messageParams) => {
+    try {
+      const enpoint =
+        Endpoint.GET_MESSAGES +
+        `?conversation=${params.conversation}&page_size=${params.page_size}&page=${params.page}`;
+      const response = await client.get(enpoint);
+      if (response.status === HttpStatusCode.Ok) {
+        return response.data;
+      }
+      throw AN_ERROR_TRY_AGAIN;
+    } catch (error) {
+      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+        throw AN_ERROR_TRY_AGAIN;
+      throw error;
+    }
+}

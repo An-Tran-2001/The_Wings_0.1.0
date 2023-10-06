@@ -1,19 +1,18 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState, useRef } from "react";
 import { DashboardLayout } from "../../layout";
 import { Stack, TextField } from "@mui/material";
 import Search from "../../components/layout/Header/Search";
 import { StyledBadge } from "components/post/Post";
 import Avatar from "@mui/material/Avatar";
-import { conversationParams, messageParams } from "store/message/actions";
+import { callMessages, conversationParams, messageParams } from "store/message/actions";
 import { useMessage } from "store/message/selectors";
-import { useAuth } from "store/auth";
+import { User, useAuth } from "store/auth";
 import { Input } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { Message, pushMessage } from "store/message/reducer";
+import { Message, UserConversation, conversations, conversationsStatus, pushMessage } from "store/message/reducer";
 import useWebSocket from "react-use-websocket";
 import { SOCKET_URL } from "constant";
 import { WebSocketType } from "constant/enum";
-import { useAppDispatch } from "store/hooks";
 interface MessageProps {
   message: Message;
   position: 'left' | 'right';
@@ -52,13 +51,13 @@ const MessageComponent = (messageprops: MessageProps) => {
             className=" bg-white mx-3"
             sx={{ width: 40, height: 40 }}
           />
-          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] p-3 max-w-lg">
+          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] p-3 max-w-lg z-0">
             {messageprops.message.content}
           </p>
         </>
       ) : (
         <>
-          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] max-w-lg p-3">
+          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] max-w-lg p-3 z-0">
             {messageprops.message.content}
           </p>
           <Avatar
@@ -73,22 +72,27 @@ const MessageComponent = (messageprops: MessageProps) => {
   );
 }
 
-
-const Message = () => {
+const Page = () => {
   const { user } = useAuth();
+  const [toUser, setToUser] = useState<UserConversation | null>(null);
   const [name, setName] = useState<conversationParams>(INITIAL_VALUES);
   const [typing, setTyping] = useState<TypingMessage>(INIT_VALUES_TYPING_MESSAGE);
-  const { conversations, onGetConversations, messages, onGetMessages, onSendMessage } = useMessage();
+  const { conversations, onGetConversations } = useMessage();
   const [ getMessages, setGetMessages ] = useState<messageParams>(INIT_VALUES_MESSAGE);
   const [ sendMessage, setSendMessage ] = useState<SendMessage>(INIT_VALUES_SEND_MESSAGE);
+  const [ messages , setMessages ] = useState<Message[]>([]);
   const token = localStorage.getItem("token");
-  const uri = `${SOCKET_URL}messaging/${conversations?.results[0].name}/?token=${
-    token || ""
-  }`;
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const url = `${SOCKET_URL}messaging/${
+    getMessages.conversation
+      ? getMessages.conversation
+      : conversations?.results[0].name
+  }/?token=${token || ""}`;
 
   
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
-    uri,
+    url,
     {
       onOpen: () => console.log("opened"),
       shouldReconnect: (closeEvent) => true,
@@ -98,10 +102,13 @@ const Message = () => {
         const data = JSON.parse(event.data);
         switch (data.type) {
           case WebSocketType.CHAT_MESSAGE_ECHO:
-            onSendMessage(data.message);
+            setMessages((prevMessages) => [data.message, ...prevMessages]);
             break;
           case WebSocketType.TYPING:
             setTyping({ ...typing, typing_response: data });
+            break;
+          case "last_50_messages":
+            setMessages(data.messages);
             break;
           default:
             console.error("Unknown message type!");
@@ -129,32 +136,31 @@ const Message = () => {
     sendJsonMessage(typing);}
   }
 
-  const handleGetMessages = (conversation: string) => {
+  const handleGetMessages = (conversation: conversationsStatus) => {
     setGetMessages({
       ...getMessages,
-      conversation: conversation,
+      conversation: conversation.name,
     })
+    setToUser(conversation?.other_user);
   }
-  const handleCreateConversationName = (e: any) => {
-    setName({
-      ...name,
-      name: e.target.value,
+  const handleGetNameToUser = (userTo: User) => {
+    const name_conversation = `${user?.username}__${userTo.username}`;
+    setGetMessages({
+      ...getMessages,
+      conversation: name_conversation,
     });
-  };
+  }
   useEffect(() => {
     const fetchData = async () => {
-      if (name) {
-        await onGetConversations(name);
-      }
+      await onGetConversations();
       if (getMessages.conversation === "") {
         getMessages.conversation = conversations?.results[0]?.name || "";
       }
-      if (getMessages) {
-        await onGetMessages(getMessages);
-      }
-    };
+
+      };
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     fetchData();
-  }, [onGetConversations, name, onGetMessages, getMessages, onSendMessage, messages]);
+  }, [onGetConversations, getMessages.conversation]);
   return (
     <Stack flex={1} justifyContent="center" alignItems="center" height="92vh">
       <div className="grid grid-cols-4 h-full w-full box-border">
@@ -163,7 +169,11 @@ const Message = () => {
             <h1 className="p-3 text-center text-2xl font-serif font-bold text-white ">
               Message
             </h1>
-            <Search justifyContent="space-between" className="relative mb-3" />
+            <Search
+              justifyContent="space-between"
+              className="relative mb-3"
+              onClick={handleGetNameToUser}
+            />
             {conversations && conversations?.results.length > 0 ? (
               conversations?.results.map((conversation) => {
                 const otherUser = conversation.other_user || {};
@@ -173,9 +183,9 @@ const Message = () => {
                 const conversation_name = conversation.name || "";
                 return (
                   <div
-                    className="flex items-center w-full p-2 rounded-2xl mt-3 flex-col bg-neutral-900"
+                    className="flex items-center w-full p-2 rounded-2xl mt-3 flex-col bg-neutral-900 cursor-pointer hover:bg-neutral-950"
                     key={conversation.id}
-                    onClick={(e) => handleGetMessages(conversation_name)}
+                    onClick={(e) => handleGetMessages(conversation)}
                   >
                     <div className="flex flex-row w-full py-1 items-center border-b-2 border-neutral-700">
                       <StyledBadge
@@ -223,12 +233,12 @@ const Message = () => {
             )}
           </div>
         </div>
-        <div className="h-full w-full col-span-3 p-3">
+        <div className="h-full w-full col-span-3 p-3 max-h-[92vh]">
           <form
-            className="h-full w-full bg-neutral-800 flex justify-end flex-col space-y-4 items-end relative overflow-hidden rounded-2xl pb-3 "
-            onSubmit={(e) => SubmitMessage(e)}  
+            className="h-full w-full bg-neutral-800  items-end relative rounded-2xl"
+            onSubmit={(e) => SubmitMessage(e)}
           >
-            <div className="bg-zinc-900 w-full absolute top-0 p-3 overflow-auto flex flex-row">
+            <div className="bg-zinc-900 w-full absolute top-0 p-3 overflow-auto flex flex-row z-20">
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{
@@ -239,7 +249,11 @@ const Message = () => {
                 className="mr-3 ml-3"
               >
                 <Avatar
-                  src={`http://localhost:8000${conversations?.results[0]?.other_user?.avatar}`}
+                  src={`http://localhost:8000${
+                    toUser
+                      ? toUser.avatar
+                      : conversations?.results[0]?.other_user?.avatar
+                  }`}
                   alt="Name"
                   className=" bg-white"
                   sx={{ width: 40, height: 40 }}
@@ -247,53 +261,68 @@ const Message = () => {
               </StyledBadge>
               <div className="ml-2">
                 <h1 className="text-white font-bold">
-                  {conversations?.results[0]?.other_user?.name}
+                  {toUser
+                    ? toUser.name
+                    : conversations?.results[0]?.other_user?.name}
                 </h1>
                 <p className="text-white text-[8px] font-light">Online</p>
               </div>
             </div>
-            {messages?.results && messages?.results.length > 0 ? (
-              (messages?.results || [])
-                .slice()
-                .reverse()
-                .map((message) => {
-                  return (
-                    <div
-                      className="w-full flex items-center justify-center"
-                      key={message.id}
-                    >
-                      {message.from_user?.id === user?.id ? (
-                        <MessageComponent message={message} position="right" />
-                      ) : (
-                        <MessageComponent message={message} position="left" />
-                      )}
-                      <div className="ml-2"></div>
-                    </div>
-                  );
-                })
-            ) : (
-              <></>
-            )}
-            <div className="w-full flex items-center justify-center">
-              {typing.typing_response?.user !== user?.username ? (
-                typing.typing_response?.typing === WebSocketType.TYPING_TRUE ? (
-                  <p className="text-white font-light text-[10px] pl-2 pt-1 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                    {typing.typing_response?.user} is typing...
-                  </p>
-                ) : (
-                  <></>
-                )
+            <div
+              className="w-full h-full overflow-y-scroll space-y-4 py-16"
+              ref={messagesEndRef}
+            >
+              {messages?.length > 0 ? (
+                (messages || [])
+                  .slice()
+                  .reverse()
+                  .map((message) => {
+                    return (
+                      <div
+                        className="w-full flex items-center justify-center"
+                        key={message.id}
+                      >
+                        {message.from_user?.id === user?.id ? (
+                          <MessageComponent
+                            message={message}
+                            position="right"
+                          />
+                        ) : (
+                          <MessageComponent message={message} position="left" />
+                        )}
+                      </div>
+                    );
+                  })
               ) : (
                 <></>
               )}
             </div>
-            <Input
-              className="w-[98%] bg-slate-500 p-3 rounded-2xl relative"
-              placeholder="Message"
-              disableUnderline
-              onChange={handleTypingMessage}
-              endAdornment={<SendIcon className="text-white cursor-pointer" />}
-            />
+            <div className="absolute bottom-3 w-full flex flex-col justify-center">
+              <div className="w-full flex items-center justify-center p-2">
+                {typing.typing_response?.user !== user?.username ? (
+                  typing.typing_response?.typing ===
+                  WebSocketType.TYPING_TRUE ? (
+                    <p className="text-white font-light text-[10px] pl-2 pt-1 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                      {typing.typing_response?.user} is typing...
+                    </p>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )}
+              </div>
+              <Input
+                className="w-[98%] bg-slate-500 p-3 rounded-2xl relative"
+                placeholder="Message"
+                value={sendMessage.message}
+                disableUnderline
+                onChange={handleTypingMessage}
+                endAdornment={
+                  <SendIcon className="text-white cursor-pointer" />
+                }
+              />
+            </div>
           </form>
         </div>
       </div>
@@ -301,9 +330,9 @@ const Message = () => {
   );
 };
 
-export default Message;
+export default Page;
 
-Message.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
@@ -313,7 +342,7 @@ const INITIAL_VALUES: conversationParams = {
 
 const INIT_VALUES_MESSAGE: messageParams = {
   conversation: "",
-  page: 1,
+  page: 2,
   page_size: 30,
 };
 

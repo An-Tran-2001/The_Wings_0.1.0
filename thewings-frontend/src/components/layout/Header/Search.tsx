@@ -12,7 +12,7 @@ import useProfiles from "store/profile/selector";
 import { usePost } from "store/post/selector";
 type PropsSearch = {
   inputProps?: InputProps;
-  onClick?: (user: User) => MouseEventHandler;
+  onClick?: any;
 } & StackProps;
 
 const Search = (props: PropsSearch) => {

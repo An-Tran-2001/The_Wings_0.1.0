@@ -35,8 +35,8 @@ export const useMessage = () => {
     [dispatch],
   );
   const onGetConversations = useCallback(
-    async (parames: conversationParams) => {
-      return await dispatch(getConversations(parames)).unwrap();
+    async () => {
+      return await dispatch(getConversations()).unwrap();
     },
     [dispatch],
   );

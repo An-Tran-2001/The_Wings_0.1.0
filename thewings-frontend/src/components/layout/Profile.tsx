@@ -35,8 +35,13 @@ const Profile = (props: Ionic) => {
     setOpenChangeInfo(true);
   };
 
-  const handleCloseChangeInfo = () => {
-    setOpenChangeInfo(false);
+  const handleCloseChangeInfo = async () => {
+    try {
+      await onChangeProfile(info);
+      setOpenChangeInfo(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
   const { user, onChangeProfile } = useAuth();
   const { users_info, onSubmit } = props;
@@ -265,6 +270,9 @@ const Profile = (props: Ionic) => {
                     type="text"
                     fullWidth
                     variant="standard"
+                    onChange={(e) =>
+                      setInfo((prev) => ({ ...prev, name: e.target.value }))
+                    }
                   />
                   <TextField
                     autoFocus
@@ -274,6 +282,9 @@ const Profile = (props: Ionic) => {
                     type="email"
                     fullWidth
                     variant="standard"
+                    onChange={(e) =>
+                      setInfo((prev) => ({ ...prev, email: e.target.value }))
+                    }
                   />
                   <TextField
                     autoFocus
@@ -283,6 +294,12 @@ const Profile = (props: Ionic) => {
                     type="text"
                     fullWidth
                     variant="standard"
+                    onChange={(e) =>
+                      setInfo((prev) => ({
+                        ...prev,
+                        phone_number: e.target.value,
+                      }))
+                    }
                   />
                   <TextField
                     autoFocus
@@ -292,6 +309,9 @@ const Profile = (props: Ionic) => {
                     type="text"
                     fullWidth
                     variant="standard"
+                    onChange={(e) =>
+                      setInfo((prev) => ({ ...prev, address: e.target.value }))
+                    }
                   />
                   <TextField
                     autoFocus
@@ -301,6 +321,9 @@ const Profile = (props: Ionic) => {
                     type="date"
                     fullWidth
                     variant="standard"
+                    onChange={(e) =>
+                      setInfo((prev) => ({ ...prev, birthday: e.target.value }))
+                    }
                   />
                 </DialogContent>
                 <DialogActions>

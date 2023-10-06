@@ -41,6 +41,7 @@ const Page = () => {
     };
     const handleCommentPost = async () => {
     await onCommentPost(comment);
+    setComment(INITIAL_VALUES);
     }
     useEffect(() => {
     if (post?.files?.data && post.files.data.length > 0) {
@@ -172,22 +173,23 @@ const Page = () => {
                     <p>Comment {post?.comments?.count}</p>
                   </div>
                 </div>
-                <div className="p-3 border-b-2">
-                  <Input
-                    className="w-full bg-slate-500 p-3 rounded-2xl relative"
-                    placeholder="Comment"
-                    disableUnderline
-                    endAdornment={
-                      <SendIcon
-                        className="text-white cursor-pointer"
-                        onClick={handleCommentPost}
-                      />
-                    }
-                    onChange={(e) =>
-                      setComment({ ...comment, content: e.target.value })
-                    }
-                  />
-                </div>
+                  <div className="p-3 border-b-2">
+                    <Input
+                      className="w-full bg-slate-500 p-3 rounded-2xl relative"
+                      placeholder="Comment"
+                      disableUnderline
+                      value={comment.content}
+                      endAdornment={
+                        <SendIcon
+                          className="text-white cursor-pointer"
+                          onClick={handleCommentPost}
+                        />
+                      }
+                      onChange={(e) =>
+                        setComment({ ...comment, content: e.target.value })
+                      }
+                    />
+                  </div>
                 <div className="bg-slate-500 mt-3 rounded-2xl p-3 overflow-auto h-[600px]">
                   {post?.comments?.data && post?.comments?.data.length > 0 ? (
                     post.comments.data.map((comment) => (
