@@ -1,15 +1,11 @@
 import { ReactElement, useState } from "react";
 import { DashboardLayout } from "../../layout";
-import { Stack } from "@mui/material";
-const Friend = () => {
-    return (
-        <Stack flex={1} bgcolor="#15161661" justifyContent="center" alignItems="center">
-
-        </Stack>
-    );
+import Friend from "screens/friend";
+const Page = () => {
+    return <Friend />
 };
-export default Friend;
+export default Page;
 
-Friend.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement) {
     return <DashboardLayout>{page}</DashboardLayout>;
 };

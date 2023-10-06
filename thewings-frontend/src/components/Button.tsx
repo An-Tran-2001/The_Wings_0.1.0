@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
+import { twMerge } from "tailwind-merge";
 
 export type IButtonProps = {} & ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -7,11 +8,14 @@ const Button = (props: IButtonProps) => {
   return (
     <button
       type={type}
-      className={
-        "text-white px-3 py-2 rounded-md bg-blue-600 " + className
-      }
+      className={twMerge(
+        "text-white px-3 py-2 rounded-md bg-blue-600 ",
+        className,
+      )}
       {...rest}
-    >{content}</button>
+    >
+      {content}
+    </button>
   );
 };
 export default Button;
