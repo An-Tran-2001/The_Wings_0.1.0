@@ -3,11 +3,13 @@ import AuthReducer, { AuthState } from "./auth/reducer";
 import MessageReducer,{ messageState }  from "./message/reducer";
 import PostReducer, { postState } from "./post/reducer";
 import ProfileReducer, { ProfileState } from "./profile/reducer";
+import FriendReducer, { friendState } from "./friend/reducer";
 export interface IRootState {
   auth: AuthState;
   message: messageState;
   post: postState;
   profile: ProfileState;
+  freinds: friendState;
 }
 
 const store = configureStore({
@@ -16,6 +18,7 @@ const store = configureStore({
     message: MessageReducer,
     post: PostReducer,
     profile: ProfileReducer,
+    friends: FriendReducer,
   },
 });
 

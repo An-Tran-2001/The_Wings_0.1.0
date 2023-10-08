@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Friend, BlackFriend
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from thewings_backend.users.api.serializers import UserSerializer
+from thewings_backend.users.api.serializers import UserSerializer, OrtherUserSerializer
 from drf_spectacular.utils import extend_schema_field
 
 User = get_user_model()
@@ -18,7 +18,7 @@ class FriendSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(UserSerializer)
     def get_friend(self, obj):
-        return UserSerializer(obj.user, context=self.context).data
+        return OrtherUserSerializer(obj.user, context=self.context).data
 
 
 class AddFriendSerializer(serializers.ModelSerializer):
@@ -78,7 +78,7 @@ class ListFriendSerializer(serializers.ModelSerializer):
             Q(friend=obj.id) & Q(is_accepted=True)
         ).values("user")
         query = User.objects.filter(Q(id__in=query_user) | Q(id__in=query_friend))
-        return UserSerializer(query, many=True, context=self.context).data
+        return OrtherUserSerializer(query, many=True, context=self.context).data
 
     def update(self, instance, validated_data):
         friend_id = validated_data.pop("friend_id")

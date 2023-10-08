@@ -16,6 +16,11 @@ const Endpoint = {
   CHANGE_PROFILE: "users/create-profile/",
   GET_CONVERSATIONS: "api/conversations/",
   GET_MESSAGES: "api/messages/",
+  ADD_FRIEND: "friends/friends_request/",
+  REMOVE_FRIEND: "friends/delete_friend/",
+  ACCEPT_REQUEST: "friends/user_request_friend/",
+  GET_FRIENDS: "friends/friends/",
+  GET_REQUESTS: "friends/user_request_friend/",
 };
 
 export default Endpoint;

@@ -49,6 +49,15 @@ const client = {
     }
   },
 
+  patch: async (endpoint: string, body: {}) => {
+    try {
+      const response = await axios.patch(endpoint, body);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   delete: async (endpoint: string, data?: {}) => {
     try {
       const response = await axios.delete(endpoint, { data });

@@ -3,6 +3,7 @@ import { DataStatus } from "constant/enum";
 import { TOKEN_KEY, AN_ERROR_TRY_AGAIN } from "constant/path";
 import { User } from "store/auth";
 import { getProfile } from "./actions";
+import { acceptRequest, addFriend, removeFriend } from "store/friend/actions";
 
 export interface ProfileState {
   user?: User;
@@ -38,6 +39,36 @@ const profileSlice = createSlice({
         state.status = DataStatus.FAILED;
         state.error = action.payload as string;
       })
+      .addCase(addFriend.pending, (state) => {
+        state.status = DataStatus.LOADING;
+      })
+      .addCase(addFriend.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(addFriend.rejected, (state, action) => {
+        state.status = DataStatus.FAILED;
+        state.error = action.payload as string;
+      })
+      .addCase(removeFriend.pending, (state) => {
+        state.status = DataStatus.LOADING;
+      })
+      .addCase(removeFriend.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(removeFriend.rejected, (state, action) => {
+        state.status = DataStatus.FAILED;
+        state.error = action.payload as string;
+      })
+      .addCase(acceptRequest.pending, (state) => {
+        state.status = DataStatus.LOADING;
+      })
+      .addCase(acceptRequest.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(acceptRequest.rejected, (state, action) => {
+        state.status = DataStatus.FAILED;
+        state.error = action.payload as string;
+      });
   }
 });
 

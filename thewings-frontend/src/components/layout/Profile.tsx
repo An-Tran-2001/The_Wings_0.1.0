@@ -14,6 +14,14 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { Sex } from "constant/enum";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import CancelScheduleSendIcon from "@mui/icons-material/CancelScheduleSend";
+import MapsUgcIcon from "@mui/icons-material/MapsUgc";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import useFriend from "store/friend/selector";
 
 export interface Ionic {
   users_info: User;
@@ -44,6 +52,7 @@ const Profile = (props: Ionic) => {
     }
   };
   const { user, onChangeProfile } = useAuth();
+  const { onAddFriend, onRemoveFriend, onAcceptRequest } = useFriend();
   const { users_info, onSubmit } = props;
   const [info, setInfo] = useState<changeProfileInfo>(INITIAL_VALUES_PROFILE);
   const [ImageCoverPreview, setImageCoverPreview] = useState(null);
@@ -63,13 +72,38 @@ const Profile = (props: Ionic) => {
       const previewURL = URL.createObjectURL(file);
       setImageAvatarPreview(previewURL);
     }
+  };
+
+  const onSubmitAddfriend = async () => {
+    try {
+      await onAddFriend({ friend: users_info?.id });
+    } catch (err) {
+      console.log(err);
+    }
   }
+
+  const onSubmitRemoveFriend = async () => {
+    try {
+      await onRemoveFriend(users_info?.username);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const onSubmitAcceptRequest = async () => {
+    try {
+      await onAcceptRequest({ friend_id: users_info?.id });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     const chageProfile = async (info: changeProfileInfo) => {
       await onChangeProfile(info);
     };
     chageProfile(info);
-  }, [onChangeProfile, info]);
+  }, [onChangeProfile, info, users_info]);
   return (
     <div className="flex justify-center items-center">
       <div className="container">
@@ -243,17 +277,22 @@ const Profile = (props: Ionic) => {
             <div className="flex ">
               {user?.id === users_info?.id ? (
                 <Button
-                  className="mx-2"
                   content="Edit Profile"
                   onClick={handleClickOpenChangeInfo}
+                  icon={<BorderColorIcon />}
                 />
               ) : (
-                <Stack flexDirection="row">
-                  <Button className="mx-2" content="Follow" />
-                  <Link href={MESSAGE_PATH}>
-                    <Button className="mx-2" content="Message" />
-                  </Link>
-                  <Button className="mx-2" content="Add Friend" />
+                <Stack flexDirection="row" className="space-x-3">
+                  <Button content="Message" icon={<MapsUgcIcon />} />
+                  {users_info?.isfriend ? (
+                    <Button content="Unfriend" icon={<PersonRemoveIcon />} onClick={onSubmitRemoveFriend} />
+                  ) : users_info?.send_request ? (
+                    <Button content="Cancel Request" icon={<CancelScheduleSendIcon />} onClick={onSubmitRemoveFriend} />
+                  ) : users_info.receive_request ? (
+                    <Button content="Accept Request" icon={<HowToRegIcon />} onClick={onSubmitAcceptRequest} />
+                  ) : (
+                    <Button content="Add Friend" icon={<PersonAddIcon />} onClick={onSubmitAddfriend} />
+                  )}
                 </Stack>
               )}
               <Dialog open={openChangInfo} onClose={handleCloseChangeInfo}>
@@ -336,7 +375,7 @@ const Profile = (props: Ionic) => {
           <div className="border-b-1 border-white grid grid-cols-3 gap-4 mt-4">
             <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
               <h2 className="font-bold text-[1.1rem]">Intro</h2>
-              <p className="text-center p-3">Some text</p>
+              <p className="text-center p-3">{users_info.bio || "..."}</p>
               <Button className="w-full bg-gray-800" content="Edit Bio" />
               <div className="py-2 text-[0.9rem] flex items-center">
                 <svg
@@ -430,9 +469,8 @@ const Profile = (props: Ionic) => {
 export default memo(Profile);
 
 const INITIAL_VALUES_PROFILE: changeProfileInfo = {
-  name: "",
-  email: "",
-  phone_number: "",
+  bio: "",
+  sex: Sex.MALE,
   birthday: "",
   address: "",
   avatar: "",

@@ -15,6 +15,9 @@ export interface User {
   cover_image: string;
   sex: string;
   email: string;
+  isfriend?: boolean;
+  send_request?: boolean;
+  receive_request?: boolean;
 }
 
 export interface UserResponse {

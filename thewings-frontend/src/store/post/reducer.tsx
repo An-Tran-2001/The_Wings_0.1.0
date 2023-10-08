@@ -21,19 +21,18 @@ export interface Like {
 }
 
 export interface DataComment {
-    id: number,
-    users: User,
-    content: string,
-    created_at: string,
-    updated_at: string,
-    likes: Like[],
-    posts?: number,
-    parent: DataComment, 
+  id: number;
+  users: User;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  likes: Like[];
+  posts?: number;
+  parent: DataComment;
 }
 
 export interface Comment {
     count: number;
-    recoment: DataComment[];
     data: DataComment[];
 }
 

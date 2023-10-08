@@ -14,6 +14,11 @@ import { LikeStatus } from "constant/enum";
 import { DataComment } from "store/post/reducer";
 import { Router } from "next/router";
 import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import PostStatusIcon from "components/PostStatusIcon";
+import { Menu, MenuItem } from "@mui/material";
+import { MouseEvent, useState } from "react";
 
 export const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -52,16 +57,27 @@ type NextLinkProps = {
 };
 
 const Post = (props: NextLinkProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [open, setOpen] = useState(false);
   const { link_post, children, className, onClick } = props;
   const { posts } = usePost();
   const {onLikePost, onViewPost} = usePost();
-  const [creds, setCreds] = React.useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
+  const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
   const handleLikePost = async  (payload: LikeSet) => {
     await onLikePost(payload);
   };
   const handleViewPost = async (payload: Post) => {
     await onViewPost(payload);
   }
+  const handleMenuClick = (event: MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(!open);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setOpen(false);
+  };
   return (
     <Stack>
       {posts?.length > 0 ? (
@@ -70,40 +86,68 @@ const Post = (props: NextLinkProps) => {
             key={item.id}
             flex="1"
             justifyContent="space-between"
-            className="w-[600px] box-border m-3 bg-neutral-900 rounded-2xl"
+            alignContent="center"
+            className="w-[600px] box-border m-1 bg-neutral-900 rounded-2xl transition duration-300 hover:shadow-lg"
           >
-            <Stack direction="row" p={2}>
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-                className="mr-3"
-              >
-                <Avatar
-                  alt=""
-                  src={"http://localhost:8000" + item.author.avatar}
+            <Stack
+              direction="row"
+              p={1}
+              className="items-center w-full justify-between"
+            >
+              <Stack direction="row">
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                  className="mr-3"
+                >
+                  <Avatar
+                    alt=""
+                    src={"http://localhost:8000" + item.author.avatar}
+                  />
+                </StyledBadge>
+                <Stack>
+                  <h1 className="text-[16px]">{item.author.name}</h1>
+                  <p className="text-[12px] flex flex-row">
+                    {formatDistanceToNow(new Date(item.created_at), {
+                      addSuffix: true,
+                    })}
+                    <PostStatusIcon status={item.status} />
+                  </p>
+                </Stack>
+                <Stack direction="row" className="flex items-center">
+                  <AvatarGroup max={3} className="mx-2">
+                    {item.tags?.data.map((user) => (
+                      <Avatar
+                        key={user.id}
+                        alt={user.name}
+                        src={"http://localhost:8000" + user.avatar}
+                        sx={{ width: 24, height: 24 }}
+                      />
+                    ))}
+                  </AvatarGroup>
+                </Stack>
+              </Stack>
+              <div className="right-0">
+                <MoreHorizIcon
+                  onClick={handleMenuClick}
+                  className="ml-auto text-[30px] mx-2"
                 />
-              </StyledBadge>
-              <Stack>
-                <h1>{item.author.name}</h1>
-                <p className="text-[12px]">{item.created_at}</p>
-              </Stack>
-              <Stack direction="row" className="flex items-center">
-                <AvatarGroup max={3} className="mx-2">
-                  {item.tags?.data.map((user) => (
-                    <Avatar
-                      key={user.id}
-                      alt={user.name}
-                      src={"http://localhost:8000" + user.avatar}
-                      sx={{ width: 24, height: 24 }}
-                    />
-                  ))}
-                </AvatarGroup>
-              </Stack>
-              <CloseIcon className="ml-auto text-[25px]" />
+                <Menu
+                  open={open}
+                  id="profile-menu"
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                >
+                  <MenuItem>Change</MenuItem>
+                  <MenuItem>Delete post</MenuItem>
+                  <MenuItem>Block {item.author?.name}</MenuItem>
+                </Menu>
+                <CloseIcon className="ml-auto text-[30px] mx-2" />
+              </div>
             </Stack>
             <Stack>
-              <p className="p-3">{item.content}</p>
+              <p className="px-3 py-1">{item.content}</p>
               {item.files?.data.length === 1 ? (
                 <Image
                   key={item.files.data[0].id}

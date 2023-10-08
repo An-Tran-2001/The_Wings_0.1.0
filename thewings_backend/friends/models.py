@@ -8,12 +8,28 @@ from django.db.models import (
     ForeignKey,
     Model,
     UUIDField,
+    Manager,
+    Q
 )
 
 User = get_user_model()
 
 
-# Create your models here.
+class FriendManager(Manager):
+    def are_friends(self, user1, user2):
+        return self.filter(
+            (Q(user=user1.id, friend=user2.id) | Q(user=user2.id, friend=user1.id)),
+            is_accepted=True
+        ).exists()
+        
+    def are_send_requested(self, user1, user2):
+        print("here ư")
+        return self.filter(user=user1.id, friend=user2.id, is_accepted=False).exists()
+    
+    def are_receive_requested(self, user1, user2):
+        return self.filter(user=user2.id, friend=user1.id, is_accepted=False).exists()
+
+
 class Friend(Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = ForeignKey(User, on_delete=CASCADE, related_name="friends")
@@ -23,6 +39,7 @@ class Friend(Model):
     is_accepted = BooleanField(default=False)
     created_at = DateTimeField(auto_now_add=True)
 
+    objects = FriendManager()
     def __str__(self) -> str:
         return super().__str__()
 

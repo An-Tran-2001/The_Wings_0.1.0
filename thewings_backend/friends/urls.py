@@ -6,6 +6,7 @@ from thewings_backend.friends.views import (
     user_block_friend_view,
     block_friend_view,
     unblock_friend_view,
+    delete_friend_vew
 )
 
 
@@ -22,4 +23,5 @@ urlpatterns = [
     path("user_block_friend/", view=user_block_friend_view, name="user_block_friend"),
     path("block_friend/", view=block_friend_view, name="block_friend"),
     path("unblock_friend/<int:id>", view=unblock_friend_view, name="user_block_friend"),
+    path("delete_friend/<str:username>", view=delete_friend_vew, name="delete_friend"),
 ]

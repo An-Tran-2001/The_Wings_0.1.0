@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework import status
 from rest_framework.decorators import action
@@ -15,13 +16,15 @@ from .serializers import (
     CommentSerializer,
 )
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from .models import *
+from thewings_backend.posts.models import Post
 from thewings_backend.users.renderers import UserRenderer
 from django.views.generic import DetailView
 from django.db.models import Q
 from thewings_backend.docs.posts import get_all_post_docs
 from drf_spectacular.utils import extend_schema
 from thewings_backend.friends.models import Friend
+
+User = get_user_model()
 
 # Create your views here.
 
@@ -118,8 +121,14 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     
     @action(detail=False, methods=["get"])
     def all(self, request, *args, **kwargs):
+        friends = Friend.objects.filter(Q(Q(user=self.request.user) | Q(friend=self.request.user)) & Q(is_accepted=True)).values("user", "friend")
+        friend_ids = set(friend['user'] for friend in friends) | set(friend['friend'] for friend in friends)
+        post = Post.objects.filter(
+            Q(Q(author=self.request.user.id) | Q(author__in=friend_ids)) &
+            Q(status__in=["public", "private"])
+        )
         serializer = self.serializer_class(
-                Post.objects.filter(status="public"),
+                post,
                 many=True,
                 context={"request": request},
             )

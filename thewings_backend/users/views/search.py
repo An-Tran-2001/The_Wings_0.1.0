@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from thewings_backend.users.serializers import SearchUserSerializer
-from thewings_backend.users.api.serializers import UserSerializer
+from thewings_backend.users.api.serializers import UserSerializer, OrtherUserSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
@@ -43,7 +43,7 @@ class GetUser(APIView):
         try:
             user = User.objects.get(username=username)
             return Response(
-                UserSerializer(
+                OrtherUserSerializer(
                     user,
                     context={"request": request},
                 ).data,

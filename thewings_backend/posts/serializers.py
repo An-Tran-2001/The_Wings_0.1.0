@@ -178,7 +178,6 @@ class Posts(ModelSerializer):
 
 class CreatePostSerializer(Posts):
     def validate(self, attrs):
-        print(attrs)
         if attrs.get("tags"):
             current_user = self.context.get("request").user
             black_friends = current_user.black_friends.values_list("black_friend", flat=True)
@@ -226,17 +225,8 @@ class PostsSerializer(Posts):
 
     @extend_schema_field(DocsCommentSerializer)
     def get_comments(self, obj):
-        user = self.context.get("request").user
-        if friend := Friend.objects.filter(
-            Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))
-        ).values("user", "friend"):
-            comments_limit = obj.post_comments.filter(users__in=friend)[:2]
-        comments_limit = obj.post_comments.all()[:2]
         return dict(
             count=obj.comments.count(),
-            recomment=CommentSerializer(
-                comments_limit, many=True, context=self.context
-            ).data,
             data=CommentSerializer(
                 obj.post_comments.all(), many=True, context=self.context
             ).data,
@@ -244,17 +234,8 @@ class PostsSerializer(Posts):
 
     @extend_schema_field(DocsLikesSerializer)
     def get_likes(self, obj):
-        user = self.context.get("request").user
-        if friend := Friend.objects.filter(
-            Q(Q(user=user) | Q(friend=user) & Q(is_accepted=True))
-        ).values("user", "friend"):
-            like_limit = obj.likes.filter(users__in=friend)[:2]
-        like_limit = obj.post_likes.all()[:2]
         return dict(
             count=obj.likes.count(),
-            recomment=GetPostLikeSerializer(
-                like_limit, many=True, context=self.context
-            ).data,
             data=GetPostLikeSerializer(
                 obj.post_likes.all(), many=True, context=self.context
             ).data,
