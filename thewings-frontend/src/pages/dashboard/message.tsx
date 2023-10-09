@@ -44,7 +44,7 @@ const MessageComponent = (messageprops: MessageProps) => {
       key={messageprops.message.id}
     >
       {isLeft ? (
-        <>
+        <div className="my-3 flex flex-row">
           <Avatar
             src={`http://localhost:8000${messageprops.message.from_user?.avatar}`}
             alt="Name"
@@ -54,9 +54,9 @@ const MessageComponent = (messageprops: MessageProps) => {
           <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] p-3 max-w-lg z-0">
             {messageprops.message.content}
           </p>
-        </>
+        </div>
       ) : (
-        <>
+        <div className="my-3 flex flex-row">
           <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] max-w-lg p-3 z-0">
             {messageprops.message.content}
           </p>
@@ -66,7 +66,7 @@ const MessageComponent = (messageprops: MessageProps) => {
             className=" bg-white mx-3"
             sx={{ width: 40, height: 40 }}
           />
-        </>
+        </div>
       )}
     </div>
   );
@@ -269,13 +269,12 @@ const Page = () => {
               </div>
             </div>
             <div
-              className="w-full h-full overflow-y-scroll space-y-4 py-16"
+              className="w-full h-full overflow-y-scroll py-16 flex flex-col-reverse"
               ref={messagesEndRef}
             >
               {messages?.length > 0 ? (
                 (messages || [])
                   .slice()
-                  .reverse()
                   .map((message) => {
                     return (
                       <div
@@ -297,7 +296,7 @@ const Page = () => {
                 <></>
               )}
             </div>
-            <div className="absolute bottom-3 w-full flex flex-col justify-center">
+            <div className="absolute bottom-3 w-full flex flex-col justify-center items-center">
               <div className="w-full flex items-center justify-center p-2">
                 {typing.typing_response?.user !== user?.username ? (
                   typing.typing_response?.typing ===
