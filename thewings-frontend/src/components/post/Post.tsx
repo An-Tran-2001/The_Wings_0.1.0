@@ -64,13 +64,17 @@ const Post = (props: NextLinkProps) => {
   const [open, setOpen] = useState(false);
   const { link_post, children, className, onClick } = props;
   const { posts } = usePost();
-  const {onLikePost, onViewPost} = usePost();
+  const {onLikePost, onViewPost, onDeletePost} = usePost();
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
   const handleLikePost = async  (payload: LikeSet) => {
     await onLikePost(payload);
   };
   const handleViewPost = async (payload: Post) => {
     await onViewPost(payload);
+  }
+  const handleDeletePost = async (id: number) => {
+    handleClose();
+    await onDeletePost(id);
   }
   const handleMenuClick = (event: MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -131,21 +135,28 @@ const Post = (props: NextLinkProps) => {
                   </AvatarGroup>
                 </Stack>
               </Stack>
-              <div className="right-0">
-                <MoreHorizIcon
-                  onClick={handleMenuClick}
-                  className="ml-auto text-[30px] mx-2"
-                />
-                <Menu
-                  open={open}
-                  id="profile-menu"
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                >
-                  <MenuItem>Change</MenuItem>
-                  <MenuItem>Delete post</MenuItem>
-                  <MenuItem>Block {item.author?.name}</MenuItem>
-                </Menu>
+              <div className="right-0 flex flex-row">
+                {item.author?.username === user?.username ? (
+                  <div>
+                    <MoreHorizIcon
+                      onClick={handleMenuClick}
+                      className="ml-auto text-[30px] mx-2"
+                    />
+                    <Menu
+                      open={open}
+                      id="profile-menu"
+                      anchorEl={anchorEl}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem onClick={() => handleDeletePost(item.id)}>
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <CloseIcon className="ml-auto text-[30px] mx-2" />
               </div>
             </Stack>
@@ -184,9 +195,14 @@ const Post = (props: NextLinkProps) => {
                     })
                   }
                 >
-                  { user.id && item.likes?.data.find((like) => like.user.id === user.id) ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />} 
+                  {user.id &&
+                  item.likes?.data.find((like) => like.user.id === user.id) ? (
+                    <ThumbUpIcon />
+                  ) : (
+                    <ThumbUpOffAltIcon />
+                  )}
                   {item.likes?.data && item.likes?.data.length > 0 ? (
-                    <AvatarGroup max={3} className="mx-2" spacing="small" >
+                    <AvatarGroup max={3} className="mx-2" spacing="small">
                       {item.likes?.data.map((info) => (
                         <Avatar
                           key={info.user.id}

@@ -8,7 +8,7 @@ import { useAuth } from "store/auth";
 
 const Page = () => {
   const { user } = useAuth();
-  const { onGetPostsHome } = usePost();
+  const { posts, onGetPostsHome, onDeletePost } = usePost();
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
@@ -17,7 +17,7 @@ const Page = () => {
     };
 
     fetchData();
-  }, [onGetPostsHome]);
+  }, [onGetPostsHome, onDeletePost, user?.username]);
     
   return (
     <Stack

@@ -140,3 +140,20 @@ export const postComment = createAsyncThunk(
     }
   },
 );
+
+export const deletePost = createAsyncThunk(
+  "post/deletePost",
+  async (id: number) => {
+    try {
+      const endpoint = Endpoint.GET_OTHER_POSTS + id + "/delete_post/";
+      const response = await client.delete(endpoint);
+      return { id, response: response.data}
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);

@@ -16,7 +16,7 @@ from .serializers import (
     CommentSerializer,
 )
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from thewings_backend.posts.models import Post
+from thewings_backend.posts.models import Post, Comment
 from thewings_backend.users.renderers import UserRenderer
 from django.views.generic import DetailView
 from django.db.models import Q
@@ -134,6 +134,14 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
+    @action(detail=True, methods=['delete'])
+    def delete_post(self, request, *args, **kwargs):
+        instance = Post.objects.get(id=kwargs.get("id", None))
+        if instance.author == request.user:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "You don't have permission to delete this post"})
 
 class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
     serializer_class = CreatePostSerializer
@@ -174,7 +182,14 @@ class LikeViewSet(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user)
-        post = Post.objects.get(id=serializer.data["post"])
+        post_id = serializer.data["post"]
+        comment_id = serializer.data["comment"]
+        if post_id and not comment_id:
+            post = Post.objects.get(id=post_id)
+        else:
+            post = Comment.objects.get(id=comment_id).posts
+        
+        print(post)
         return Response(
             status=status.HTTP_201_CREATED,
             data={"post": PostsSerializer(post, context={"request": request}).data}

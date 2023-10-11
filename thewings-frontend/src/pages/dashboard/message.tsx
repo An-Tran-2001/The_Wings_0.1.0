@@ -103,6 +103,7 @@ const Page = () => {
         switch (data.type) {
           case WebSocketType.CHAT_MESSAGE_ECHO:
             setMessages((prevMessages) => [data.message, ...prevMessages]);
+            console.log(data.message);
             break;
           case WebSocketType.TYPING:
             setTyping({ ...typing, typing_response: data });
@@ -160,7 +161,7 @@ const Page = () => {
       };
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     fetchData();
-  }, [onGetConversations, getMessages.conversation]);
+  }, [onGetConversations, getMessages.conversation, messages]);
   return (
     <Stack flex={1} justifyContent="center" alignItems="center" height="92vh">
       <div className="grid grid-cols-4 h-full w-full box-border">
@@ -269,7 +270,7 @@ const Page = () => {
               </div>
             </div>
             <div
-              className="w-full h-full overflow-y-scroll py-17 flex flex-col-reverse"
+              className="w-full h-full overflow-y-scroll py-16 flex flex-col-reverse"
               ref={messagesEndRef}
             >
               {messages?.length > 0 ? (

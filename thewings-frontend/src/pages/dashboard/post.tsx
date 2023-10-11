@@ -249,8 +249,7 @@ const Page = () => {
                               onClick={() =>
                                 handleLikePost({
                                   status: LikeStatus.LIKE,
-                                  post: post?.id,
-                                  comment: comment?.id,
+                                  comment: comment?.id, 
                                 })
                               }
                             >

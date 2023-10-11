@@ -1,5 +1,5 @@
 import { LikeStatus, PostStatus } from "constant/enum";
-import { createPost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike } from "./actions";
+import { createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike } from "./actions";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "store/auth";
 import { DataStatus } from "constant/enum";
@@ -175,6 +175,19 @@ const postSlice = createSlice({
         state.post.comments = action.payload.post.comments
     },
     [postComment.rejected.type]: (state, action: PayloadAction<string>) => {
+      state.postState = DataStatus.FAILED;
+      state.error = action.payload;
+    },
+    [deletePost.pending.type]: (state) => {
+      state.postState = DataStatus.LOADING;
+      state.error = null;
+    },
+    [deletePost.fulfilled.type]: (state, action: PayloadAction<{id: number, response: any}>) => {
+        state.postState = DataStatus.SUCCESS;
+        const id_post = action.payload.id
+        state.posts = state.posts.filter((post) => post.id !== id_post);
+    },
+    [deletePost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
       state.error = action.payload;
     },

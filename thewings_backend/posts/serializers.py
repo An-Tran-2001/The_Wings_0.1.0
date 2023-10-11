@@ -37,6 +37,12 @@ class LikeSerializer(ModelSerializer):
         post = validated_data.get("post")
         comment = validated_data.get("comment")
         status = validated_data.get("status")
+        if not post: 
+            existing_like_comment = Like.objects.filter(user=user, post__isnull=True, comment=comment).first()
+            if existing_like_comment:
+                existing_like_comment.status = status
+                existing_like_comment.save()
+                return existing_like_comment
         if not comment:
             existing_like_post = Like.objects.filter(user=user, post=post, comment__isnull=True).first()
             if existing_like_post:
