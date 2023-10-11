@@ -19,6 +19,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import PostStatusIcon from "components/PostStatusIcon";
 import { Menu, MenuItem } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useAuth } from "store/auth";
 
 export const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -57,6 +59,7 @@ type NextLinkProps = {
 };
 
 const Post = (props: NextLinkProps) => {
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const { link_post, children, className, onClick } = props;
@@ -173,7 +176,7 @@ const Post = (props: NextLinkProps) => {
             <div className="grid grid-cols-2 b-0 p-4">
               <div className="col-span-1 text-center">
                 <div
-                  className="flex items-center justify-center space-x-2"
+                  className="flex items-center justify-center space-x-2 cursor-pointer hover:text-primary"
                   onClick={() =>
                     handleLikePost({
                       status: LikeStatus.LIKE,
@@ -181,15 +184,15 @@ const Post = (props: NextLinkProps) => {
                     })
                   }
                 >
-                  <ThumbUpOffAltIcon />
+                  { user.id && item.likes?.data.find((like) => like.user.id === user.id) ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />} 
                   {item.likes?.data && item.likes?.data.length > 0 ? (
-                    <AvatarGroup max={3} className="mx-2">
+                    <AvatarGroup max={3} className="mx-2" spacing="small" >
                       {item.likes?.data.map((info) => (
                         <Avatar
                           key={info.user.id}
                           alt={info.user.name}
                           src={"http://localhost:8000" + info.user.avatar}
-                          sx={{ width: 20, height: 20 }}
+                          sx={{ width: 23, height: 23 }}
                         />
                       ))}
                     </AvatarGroup>

@@ -15,7 +15,7 @@ const Page = () => {
     };
 
     fetchData();
-  }, [onGetPosts, user?.username]);
+  }, [onGetPosts, user]);
   return <Profile users_info={user} onSubmit={onGetPosts} />;
 };
 export default Page;

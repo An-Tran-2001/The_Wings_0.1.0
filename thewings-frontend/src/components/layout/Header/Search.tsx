@@ -40,7 +40,7 @@ const Search = (props: PropsSearch) => {
     } catch (error) {
       console.log(error);
     } finally {
-      await router.push("dashboard/orther_profile");
+      await router.push("/dashboard/orther_profile");
     }
   };
 

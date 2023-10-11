@@ -58,3 +58,9 @@ li {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.mx-2 .MuiAvatarGroup-avatar {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+}

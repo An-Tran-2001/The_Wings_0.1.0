@@ -15,9 +15,12 @@ import { CreateCommentPayload, LikeSet } from "store/post/actions";
 import SendIcon from "@mui/icons-material/Send";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import PostStatusIcon from "components/PostStatusIcon";
+import { useAuth } from "store/auth";
 
 const Page = () => {
+    const { user } = useAuth();
     const { post, posts, onCommentPost, onLikePost } = usePost();
     const [inputComment, setInputComment] = useState<CreateCommentPayload>(INITIAL_VALUES);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -130,7 +133,7 @@ const Page = () => {
                         )}
                       </p>
                     </div>
-                    <AvatarGroup max={4}>
+                    <AvatarGroup max={4} spacing="small" className="mx-2">
                       {post?.tags?.data.map((user) => (
                         <Avatar
                           key={user.id}
@@ -159,25 +162,25 @@ const Page = () => {
                         })
                       }
                     >
-                      <ThumbUpOffAltIcon />
-                      {post?.likes?.data && post?.likes?.data.length > 0 ? (
-                        <AvatarGroup
-                          max={3}
-                          className="mx-2"
-                          style={{ fontSize: 16 }}
-                        >
-                          {post?.likes?.data.map((info) => (
-                            <Avatar
-                              key={info.user.id}
-                              alt={info.user.name}
-                              src={"http://localhost:8000" + info.user.avatar}
-                              sx={{ width: 20, height: 20 }}
-                            />
-                          ))}
-                        </AvatarGroup>
-                      ) : (
-                        <></>
-                      )}
+                      {user.id && post?.likes?.data.some((info) => info.user.id === user.id) ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />}
+                        {post?.likes?.data && post?.likes?.data.length > 0 ? (
+                          <AvatarGroup
+                            max={3}
+                            className="mx-2"
+                            style={{ fontSize: "10px" }}
+                          >
+                            {post?.likes?.data.map((info) => (
+                              <Avatar
+                                key={info.user.id}
+                                alt={info.user.name}
+                                src={"http://localhost:8000" + info.user.avatar}
+                                sx={{ width: 20, height: 20 }}
+                              />
+                            ))}
+                          </AvatarGroup>
+                        ) : (
+                          <></>
+                        )}
                       <p>Like {post?.likes?.count}</p>
                     </div>
                   </div>
@@ -251,7 +254,7 @@ const Page = () => {
                                 })
                               }
                             >
-                              <ThumbUpOffAltIcon fontSize="12px" />
+                              {user.id && comment?.likes?.data.some((info) => info.user.id === user.id) ? <ThumbUpIcon fontSize="12px" /> : <ThumbUpOffAltIcon fontSize="12px" />}
                               {comment?.likes?.data &&
                               comment?.likes?.data.length > 0 ? (
                                 <AvatarGroup max={2} className="mx-2">
@@ -328,7 +331,9 @@ const Page = () => {
                                     </p>
                                   </div>
                                 </div>
-                                <p className="text-[14px] pl-3 border-l-2 border-neutral-500">{parent.content}</p>
+                                <p className="text-[14px] pl-3 border-l-2 border-neutral-500">
+                                  {parent.content}
+                                </p>
                               </div>
                             ))}
                           </Stack>

@@ -49,22 +49,22 @@ const MessageComponent = (messageprops: MessageProps) => {
             src={`http://localhost:8000${messageprops.message.from_user?.avatar}`}
             alt="Name"
             className=" bg-white mx-3"
-            sx={{ width: 40, height: 40 }}
+            sx={{ width: 45, height: 45 }}
           />
-          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] p-3 max-w-lg z-0">
+          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[14px] p-3 max-w-lg z-0">
             {messageprops.message.content}
           </p>
         </div>
       ) : (
         <div className="my-3 flex flex-row">
-          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[10px] max-w-lg p-3 z-0">
+          <p className="text-white bg-neutral-900 rounded-2xl font-light text-[14px] max-w-lg p-3 z-0">
             {messageprops.message.content}
           </p>
           <Avatar
             src={`http://localhost:8000${messageprops.message.from_user?.avatar}`}
             alt="Name"
             className=" bg-white mx-3"
-            sx={{ width: 40, height: 40 }}
+            sx={{ width: 45, height: 45 }}
           />
         </div>
       )}
@@ -208,7 +208,7 @@ const Page = () => {
                         <h1 className="text-white font-bold whitespace-nowrap">
                           {otherUser.name}
                         </h1>
-                        <p className="text-white text-[8px] font-light">
+                        <p className="text-white text-[12px] font-light">
                           Online
                         </p>
                       </div>
@@ -221,7 +221,7 @@ const Page = () => {
                         sx={{ width: 25, height: 25 }}
                       />
                       <p className="whitespace-nowrap">{toUser.name} : </p>
-                      <p className="text-white font-light text-[10px] pl-2 pt-1 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                      <p className="text-white font-light text-[13px] pl-2 pt-1 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
                         {lastMessage.content}
                       </p>
                     </div>
@@ -265,11 +265,11 @@ const Page = () => {
                     ? toUser.name
                     : conversations?.results[0]?.other_user?.name}
                 </h1>
-                <p className="text-white text-[8px] font-light">Online</p>
+                <p className="text-white text-[12px] font-light">Online</p>
               </div>
             </div>
             <div
-              className="w-full h-full overflow-y-scroll py-16 flex flex-col-reverse"
+              className="w-full h-full overflow-y-scroll py-17 flex flex-col-reverse"
               ref={messagesEndRef}
             >
               {messages?.length > 0 ? (

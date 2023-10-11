@@ -22,6 +22,7 @@ import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import useFriend from "store/friend/selector";
+import Face5Icon from "@mui/icons-material/Face5";
 
 export interface Ionic {
   users_info: User;
@@ -103,7 +104,7 @@ const Profile = (props: Ionic) => {
       await onChangeProfile(info);
     };
     chageProfile(info);
-  }, [onChangeProfile, info, users_info]);
+  }, [onChangeProfile, info.avatar, info.cover_image]);
   return (
     <div className="flex justify-center items-center">
       <div className="container">
@@ -285,13 +286,29 @@ const Profile = (props: Ionic) => {
                 <Stack flexDirection="row" className="space-x-3">
                   <Button content="Message" icon={<MapsUgcIcon />} />
                   {users_info?.isfriend ? (
-                    <Button content="Unfriend" icon={<PersonRemoveIcon />} onClick={onSubmitRemoveFriend} />
+                    <Button
+                      content="Unfriend"
+                      icon={<PersonRemoveIcon />}
+                      onClick={onSubmitRemoveFriend}
+                    />
                   ) : users_info?.send_request ? (
-                    <Button content="Cancel Request" icon={<CancelScheduleSendIcon />} onClick={onSubmitRemoveFriend} />
+                    <Button
+                      content="Cancel Request"
+                      icon={<CancelScheduleSendIcon />}
+                      onClick={onSubmitRemoveFriend}
+                    />
                   ) : users_info.receive_request ? (
-                    <Button content="Accept Request" icon={<HowToRegIcon />} onClick={onSubmitAcceptRequest} />
+                    <Button
+                      content="Accept Request"
+                      icon={<HowToRegIcon />}
+                      onClick={onSubmitAcceptRequest}
+                    />
                   ) : (
-                    <Button content="Add Friend" icon={<PersonAddIcon />} onClick={onSubmitAddfriend} />
+                    <Button
+                      content="Add Friend"
+                      icon={<PersonAddIcon />}
+                      onClick={onSubmitAddfriend}
+                    />
                   )}
                 </Stack>
               )}
@@ -304,39 +321,27 @@ const Profile = (props: Ionic) => {
                   <TextField
                     autoFocus
                     margin="dense"
-                    id="name"
-                    label="User Name"
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    onChange={(e) =>
-                      setInfo((prev) => ({ ...prev, name: e.target.value }))
-                    }
-                  />
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="email"
-                    label="Email Address"
+                    id="bio"
+                    label="Bio"
                     type="email"
                     fullWidth
                     variant="standard"
                     onChange={(e) =>
-                      setInfo((prev) => ({ ...prev, email: e.target.value }))
+                      setInfo((prev) => ({ ...prev, bio: e.target.value }))
                     }
                   />
                   <TextField
                     autoFocus
                     margin="dense"
-                    id="phoneNumber"
-                    label="Phone Number"
+                    id="sex"
+                    label="Sex"
                     type="text"
                     fullWidth
                     variant="standard"
                     onChange={(e) =>
                       setInfo((prev) => ({
                         ...prev,
-                        phone_number: e.target.value,
+                        sex: e.target.value,
                       }))
                     }
                   />
@@ -361,7 +366,7 @@ const Profile = (props: Ionic) => {
                     fullWidth
                     variant="standard"
                     onChange={(e) =>
-                      setInfo((prev) => ({ ...prev, birthday: e.target.value }))
+                      setInfo((prev) => ({ ...prev, birth_date: e.target.value }))
                     }
                   />
                 </DialogContent>
@@ -376,7 +381,7 @@ const Profile = (props: Ionic) => {
             <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
               <h2 className="font-bold text-[1.1rem]">Intro</h2>
               <p className="text-center p-3">{users_info.bio || "..."}</p>
-              <Button className="w-full bg-gray-800" content="Edit Bio" />
+              <div className="mb-2 text-[0.9rem] flex items-center border-b-4  border-neutral-400"></div>
               <div className="py-2 text-[0.9rem] flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -392,7 +397,7 @@ const Profile = (props: Ionic) => {
                     d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <p className="mx-3">User name: {users_info?.name}</p>
+                <p className="mx-3">Name: {users_info?.name}</p>
               </div>
               <div className="py-2 text-[0.9rem] flex items-center">
                 <svg
@@ -410,6 +415,10 @@ const Profile = (props: Ionic) => {
                   />
                 </svg>
                 <p className="mx-3">Email: {users_info?.email}</p>
+              </div>
+              <div className="py-2 text-[0.9rem] flex items-center">
+                <Face5Icon className="w-6 h-6" />
+                <p className="mx-3">Sex: {users_info?.sex || "..."}</p>
               </div>
               <div className="py-2 text-[0.9rem] flex items-center">
                 <svg
@@ -471,7 +480,7 @@ export default memo(Profile);
 const INITIAL_VALUES_PROFILE: changeProfileInfo = {
   bio: "",
   sex: Sex.MALE,
-  birthday: "",
+  birth_date: "",
   address: "",
   avatar: "",
   cover_image: "",
