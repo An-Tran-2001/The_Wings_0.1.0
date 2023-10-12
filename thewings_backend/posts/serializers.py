@@ -40,18 +40,27 @@ class LikeSerializer(ModelSerializer):
         if not post: 
             existing_like_comment = Like.objects.filter(user=user, post__isnull=True, comment=comment).first()
             if existing_like_comment:
+                if status == "dislike":
+                    existing_like_comment.delete()
+                    return existing_like_comment
                 existing_like_comment.status = status
                 existing_like_comment.save()
                 return existing_like_comment
         if not comment:
             existing_like_post = Like.objects.filter(user=user, post=post, comment__isnull=True).first()
             if existing_like_post:
+                if status == "dislike":
+                    existing_like_post.delete()
+                    return existing_like_post
                 existing_like_post.status = status
                 existing_like_post.save()
                 return existing_like_post
             
         existing_like_comment = Like.objects.filter(user=user, post=post, comment=comment).first()
         if existing_like_comment:
+            if status == "dislike":
+                existing_like_comment.delete()
+                return existing_like_comment
             existing_like_comment.status = status
             existing_like_comment.save()
             return existing_like_comment

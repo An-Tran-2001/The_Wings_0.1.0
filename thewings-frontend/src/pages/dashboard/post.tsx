@@ -154,33 +154,44 @@ const Page = () => {
                 <div className="grid grid-cols-2 b-0 p-4">
                   <div className="col-span-1 text-center">
                     <div
-                      className="flex items-center justify-center space-x-2"
+                      className="flex items-center justify-center space-x-2 cursor-pointer"
                       onClick={() =>
                         handleLikePost({
-                          status: LikeStatus.LIKE,
+                          status: post?.likes?.data.find(
+                            (like) => like.user.id === user?.id,
+                          )
+                            ? LikeStatus.DISLIKE
+                            : LikeStatus.LIKE,
                           post: post?.id,
                         })
                       }
                     >
-                      {user.id && post?.likes?.data.some((info) => info.user.id === user.id) ? <ThumbUpIcon /> : <ThumbUpOffAltIcon />}
-                        {post?.likes?.data && post?.likes?.data.length > 0 ? (
-                          <AvatarGroup
-                            max={3}
-                            className="mx-2"
-                            style={{ fontSize: "10px" }}
-                          >
-                            {post?.likes?.data.map((info) => (
-                              <Avatar
-                                key={info.user.id}
-                                alt={info.user.name}
-                                src={"http://localhost:8000" + info.user.avatar}
-                                sx={{ width: 20, height: 20 }}
-                              />
-                            ))}
-                          </AvatarGroup>
-                        ) : (
-                          <></>
-                        )}
+                      {user.id &&
+                      post?.likes?.data.some(
+                        (info) => info.user.id === user.id,
+                      ) ? (
+                        <ThumbUpIcon />
+                      ) : (
+                        <ThumbUpOffAltIcon />
+                      )}
+                      {post?.likes?.data && post?.likes?.data.length > 0 ? (
+                        <AvatarGroup
+                          max={3}
+                          className="mx-2"
+                          style={{ fontSize: "10px" }}
+                        >
+                          {post?.likes?.data.map((info) => (
+                            <Avatar
+                              key={info.user.id}
+                              alt={info.user.name}
+                              src={"http://localhost:8000" + info.user.avatar}
+                              sx={{ width: 20, height: 20 }}
+                            />
+                          ))}
+                        </AvatarGroup>
+                      ) : (
+                        <></>
+                      )}
                       <p>Like {post?.likes?.count}</p>
                     </div>
                   </div>
@@ -245,15 +256,26 @@ const Page = () => {
                           </div>
                           <div className="flex flex-row border-t-2 py-2 border-neutral-400">
                             <div
-                              className="flex items-center flex-row justify-center space-x-2 mx-6"
+                              className="flex items-center flex-row justify-center space-x-2 mx-6 cursor-pointer"
                               onClick={() =>
                                 handleLikePost({
-                                  status: LikeStatus.LIKE,
-                                  comment: comment?.id, 
+                                  status: comment?.likes?.data.find(
+                                    (like) => like.user.id === user?.id,
+                                  )
+                                    ? LikeStatus.DISLIKE
+                                    : LikeStatus.LIKE,
+                                  comment: comment?.id,
                                 })
                               }
                             >
-                              {user.id && comment?.likes?.data.some((info) => info.user.id === user.id) ? <ThumbUpIcon fontSize="12px" /> : <ThumbUpOffAltIcon fontSize="12px" />}
+                              {user.id &&
+                              comment?.likes?.data.some(
+                                (info) => info.user.id === user.id,
+                              ) ? (
+                                <ThumbUpIcon fontSize="12px" />
+                              ) : (
+                                <ThumbUpOffAltIcon fontSize="12px" />
+                              )}
                               {comment?.likes?.data &&
                               comment?.likes?.data.length > 0 ? (
                                 <AvatarGroup max={2} className="mx-2">

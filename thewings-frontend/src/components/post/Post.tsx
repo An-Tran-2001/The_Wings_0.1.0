@@ -190,13 +190,13 @@ const Post = (props: NextLinkProps) => {
                   className="flex items-center justify-center space-x-2 cursor-pointer hover:text-primary"
                   onClick={() =>
                     handleLikePost({
-                      status: LikeStatus.LIKE,
+                      status: item.likes?.data.find((like) => like.user.id === user?.id) ? LikeStatus.DISLIKE : LikeStatus.LIKE, 
                       post: item.id,
                     })
                   }
                 >
-                  {user.id &&
-                  item.likes?.data.find((like) => like.user.id === user.id) ? (
+                  {user?.id &&
+                  item.likes?.data.find((like) => like.user.id === user?.id) ? (
                     <ThumbUpIcon />
                   ) : (
                     <ThumbUpOffAltIcon />
