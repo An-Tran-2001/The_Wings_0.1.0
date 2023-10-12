@@ -214,3 +214,17 @@ class CommentViewSet(APIView):
             status=status.HTTP_201_CREATED,
             data={"post": PostsSerializer(post, context={"request": request}).data}
         )
+        
+class CommentDetailViewSet(APIView):
+    permission_classes = [IsAuthenticated & IsAcessToken & IsAuthor]
+    renderer_classes = [UserRenderer]
+    serializer_class = CommentSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    lookup_field = 'id'
+    def delete(self, request, *args, **kwargs):
+        instance = Comment.objects.get(id=kwargs.get("id", None))
+        if instance.users == request.user:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "You don't have permission to delete this comment"})

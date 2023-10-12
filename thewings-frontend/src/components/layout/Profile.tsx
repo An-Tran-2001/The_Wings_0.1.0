@@ -366,7 +366,10 @@ const Profile = (props: Ionic) => {
                     fullWidth
                     variant="standard"
                     onChange={(e) =>
-                      setInfo((prev) => ({ ...prev, birth_date: e.target.value }))
+                      setInfo((prev) => ({
+                        ...prev,
+                        birth_date: e.target.value,
+                      }))
                     }
                   />
                 </DialogContent>
@@ -380,7 +383,9 @@ const Profile = (props: Ionic) => {
           <div className="border-b-1 border-white grid grid-cols-3 gap-4 mt-4">
             <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
               <h2 className="font-bold text-[1.1rem]">Intro</h2>
-              <p className="text-center p-3">{users_info.bio || "..."}</p>
+              <p className="text-center p-3">
+                {users_info && users_info.bio || "..."}
+              </p>
               <div className="mb-2 text-[0.9rem] flex items-center border-b-4  border-neutral-400"></div>
               <div className="py-2 text-[0.9rem] flex items-center">
                 <svg

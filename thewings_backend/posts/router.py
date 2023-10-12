@@ -17,4 +17,5 @@ app_name = "posts"
 urlpatterns = [
     path("like/", LikeViewSet.as_view()),
     path("comment/", CommentViewSet.as_view()),
+    path("comment/<int:id>/", CommentDetailViewSet.as_view(), name="comment-detail"),
 ] + router.urls

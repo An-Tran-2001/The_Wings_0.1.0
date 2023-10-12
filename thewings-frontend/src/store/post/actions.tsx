@@ -103,8 +103,8 @@ export const getOrtherPosts = createAsyncThunk(
 );
 
 export interface LikeSet {
-  status: LikeStatus.LIKE | LikeStatus.DISLIKE;
-  post: Post;
+  status: LikeStatus;
+  post?: Post;
   comment?: number;
 }
 
@@ -148,6 +148,23 @@ export const deletePost = createAsyncThunk(
       const endpoint = Endpoint.GET_OTHER_POSTS + id + "/delete_post/";
       const response = await client.delete(endpoint);
       return { id, response: response.data}
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === HttpStatusCode.Unauthorized) {
+        throw new Error(AN_ERROR_TRY_AGAIN);
+      }
+      throw error;
+    }
+  },
+);
+
+export const deleteComment = createAsyncThunk(
+  "post/deleteComment",
+  async (id: number) => {
+    try {
+      const endpoint = Endpoint.POST_COMMENT + id + "/";
+      const response = await client.delete(endpoint);
+      return { id, response: response.data };
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === HttpStatusCode.Unauthorized) {

@@ -32,9 +32,10 @@ const Nav = () => {
   const handleLogout = async () => {
     try {
       await onLogout();
-    } finally {
       handleClose();
       router.push(HOME_PATH);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -58,7 +59,6 @@ const Nav = () => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleOpenProfile}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Stack>

@@ -251,6 +251,12 @@ const Page = () => {
                                   )}
                                 </p>
                               </div>
+                              {comment.users.username === user?.username && (
+                                <CloseIcon
+                                  className="ml-auto text-[25px]"
+                                />
+                              )
+                              }
                             </div>
                             <p className="p-3">{comment.content}</p>
                           </div>
@@ -268,9 +274,9 @@ const Page = () => {
                                 })
                               }
                             >
-                              {user.id &&
-                              comment?.likes?.data.some(
-                                (info) => info.user.id === user.id,
+                              {user?.id &&
+                              comment?.likes?.data?.some(
+                                (info) => info.user.id === user?.id,
                               ) ? (
                                 <ThumbUpIcon fontSize="12px" />
                               ) : (
