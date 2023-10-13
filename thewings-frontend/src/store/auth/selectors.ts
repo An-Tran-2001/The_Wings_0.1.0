@@ -39,14 +39,14 @@ export const useAuth = () => {
 
   const onRegister = useCallback(
     async (info: RegisterInfo) => {
-      await dispatch(register(info));
+      return await dispatch(register(info)).unwrap();
     },
     [dispatch],
   );
 
   const onConfirmCode = useCallback(
     async (info: ConfirmInfo) => {
-      await dispatch(confirmCode(info));
+      return await dispatch(confirmCode(info)).unwrap();
     },
     [dispatch],
   );

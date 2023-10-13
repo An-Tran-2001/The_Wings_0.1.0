@@ -1,6 +1,6 @@
 import { client, Endpoint } from "api";
 import { AN_ERROR_TRY_AGAIN } from "constant";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
 import { Sex } from "constant/enum";
 
@@ -67,8 +67,10 @@ export const register = createAsyncThunk(
       if (response.status === HttpStatusCode.Created) {
         return response.data;
       }
+      
       throw AN_ERROR_TRY_AGAIN;
     } catch (error) {
+      console.log("abc");
       if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
         throw AN_ERROR_TRY_AGAIN;
       throw error;
