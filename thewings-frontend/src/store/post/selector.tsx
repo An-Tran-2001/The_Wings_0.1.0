@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
 import { CreateCommentPayload, LikeSet, createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike, deleteComment } from "./actions";
 import { PostStatus } from "constant/enum";
-import { Post,  viewPost} from "./reducer";
+import { Post,  popPost,  viewPost} from "./reducer";
 
 export interface CreatePostPayload {
     content: string;
@@ -99,6 +99,7 @@ export const usePost = () => {
         },
         [dispatch],
         );
+    const onPopPost = async (id: number) => await dispatch(popPost({id: id}));
     return {
         posts,
         post,
@@ -112,5 +113,6 @@ export const usePost = () => {
         onCommentPost,
         onDeletePost,
         onDeleteComment,
+        onPopPost,
     };
     };

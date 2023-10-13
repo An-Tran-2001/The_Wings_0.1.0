@@ -51,7 +51,7 @@ export interface Tags {
 }
 
 export interface Post {
-    id?: number;
+    id: number;
     url?: string;
     files?: FileStatus;
     content?: string;
@@ -87,6 +87,9 @@ const postSlice = createSlice({
     },
     viewPost: (state, action: PayloadAction<Post>) => {
       state.post = action.payload;
+    },
+    popPost: (state, action: PayloadAction<{id: number}>) => {
+      state.posts = state.posts.filter((post) => post.id !== action.payload.id);
     },
   },
   extraReducers: {
@@ -207,5 +210,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { resetState, viewPost } = postSlice.actions;
+export const { resetState, viewPost, popPost } = postSlice.actions;
 export default postSlice.reducer;

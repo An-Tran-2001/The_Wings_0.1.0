@@ -63,7 +63,7 @@ const Post = (props: NextLinkProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const { link_post, children, className, onClick } = props;
-  const { posts } = usePost();
+  const { posts , onPopPost} = usePost();
   const {onLikePost, onViewPost, onDeletePost} = usePost();
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
   const handleLikePost = async  (payload: LikeSet) => {
@@ -85,6 +85,9 @@ const Post = (props: NextLinkProps) => {
     setAnchorEl(null);
     setOpen(false);
   };
+  const handlePopPost = async (id: number) => {
+    await onPopPost(id);
+  }
   return (
     <Stack>
       {posts?.length > 0 ? (
@@ -157,7 +160,7 @@ const Post = (props: NextLinkProps) => {
                 ) : (
                   <></>
                 )}
-                <CloseIcon className="ml-auto text-[30px] mx-2" />
+                <CloseIcon className="ml-auto text-[30px] mx-2 cursor-pointer" onClick={() => handlePopPost(item.id)} />
               </div>
             </Stack>
             <Stack>
