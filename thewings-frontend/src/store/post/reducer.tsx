@@ -198,11 +198,7 @@ const postSlice = createSlice({
     [deleteComment.fulfilled.type]: (state, action: PayloadAction<Post>) => {
         state.postState = DataStatus.SUCCESS;
         const id_comment = action.payload.id
-        state.posts = state.posts.map((post) => {
-          post.comments?.data.filter((comment) => comment.id !== id_comment)
-        } 
-        );
-        state.post.comments = state.post.comments?.data.filter((comment) => comment.id !== id_comment)
+        state.post = {...state.post, comments: {count: state.post.comments?.count - 1, data: state.post.comments?.data.filter((comment) => comment.id !== id_comment)}}
     },
     [deleteComment.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;

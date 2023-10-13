@@ -21,7 +21,7 @@ import { useAuth } from "store/auth";
 
 const Page = () => {
     const { user } = useAuth();
-    const { post, posts, onCommentPost, onLikePost } = usePost();
+    const { post, posts, onCommentPost, onLikePost, onDeleteComment } = usePost();
     const [inputComment, setInputComment] = useState<CreateCommentPayload>(INITIAL_VALUES);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -47,6 +47,9 @@ const Page = () => {
     const handleCommentPost = async () => {
     await onCommentPost(inputComment);
     setInputComment(INITIAL_VALUES);
+    };
+    const handleDeleteComment = async (id: number) => {
+    await onDeleteComment(id);
     }
     useEffect(() => {
     if (post?.files?.data && post.files.data.length > 0) {
@@ -254,6 +257,7 @@ const Page = () => {
                               {comment.users.username === user?.username && (
                                 <CloseIcon
                                   className="ml-auto text-[25px]"
+                                  onClick={() => handleDeleteComment(comment.id)}
                                 />
                               )
                               }
