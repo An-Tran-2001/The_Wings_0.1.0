@@ -17,10 +17,11 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import PostStatusIcon from "components/PostStatusIcon";
-import { Menu, MenuItem } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Menu, MenuItem, TextField } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useAuth } from "store/auth";
+import UpdatePost from "./UpdatePost";
 
 export const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -62,12 +63,20 @@ const Post = (props: NextLinkProps) => {
   const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
+  const [openChangePost, setOpenChangePost] = useState(false);
   const { link_post, children, className, onClick } = props;
   const { posts , onPopPost} = usePost();
   const {onLikePost, onViewPost, onDeletePost} = usePost();
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
   const handleLikePost = async  (payload: LikeSet) => {
     await onLikePost(payload);
+  };
+  const handleClickOpenCP = () => {
+    setOpenChangePost(true);
+  };
+
+  const handleCloseCP = () => {
+    setOpenChangePost(false);
   };
   const handleViewPost = async (payload: Post) => {
     await onViewPost(payload);
@@ -151,7 +160,13 @@ const Post = (props: NextLinkProps) => {
                       anchorEl={anchorEl}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleClose(), handleClickOpenCP();
+                        }}
+                      >
+                        Edit
+                      </MenuItem>
                       <MenuItem onClick={() => handleDeletePost(item.id)}>
                         Delete
                       </MenuItem>
@@ -160,7 +175,11 @@ const Post = (props: NextLinkProps) => {
                 ) : (
                   <></>
                 )}
-                <CloseIcon className="ml-auto text-[30px] mx-2 cursor-pointer" onClick={() => handlePopPost(item.id)} />
+                <UpdatePost post={item} onOpen={openChangePost} handleClose={handleCloseCP} />
+                <CloseIcon
+                  className="ml-auto text-[30px] mx-2 cursor-pointer"
+                  onClick={() => handlePopPost(item.id)}
+                />
               </div>
             </Stack>
             <Stack>
@@ -193,7 +212,11 @@ const Post = (props: NextLinkProps) => {
                   className="flex items-center justify-center space-x-2 cursor-pointer hover:text-primary"
                   onClick={() =>
                     handleLikePost({
-                      status: item.likes?.data.find((like) => like.user.id === user?.id) ? LikeStatus.DISLIKE : LikeStatus.LIKE, 
+                      status: item.likes?.data.find(
+                        (like) => like.user.id === user?.id,
+                      )
+                        ? LikeStatus.DISLIKE
+                        : LikeStatus.LIKE,
                       post: item.id,
                     })
                   }

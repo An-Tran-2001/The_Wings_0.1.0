@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
-import { CreateCommentPayload, LikeSet, createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike, deleteComment } from "./actions";
+import { CreateCommentPayload, LikeSet, createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike, deleteComment, UpdatePost, changePost } from "./actions";
 import { PostStatus } from "constant/enum";
 import { Post,  popPost,  viewPost} from "./reducer";
 
@@ -100,6 +100,16 @@ export const usePost = () => {
         [dispatch],
         );
     const onPopPost = async (id: number) => await dispatch(popPost({id: id}));
+    const onUpdatePost = useCallback(
+        async (payload: UpdatePost) => {
+            try {
+            await dispatch(changePost(payload)).unwrap();
+            } catch (error) {
+            throw error;
+            }
+        },
+        [dispatch],
+        );
     return {
         posts,
         post,
@@ -114,5 +124,6 @@ export const usePost = () => {
         onDeletePost,
         onDeleteComment,
         onPopPost,
+        onUpdatePost,
     };
     };

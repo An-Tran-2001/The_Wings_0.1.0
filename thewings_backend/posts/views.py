@@ -156,7 +156,17 @@ class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
 
     def perform_update(self, serializer, *args, **kwargs):
         serializer.save(author=self.request.user)
+        
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        response.data = {"message": "Post updated successfully", "post": response.data}
+        return response
 
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        post = Post.objects.get(id=kwargs.get("id", None))
+        response.data = PostsSerializer(post, context={"request": request}).data
+        return response
     @action(detail=False, methods=["post"])
     def creat(self, request, *args, **kwargs):
         serializer = self.serializer_class(

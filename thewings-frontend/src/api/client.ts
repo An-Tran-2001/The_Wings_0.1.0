@@ -49,9 +49,9 @@ const client = {
     }
   },
 
-  patch: async (endpoint: string, body: {}) => {
+  patch: async (endpoint: string, body: {}, config?: AxiosRequestConfig) => {
     try {
-      const response = await axios.patch(endpoint, body);
+      const response = await axios.patch(endpoint, body, config);
       return response;
     } catch (error) {
       throw error;

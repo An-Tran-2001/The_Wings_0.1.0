@@ -21,6 +21,7 @@ const Endpoint = {
   ACCEPT_REQUEST: "friends/user_request_friend/",
   GET_FRIENDS: "friends/friends/",
   GET_REQUESTS: "friends/user_request_friend/",
+  CHANGE_POST: "posts/my-posts/",
 };
 
 export default Endpoint;

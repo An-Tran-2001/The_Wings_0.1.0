@@ -1,3 +1,4 @@
+from typing import Any
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import (
     ModelSerializer,
@@ -216,6 +217,14 @@ class CreatePostSerializer(Posts):
             for file in files:
                 File.objects.create(post=post, file=file).save()
         return post
+    def update(self, instance: Any, validated_data: Any) -> Any:
+        files = validated_data.pop("files", None)
+        instance = super().update(instance, validated_data)
+        if files:
+            instance.post_files.all().delete()
+            for file in files:
+                File.objects.create(post=instance, file=file).save()
+        return super().update(instance, validated_data)
 
 
 class DocsTagsSerializer(ModelSerializer):
