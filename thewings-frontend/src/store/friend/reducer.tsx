@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DataStatus } from "constant/enum";
 import { User } from "store/auth";
-import { getFriends, getRequests } from "./actions";
+import { blockUser, getBlockUser, getFriends, getRequests, unBlockUser } from "./actions";
 
 export interface getFriendResponse {
     id: number;
@@ -32,6 +32,10 @@ const initialState: friendState = {
     error: null,
 };
 
+interface responseBlock {
+  black_friend: User[];
+}
+
 const friendSlice = createSlice({
     name: "friend",
     initialState,
@@ -44,28 +48,81 @@ const friendSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getFriends.pending, (state) => {
-                state.friendState = DataStatus.LOADING;
-            })
-            .addCase(getFriends.fulfilled, (state, action: PayloadAction<getFriendResponse>) => {
-                state.friendState = DataStatus.SUCCESS;
-                state.friends = action.payload.friend;
-            })
-            .addCase(getFriends.rejected, (state, action) => {
-                state.friendState = DataStatus.FAILED;
-                state.error = action.payload as string;
-            })
-            .addCase(getRequests.pending, (state) => {
-                state.friendState = DataStatus.LOADING;
-            })
-            .addCase(getRequests.fulfilled, (state, action: PayloadAction<RequestResponse>) => {
-                state.friendState = DataStatus.SUCCESS;
-                state.request = action.payload.friend;
-            })
-            .addCase(getRequests.rejected, (state, action) => {
-                state.friendState = DataStatus.FAILED;
-                state.error = action.payload as string;
-            });
+          .addCase(getFriends.pending, (state) => {
+            state.friendState = DataStatus.LOADING;
+          })
+          .addCase(
+            getFriends.fulfilled,
+            (state, action: PayloadAction<getFriendResponse>) => {
+              state.friendState = DataStatus.SUCCESS;
+              state.friends = action.payload.friend;
+            },
+          )
+          .addCase(getFriends.rejected, (state, action) => {
+            state.friendState = DataStatus.FAILED;
+            state.error = action.payload as string;
+          })
+          .addCase(getRequests.pending, (state) => {
+            state.friendState = DataStatus.LOADING;
+          })
+          .addCase(
+            getRequests.fulfilled,
+            (state, action: PayloadAction<RequestResponse>) => {
+              state.friendState = DataStatus.SUCCESS;
+              state.request = action.payload.friend;
+            },
+          )
+          .addCase(getRequests.rejected, (state, action) => {
+            state.friendState = DataStatus.FAILED;
+            state.error = action.payload as string;
+          })
+          .addCase(blockUser.pending, (state) => {
+            state.friendState = DataStatus.LOADING;
+          })
+          .addCase(
+            blockUser.fulfilled,
+            (state, action: PayloadAction<User>) => {
+              state.friendState = DataStatus.SUCCESS;
+              state.block = [...state.block!, action.payload];
+              state.friends = state.friends.filter(
+                (item) => item.id !== action.payload.id,
+              );
+            },
+          )
+          .addCase(blockUser.rejected, (state, action) => {
+            state.friendState = DataStatus.FAILED;
+            state.error = action.payload as string;
+          })
+          .addCase(getBlockUser.pending, (state) => {
+            state.friendState = DataStatus.LOADING;
+          })
+          .addCase(
+            getBlockUser.fulfilled,
+            (state, action: PayloadAction<responseBlock>) => {
+              state.friendState = DataStatus.SUCCESS;
+              state.block = action.payload.black_friend;
+            },
+          )
+          .addCase(getBlockUser.rejected, (state, action) => {
+            state.friendState = DataStatus.FAILED;
+            state.error = action.payload as string;
+          })
+          .addCase(unBlockUser.pending, (state) => {
+            state.friendState = DataStatus.LOADING;
+          })
+          .addCase(
+            unBlockUser.fulfilled,
+            (state, action: PayloadAction<User>) => {
+              state.friendState = DataStatus.SUCCESS;
+              state.block = state.block?.filter(
+                (item) => item.id !== action.payload.id,
+              );
+            },
+          )
+          .addCase(unBlockUser.rejected, (state, action) => {
+            state.friendState = DataStatus.FAILED;
+            state.error = action.payload as string;
+          });
     },
 });
 

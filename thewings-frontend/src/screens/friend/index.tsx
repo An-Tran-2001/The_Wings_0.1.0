@@ -5,7 +5,7 @@ import { User } from "store/auth";
 import { getFriendRequestResponse } from "store/friend/reducer";
 
 const Friend = () => {
-  const { friends, request } = useFriend();
+  const { friends, request, block } = useFriend();
   return (
     <Stack
       flex={1}
@@ -15,6 +15,7 @@ const Friend = () => {
     >
       <FriendList title="Friends" data={friends} />
       <FriendList title="Friends Request" data={request} />
+      <FriendList title="Block" data={block} />
     </Stack>
   );
 };

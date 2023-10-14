@@ -284,7 +284,7 @@ const Profile = (props: Ionic) => {
                 />
               ) : (
                 <Stack flexDirection="row" className="space-x-3">
-                  <Button content="Message" icon={<MapsUgcIcon />} />
+                  {/* <Button content="Message" icon={<MapsUgcIcon />} /> */}
                   {users_info?.isfriend ? (
                     <Button
                       content="Unfriend"

@@ -127,12 +127,12 @@ class UserBlockFriendSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You can't add yourself")
         return attrs
 
-    @extend_schema_field(UserSerializer(many=True))
+    @extend_schema_field(OrtherUserSerializer(many=True))
     def get_black_friend(self, obj):
         query = User.objects.filter(
             id__in=obj.black_friends.all().values("black_friend")
         )
-        return UserSerializer(query, many=True, context=self.context).data
+        return OrtherUserSerializer(query, many=True, context=self.context).data
 
 
 class BlockUserSerializer(serializers.ModelSerializer):
@@ -146,6 +146,17 @@ class BlockUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        other_user = validated_data.get("black_friend", None)
+        user = self.context["request"].user
+        if Friend.objects.filter(
+            Q(Q(user=user) | Q(friend=user))
+            & Q(Q(user=other_user) | Q(friend=other_user))
+        ).exists():
+            friend_rl = Friend.objects.filter(
+                Q(Q(user=user) | Q(friend=user))
+                & Q(Q(user=other_user) | Q(friend=other_user))
+            ).first()
+            friend_rl.delete()
         return BlackFriend.objects.create(
             user=self.context["request"].user, **validated_data
         )

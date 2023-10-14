@@ -8,6 +8,8 @@ from thewings_backend.users.serializers import SearchUserSerializer
 from thewings_backend.users.api.serializers import UserSerializer, OrtherUserSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.db.models import Subquery, OuterRef
+from thewings_backend.friends.models import BlackFriend
 
 User = get_user_model()
 
@@ -24,11 +26,15 @@ class SearchUser(APIView):
         if serializer.is_valid():
             current_user = request.user
             key_name = serializer.data.get("key_name")
+            black_friends_subquery = BlackFriend.objects.filter(
+                black_friend=current_user.id
+            ).values('user')
+            filtered_users = User.objects.filter(
+                Q(name__icontains=key_name) & ~Q(id=current_user.id)
+            ).exclude(id__in=Subquery(black_friends_subquery))
             return Response(
                 UserSerializer(
-                    User.objects.filter(
-                        Q(name__icontains=key_name) & ~Q(id=current_user.id)
-                    ),
+                    filtered_users,
                     many=True,
                     context={"request": request},
                 ).data,

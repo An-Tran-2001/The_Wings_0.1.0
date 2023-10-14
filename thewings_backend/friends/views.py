@@ -78,7 +78,6 @@ class UserRequestFriendView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            print(serializer.data)
             other_user = get_object_or_404(User, id=request.data["friend_id"])
             return Response(OrtherUserSerializer(other_user, context={"request": request}).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -115,8 +114,9 @@ class BlockFriendView(APIView):
             data=request.data, context={"request": request}
         )
         if serializer.is_valid():
+            other_user = get_object_or_404(User, id=request.data["black_friend"])
             serializer.save()
-            return Response({"messenger": "success"}, status=status.HTTP_201_CREATED)
+            return Response(OrtherUserSerializer(other_user, context={"request": request}).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -127,7 +127,8 @@ class DeleteBlockView(APIView):
 
     def delete(self, request, id):
         request.user.black_friends.filter(user=request.user, black_friend=id).delete()
-        return Response({"messenger": "success"}, status=status.HTTP_200_OK)
+        orther_user = get_object_or_404(User, id=id)
+        return Response(OrtherUserSerializer(orther_user, context={"request": request}).data, status=status.HTTP_200_OK)
 
 
 friend_request_view = AddFriendView.as_view()

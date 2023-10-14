@@ -22,6 +22,9 @@ const Endpoint = {
   GET_FRIENDS: "friends/friends/",
   GET_REQUESTS: "friends/user_request_friend/",
   CHANGE_POST: "posts/my-posts/",
+  BLOCK_USER: "friends/block_friend/",
+  GET_BLOCK_USER: "friends/user_block_friend/",
+  UNBLOCK_USER: "friends/unblock_friend/",
 };
 
 export default Endpoint;

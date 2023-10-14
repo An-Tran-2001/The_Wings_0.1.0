@@ -4,15 +4,16 @@ import Friend from "screens/friend";
 import useFriend from "store/friend/selector";
 import useProfiles from "store/profile/selector";
 const Page = () => {
-    const { onGetFriends, onGetRequests } = useFriend();
+    const { onGetFriends, onGetRequests , onGetBlockUser} = useFriend();
     const {user} = useProfiles();
     useEffect(() => {
         const fetchData = async () => {
             await onGetFriends();
             await onGetRequests();
+            await onGetBlockUser();
         };
         fetchData();
-    }, [onGetFriends, user, onGetRequests]);
+    }, [onGetFriends, user, onGetRequests, onGetBlockUser]);
     return <Friend />
 };
 export default Page;

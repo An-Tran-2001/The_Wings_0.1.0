@@ -1,11 +1,29 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { acceptRequest, acceptRequestPayload, addFriend, addfriendPayload, getFriends, getRequests, removeFriend } from "./actions";
+import {
+  acceptRequest,
+  acceptRequestPayload,
+  addFriend,
+  addfriendPayload,
+  blockUser,
+  blockUserPayload,
+  getBlockUser,
+  getFriends,
+  getRequests,
+  removeFriend,
+  unBlockUser,
+} from "./actions";
 
 const useFriend = () => {
   const dispatch = useAppDispatch();
   const { user, status, error } = useAppSelector((state) => state.profile);
-  const { friends, friendState, error: friendError, request } = useAppSelector((state) => state.friends);
+  const {
+    friends,
+    friendState,
+    error: friendError,
+    request,
+    block,
+  } = useAppSelector((state) => state.friends);
 
   const onAddFriend = useCallback(
     async (paylaod: addfriendPayload) => {
@@ -39,33 +57,55 @@ const useFriend = () => {
     [dispatch],
   );
 
-  const onGetFriends = useCallback(
-    async () => {
+  const onGetFriends = useCallback(async () => {
+    try {
+      await dispatch(getFriends()).unwrap();
+    } catch (error) {
+      throw error;
+    }
+  }, [dispatch]);
+
+  const onGetRequests = useCallback(async () => {
+    try {
+      await dispatch(getRequests()).unwrap();
+    } catch (error) {
+      throw error;
+    }
+  }, [dispatch]);
+  const onBlockUser = useCallback(
+    async (payload: blockUserPayload) => {
       try {
-        await dispatch(getFriends()).unwrap();
+        return await dispatch(blockUser(payload)).unwrap();
       } catch (error) {
         throw error;
       }
     },
     [dispatch],
   );
+  const onGetBlockUser = useCallback(async () => {
+    try {
+      return await dispatch(getBlockUser()).unwrap();
+    } catch (error) {
+      throw error;
+    }
+  }, [dispatch]);
 
-  const onGetRequests = useCallback(
-    async () => {
+  const onunBlockUser = useCallback(
+    async (id: number) => {
       try {
-        await dispatch(getRequests()).unwrap();
+        await dispatch(unBlockUser(id)).unwrap();
       } catch (error) {
         throw error;
       }
     },
     [dispatch],
   );
-
   return {
     user,
     status,
     error,
     friends,
+    block,
     friendState,
     friendError,
     request,
@@ -74,6 +114,9 @@ const useFriend = () => {
     onAcceptRequest,
     onGetFriends,
     onGetRequests,
+    onBlockUser,
+    onGetBlockUser,
+    onunBlockUser,
   };
 };
 

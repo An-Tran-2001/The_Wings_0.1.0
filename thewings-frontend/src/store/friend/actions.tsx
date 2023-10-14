@@ -97,3 +97,57 @@ export const getRequests = createAsyncThunk(
         }
     },
     );
+
+export interface blockUserPayload {
+    black_friend: number;
+}
+export const blockUser = createAsyncThunk(
+    "friend/blockUser",
+    async (payload: blockUserPayload) => {
+        try {
+        const response = await client.post(Endpoint.BLOCK_USER, payload);
+        if (response.status === HttpStatusCode.Created) {
+            return response.data;
+        }
+        throw AN_ERROR_TRY_AGAIN;
+        } catch (error) {
+        if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+            throw AN_ERROR_TRY_AGAIN;
+        throw error;
+        }
+    },
+    );
+
+export const getBlockUser = createAsyncThunk(
+    "friend/getBlockUser",
+    async () => {
+        try {
+        const response = await client.get(Endpoint.GET_BLOCK_USER);
+        if (response.status === HttpStatusCode.Ok) {
+            return response.data;
+        }
+        throw AN_ERROR_TRY_AGAIN;
+        } catch (error) {
+        if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+            throw AN_ERROR_TRY_AGAIN;
+        throw error;
+        }
+    },
+    );
+
+export const unBlockUser = createAsyncThunk(
+    "friend/unBlockUser",
+    async (id: number) => {
+        try {
+        const response = await client.delete(Endpoint.UNBLOCK_USER + id);
+        if (response.status === HttpStatusCode.Ok) {
+            return response.data;
+        }
+        throw AN_ERROR_TRY_AGAIN;
+        } catch (error) {
+        if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
+            throw AN_ERROR_TRY_AGAIN;
+        throw error;
+        }
+    },
+    );

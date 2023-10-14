@@ -1,15 +1,16 @@
 import { Avatar, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Button from "components/Button";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { User } from "store/auth";
 import useFriend from "store/friend/selector";
 import { deepOrange } from "@mui/material/colors";
 import { useRouter } from "next/router";
 import useProfiles from "store/profile/selector";
+import {  blockUserPayload } from "store/friend/actions";
 
 const FriendCard = (user: User) => {
-  const {onRemoveFriend, onAcceptRequest} = useFriend();
+  const {onRemoveFriend, onAcceptRequest, onBlockUser, onunBlockUser} = useFriend();
   const { onGetProfile } = useProfiles();
   const router = useRouter();
   const onSubmitRemoveFriend = async () => {
@@ -26,6 +27,21 @@ const FriendCard = (user: User) => {
       console.log(err);
     }
   };
+  const onSubmitBlockUser = async () => {
+    try {
+      await onBlockUser({black_friend: user.id})
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onSubmitUnBlockUser = async () => {
+    try {
+      await onunBlockUser(user.id)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const nextOrtherProfile = async () => {
     try {
       await onGetProfile(user.username);
@@ -63,7 +79,15 @@ const FriendCard = (user: User) => {
             }}
           />
         ) : (
-          <Avatar sx={{ bgcolor: deepOrange[500] , width: 250, height: 250, fontSize: 80}} variant="square">
+          <Avatar
+            sx={{
+              bgcolor: deepOrange[500],
+              width: 250,
+              height: 250,
+              fontSize: 80,
+            }}
+            variant="square"
+          >
             {user.name[0]}
           </Avatar>
         )}
@@ -94,9 +118,27 @@ const FriendCard = (user: User) => {
             onClick={onSubmitRemoveFriend}
           />
         ) : null}
+        {user.isfriend ? (
+          <Button
+            content="Block"
+            style={{ backgroundColor: "#F87171", color: "#fff" }}
+            onClick={onSubmitBlockUser}
+          />
+        ) : null}
+        {!(user.isfriend || user.receive_request || user.receive_request) && (
+          <Button
+            content="Unblock"
+            style={{ backgroundColor: "#60A5FA", color: "#fff" }}
+            onClick={onSubmitUnBlockUser}
+          />
+        )}
       </Stack>
     </Stack>
   );
 };
 
 export default memo(FriendCard);
+
+const INIT_VALUES_BLOCK_USER = {
+  black_friend: 0,
+};
