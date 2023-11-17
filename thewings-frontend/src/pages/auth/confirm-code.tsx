@@ -32,19 +32,6 @@ const Page = () => {
     event.preventDefault();
     setCode(event.currentTarget.value);
   };
-  useEffect(() => {
-    const submit = async () => {
-    if (code.length === 6) {
-      try {
-        await onConfirmCode({ email, code });
-        router.push(LOGIN_PATH);
-      } catch (error) {
-        console.log(error);
-        setIsError(AN_ERROR_TRY_AGAIN);
-      } 
-    }}
-    submit();
-  }, [code]);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
