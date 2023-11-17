@@ -66,7 +66,7 @@ const Search = (props: PropsSearch) => {
         <IconButton>
           <SearchIcon className="text-white" />
         </IconButton>
-        <Stack padding={1} spacing={1} className="absolute top-[40px] w-full">
+        {value ? <Stack className="absolute top-[45px] w-full bg-slate-600 z-30 rounded-xl flex justify-center items-center max-h-[300px] overflow-scroll pt-10">
           {value &&
             users?.map((user) => (
               <Stack
@@ -74,7 +74,7 @@ const Search = (props: PropsSearch) => {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
-                className="w-full h-[40px] bg-slate-300 p-3 rounded-xl z-20"
+                className="w-[98%] h-[40px] mt-2 bg-slate-300 p-3 rounded-xl z-30 cursor-pointer hover:bg-slate-400 transition duration-300"
               >
                 <Stack
                   onClick={() => onClick(user)}
@@ -111,7 +111,7 @@ const Search = (props: PropsSearch) => {
                 />
               </Stack>
             ))}
-        </Stack>
+        </Stack> : null}
       </Stack>
     </Stack>
   );

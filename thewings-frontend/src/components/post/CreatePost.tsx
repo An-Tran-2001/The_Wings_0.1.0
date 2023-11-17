@@ -57,7 +57,7 @@ export function SimpleDialog(props: SimpleDialogProps) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Tags Users</DialogTitle>
-      <List sx={{ p: 2 }}>
+      <List sx={{ p: 2 }} className="h-[380px] w-[500px] overflow-hidden">
         <Search onClick={handleListItemClick} />
       </List>
     </Dialog>

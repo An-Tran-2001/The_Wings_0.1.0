@@ -175,7 +175,11 @@ const Post = (props: NextLinkProps) => {
                 ) : (
                   <></>
                 )}
-                <UpdatePost post={item} onOpen={openChangePost} handleClose={handleCloseCP} />
+                <UpdatePost
+                  post={item}
+                  onOpen={openChangePost}
+                  handleClose={handleCloseCP}
+                />
                 <CloseIcon
                   className="ml-auto text-[30px] mx-2 cursor-pointer"
                   onClick={() => handlePopPost(item.id)}
@@ -193,15 +197,18 @@ const Post = (props: NextLinkProps) => {
                   alt={item.files.data[0].name || "image"}
                 />
               ) : (
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4 px-1">
                   {item.files?.data.map((file) => (
-                    <Image
-                      key={file.id}
-                      src={file.file}
-                      width={300}
-                      height={300}
-                      alt={file.name || "image"}
-                    />
+                    <Stack className="col-span-1" key={file.id}>
+                      <Image
+                        key={file.id}
+                        src={file.file}
+                        width={600}
+                        height={600}
+                        alt={file.name || "image"}
+                        className="rounded-xl h-full"
+                      />
+                    </Stack>
                   ))}
                 </div>
               )}

@@ -239,7 +239,7 @@ const Page = () => {
             className="h-full w-full bg-neutral-800  items-end relative rounded-2xl"
             onSubmit={(e) => SubmitMessage(e)}
           >
-            <div className="bg-zinc-900 w-full absolute top-0 p-3 overflow-auto flex flex-row z-20">
+            <div className="bg-zinc-900 w-full absolute top-0 p-3 overflow-auto flex flex-row z-10">
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{
