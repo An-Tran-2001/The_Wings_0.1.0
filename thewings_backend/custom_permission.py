@@ -40,7 +40,7 @@ class PostStatus(permissions.BasePermission):
     def has_permission(self, request, view):
         if hasattr(view, 'lookup_field') and (post_id := view.kwargs.get(view.lookup_field)):
             post = Post.objects.get(id=post_id)
-            return post.author == request.use
+            return post.author == request.user
         if hasattr(request.data, 'post') and (post_id := request.data.get("post")):
             post = Post.objects.get(id=post_id)
         elif post_id := request.data.get("posts"):
@@ -48,10 +48,12 @@ class PostStatus(permissions.BasePermission):
         if post.status == "public":
             return True
         elif post.status == "private":
-            friend = Friend.objects.filter(
+            friend_pairs = Friend.objects.filter(
                 Q(Q(user=post.author) | Q(friend=post.author) & Q(is_accepted=True))
-            ).values("user", "friend")
-            return request.user in friend
+            ).values_list("user", "friend")
+            for user, friend in friend_pairs:
+                if request.user.id in [user, friend]:
+                    return True
         elif post.status == "private_only":
             return False
         return True 

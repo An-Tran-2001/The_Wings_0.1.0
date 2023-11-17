@@ -46,7 +46,7 @@ export const useAuth = () => {
 
   const onConfirmCode = useCallback(
     async (info: ConfirmInfo) => {
-      await dispatch(confirmCode(info)).unwrap();
+      return await dispatch(confirmCode(info)).unwrap();
     },
     [dispatch],
   );

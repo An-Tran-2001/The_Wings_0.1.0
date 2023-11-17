@@ -97,7 +97,7 @@ export const confirmCode = createAsyncThunk(
   async (info: ConfirmInfo) => {
     try {
       const response = await client.post(Endpoint.CONFIRM_CODE, info);
-      if (response.status === HttpStatusCode.Ok) {
+      if (response.status === HttpStatusCode.Created) {
         return response.data;
       }
       throw AN_ERROR_TRY_AGAIN;

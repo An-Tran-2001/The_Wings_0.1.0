@@ -11,6 +11,7 @@ def get_all_post_docs() -> extend_schema:
         description="Get all posts",
         request=PostsSerializer,
         responses={
+            
             200: {
                 "type": "object",
                 "properties": {

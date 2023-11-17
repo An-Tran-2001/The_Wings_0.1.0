@@ -23,6 +23,8 @@ from django.db.models import Q
 from thewings_backend.docs.posts import get_all_post_docs
 from drf_spectacular.utils import extend_schema
 from thewings_backend.friends.models import Friend
+from thewings_backend.paginate import StandardResultsSetPagination
+
 
 User = get_user_model()
 
@@ -35,7 +37,8 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated & IsAcessToken]
     renderer_classes = [UserRenderer]
-
+    pagination_class = StandardResultsSetPagination
+    
     def get_queryset(self, *args, **kwargs):
         assert isinstance(self.request.user.id, int)
         if self.action == "my_post_all":
@@ -87,7 +90,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         return super().retrieve(request, *args)
 
     @get_all_post_docs()
-    @action(detail=False)
+    @action(detail=False, pagination_class=StandardResultsSetPagination, methods=["get"])
     def my_post_all(self, request):
         serializer = self.serializer_class(
             self.get_queryset(), many=True, context={"request": request}

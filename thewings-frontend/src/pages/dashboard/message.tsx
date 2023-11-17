@@ -87,7 +87,7 @@ const Page = () => {
   const url = `${SOCKET_URL}messaging/${
     getMessages.conversation
       ? getMessages.conversation
-      : conversations?.results[0].name
+      : conversations?.results[0] ? conversations?.results[0].name : ""
   }/?token=${token || ""}`;
 
   
