@@ -132,16 +132,14 @@ const CreatePost = (props: Status) => {
   return (
     <div className="flex p-3 bg-neutral-900 rounded-lg">
       {user?.avatar ? (
-        <Image
+        <Avatar
+          sx={{ width: 45, height: 45 }}
+          className="absolute inset-0"
           src={"http://localhost:8000" + user?.avatar}
           alt={user.name}
-          width={50}
-          height={50}
-          style={{ objectFit: "cover", borderRadius: "50%", height: "100%" }}
-          className="max-w-[60px] max-h-[60px]"
         />
       ) : (
-        <Avatar sx={{ width: 40, height: 40 }} className="absolute inset-0" />
+        <Avatar sx={{ width: 45, height: 45 }} className="absolute inset-0" />
       )}
       <Button
         className="text-gray-300 font-normal w-full px-3 py-2 rounded-3xl  bg-gray-800"
@@ -177,17 +175,11 @@ const CreatePost = (props: Status) => {
         <DialogContent dividers>
           <Typography className="flex">
             {user?.avatar ? (
-              <Image
+              <Avatar
                 src={"http://localhost:8000" + user?.avatar}
                 alt={user.name}
-                width={70}
-                height={70}
-                style={{
-                  objectFit: "cover",
-                  borderRadius: "50%",
-                  height: "100%",
-                  marginRight: "10px",
-                }}
+                sx={{ width: 70, height: 70 }}
+                className="mx-2"
               />
             ) : (
               <Avatar

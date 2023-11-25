@@ -25,6 +25,7 @@ const Endpoint = {
   BLOCK_USER: "friends/block_friend/",
   GET_BLOCK_USER: "friends/user_block_friend/",
   UNBLOCK_USER: "friends/unblock_friend/",
+  MY_PICS: "api/pics/",
 };
 
 export default Endpoint;

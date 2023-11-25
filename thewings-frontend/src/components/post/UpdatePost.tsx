@@ -69,19 +69,13 @@ const UpdatePost = ({
     <Dialog open={onOpen} onClose={handleClose}>
       <DialogTitle>Change Post</DialogTitle>
       <DialogContent dividers>
-        <Typography className="flex">
+        <Typography className="flex items-center py-2">
           {post.author?.avatar ? (
-            <Image
+            <Avatar
               src={"http://localhost:8000" + post.author?.avatar}
               alt={post.author?.name}
-              width={70}
-              height={70}
-              style={{
-                objectFit: "cover",
-                borderRadius: "50%",
-                height: "100%",
-                marginRight: "10px",
-              }}
+              sx={{ width: 65, height: 65 }}
+              className="absolute inset-0 mx-2"
             />
           ) : (
             <Avatar

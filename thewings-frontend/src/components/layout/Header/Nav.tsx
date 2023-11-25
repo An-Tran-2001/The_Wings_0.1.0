@@ -48,9 +48,19 @@ const Nav = () => {
         <SettingsIcon className="text-white" />
       </IconButton>
       {user?.avatar ? (
-        <Image onClick={handleMenuClick} src={"http://localhost:8000" + user?.avatar} alt="123" width={50} height={50} style={{ objectFit: "cover", borderRadius: "50%", height: "100%" }} />
+        <Avatar
+          onClick={handleMenuClick}
+          sx={{ width: 45, height: 45 }}
+          className="absolute inset-0"
+          src={"http://localhost:8000" + user?.avatar}
+          alt="123"
+        />
       ) : (
-        <Avatar onClick={handleMenuClick} sx={{ width: 40, height: 40 }} className="absolute inset-0" />
+        <Avatar
+          onClick={handleMenuClick}
+          sx={{ width: 45, height: 45 }}
+          className="absolute inset-0"
+        />
       )}
       <Menu
         open={open}

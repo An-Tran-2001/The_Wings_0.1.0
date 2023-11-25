@@ -24,12 +24,12 @@ from thewings_backend.docs.posts import get_all_post_docs
 from drf_spectacular.utils import extend_schema
 from thewings_backend.friends.models import Friend
 from thewings_backend.paginate import StandardResultsSetPagination
+from rest_framework.pagination import PageNumberPagination
 
 
 User = get_user_model()
 
 # Create your views here.
-
 
 class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = PostsSerializer
@@ -97,7 +97,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
-    @action(detail=False, methods=["get"], url_path="(?P<username>[^/.]+)")
+    @action(detail=False, methods=["get"], url_path="(?P<username>[^/.]+)", pagination_class=StandardResultsSetPagination)
     def your_post(self, request, *args, **kwargs):
         user_id = kwargs.get("username", None)
         if not User.objects.filter(username=user_id).exists():
@@ -122,7 +122,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
     
-    @action(detail=False, methods=["get"])
+    @action(detail=False, methods=["get"], pagination_class=StandardResultsSetPagination)
     def all(self, request, *args, **kwargs):
         friends = Friend.objects.filter(Q(Q(user=self.request.user) | Q(friend=self.request.user)) & Q(is_accepted=True)).values("user", "friend")
         friend_ids = set(friend['user'] for friend in friends) | set(friend['friend'] for friend in friends)

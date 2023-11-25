@@ -23,10 +23,13 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import useFriend from "store/friend/selector";
 import Face5Icon from "@mui/icons-material/Face5";
+import CardImage from "components/CardImage";
+import { Pic } from "store/mypics/reducer";
 
 export interface Ionic {
   users_info: User;
   onSubmit?: () => void;
+  review_pics?: Pic[];
 }
 
 export const FlipCameraIosIconCustom = () => {
@@ -54,10 +57,11 @@ const Profile = (props: Ionic) => {
   };
   const { user, onChangeProfile } = useAuth();
   const { onAddFriend, onRemoveFriend, onAcceptRequest } = useFriend();
-  const { users_info, onSubmit } = props;
+  const { users_info, onSubmit, review_pics } = props;
   const [info, setInfo] = useState<changeProfileInfo>(INITIAL_VALUES_PROFILE);
   const [ImageCoverPreview, setImageCoverPreview] = useState(null);
   const [ImageAvatarPreview, setImageAvatarPreview] = useState(null);
+  console.log(review_pics);
   const handleImageCoverChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -108,7 +112,7 @@ const Profile = (props: Ionic) => {
   return (
     <div className="flex justify-center items-center">
       <div className="container">
-        <header className="">
+        <Stack>
           <div className="relative h-96 bg-transparent rounded m-3">
             {user?.id === users_info?.id ? (
               users_info?.cover_image ? (
@@ -381,10 +385,10 @@ const Profile = (props: Ionic) => {
             </div>
           </div>
           <div className="border-b-1 border-white grid grid-cols-3 gap-4 mt-4">
-            <div className="text-white bg-neutral-900  p-3 rounded-lg box-border">
+            <div className="text-white bg-neutral-900  px-3 py-4 rounded-lg box-border h-fit">
               <h2 className="font-bold text-[1.1rem]">Intro</h2>
               <p className="text-center p-3">
-                {users_info && users_info.bio || "..."}
+                {(users_info && users_info.bio) || "..."}
               </p>
               <div className="mb-2 text-[0.9rem] flex items-center border-b-4  border-neutral-400"></div>
               <div className="py-2 text-[0.9rem] flex items-center">
@@ -466,6 +470,25 @@ const Profile = (props: Ionic) => {
                   Locations: {users_info?.address || "..."}
                 </p>
               </div>
+              <Stack>
+                <div className="flex justify-between items-center py-3">
+                  <h2 className="font-bold text-[1.1rem]">Recent Image</h2>
+                  <Link href={MESSAGE_PATH}>
+                  See all
+                  </Link>
+                </div>
+                <div className="grid grid-cols-3 gap-4 my-3">
+                  {
+                    review_pics?.map((pic) => (
+                      <div className="col-span-1 rounded-xl overflow-hidden" key={pic?.id}>
+                        <CardImage
+                          src={pic?.file}
+                        />
+                      </div>
+                    ))
+                  }
+                </div>
+              </Stack>
             </div>
             <div className="col-span-2">
               <CreatePost onPosts={onSubmit} />
@@ -474,7 +497,7 @@ const Profile = (props: Ionic) => {
               </Stack>
             </div>
           </div>
-        </header>
+        </Stack>
       </div>
     </div>
   );

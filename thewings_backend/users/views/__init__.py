@@ -5,3 +5,4 @@ from .forgot_password import *
 from .logout import *
 from .profile import *
 from .search import *
+from .allpics import *

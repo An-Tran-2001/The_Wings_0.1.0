@@ -61,46 +61,81 @@ type NextLinkProps = {
 
 const Post = (props: NextLinkProps) => {
   const { user } = useAuth();
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [open, setOpen] = useState(false);
   const [openChangePost, setOpenChangePost] = useState(false);
+  const [postChange, setPostChange] = useState<Post>(null);
   const { link_post, children, className, onClick } = props;
   const { posts , onPopPost} = usePost();
   const {onLikePost, onViewPost, onDeletePost} = usePost();
+
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
+  const [openStates, setOpenStates] = useState<boolean[]>(() =>
+    Array.isArray(posts) ? posts.map(() => false) : [],
+  );
+  const [anchorElStates, setAnchorElStates] = useState<(HTMLElement | null)[]>(
+    () => (Array.isArray(posts) ? posts.map(() => null) : []),
+  );
   const handleLikePost = async  (payload: LikeSet) => {
     await onLikePost(payload);
   };
-  const handleClickOpenCP = () => {
+   const handleClickOpenCP = (index: number) => {
+     setOpenStates((prevStates) =>
+       prevStates.map((state, i) => (i === index ? true : state)),
+     );
+   };
+
+  const handleSetPostChange = (post: Post) => {
+    console.log(post);
+    setPostChange(post);
     setOpenChangePost(true);
+  }
+
+  const handleCloseCP = (index: number) => {
+    setOpenStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? false : state)),
+    );
   };
 
-  const handleCloseCP = () => {
+  const handleCloseAll = () => {
+    setOpenStates((prevStates) => prevStates.map(() => false));
     setOpenChangePost(false);
-  };
-  const handleViewPost = async (payload: Post) => {
+  }
+
+  const handleViewPost = async (payload: Post) => { 
     await onViewPost(payload);
   }
   const handleDeletePost = async (id: number) => {
     handleClose();
     await onDeletePost(id);
   }
-  const handleMenuClick = (event: MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
-    setOpen(!open);
-  };
+   const handleMenuClick = (
+     event: MouseEvent<HTMLDivElement>,
+     index: number,
+   ) => {
+     setAnchorElStates((prevStates) =>
+       prevStates.map((state, i) =>
+         i === index ? event.currentTarget : state,
+       ),
+     );
+     setOpenStates((prevStates) =>
+       prevStates.map((state, i) => (i === index ? !state : state)),
+     );
+   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-    setOpen(false);
-  };
+   const handleClose = (index: number) => {
+     setAnchorElStates((prevStates) =>
+       prevStates.map((state, i) => (i === index ? null : state)),
+     );
+     setOpenStates((prevStates) =>
+       prevStates.map((state, i) => (i === index ? false : state)),
+     );
+   };
   const handlePopPost = async (id: number) => {
     await onPopPost(id);
   }
   return (
     <Stack>
       {posts?.length > 0 ? (
-        posts.map((item) => (
+        posts.map((item, index) => (
           <Stack
             key={item.id}
             flex="1"
@@ -149,44 +184,49 @@ const Post = (props: NextLinkProps) => {
               </Stack>
               <div className="right-0 flex flex-row">
                 {item.author?.username === user?.username ? (
-                  <div>
+                  <Stack direction="row">
                     <MoreHorizIcon
-                      onClick={handleMenuClick}
-                      className="ml-auto text-[30px] mx-2"
+                      onClick={(event) => handleMenuClick(event, index)}
+                      className="ml-auto text-[30px] mx-2 cursor-pointer"
+                      sx={{ position: "relative" }}
                     />
                     <Menu
-                      open={open}
-                      id="profile-menu"
-                      anchorEl={anchorEl}
-                      onClose={handleClose}
+                      open={openStates[index]}
+                      id={`profile-menu-${item.id}`}
+                      anchorEl={anchorElStates[index]}
+                      onClose={() => handleClose(index)}
+                      sx={{ position: "absolute" }}
                     >
                       <MenuItem
                         onClick={() => {
-                          handleClose(), handleClickOpenCP();
+                          handleClose(index);
+                          handleClickOpenCP(index);
+                          handleSetPostChange(item);
                         }}
                       >
                         Edit
                       </MenuItem>
-                      <MenuItem onClick={() => handleDeletePost(item.id)}>
+                      <MenuItem
+                        onClick={() => {
+                          handleDeletePost(item.id);
+                          handleClose(index);
+                          handlePopPost(item.id);
+                        }}
+                      >
                         Delete
                       </MenuItem>
                     </Menu>
-                  </div>
+                  </Stack>
                 ) : (
                   <></>
                 )}
-                <UpdatePost
-                  post={item}
-                  onOpen={openChangePost}
-                  handleClose={handleCloseCP}
-                />
                 <CloseIcon
                   className="ml-auto text-[30px] mx-2 cursor-pointer"
                   onClick={() => handlePopPost(item.id)}
                 />
               </div>
             </Stack>
-            <Stack>
+            <Stack className="max-h-[650px] overflow-hidden">
               <p className="px-3 py-1">{item.content}</p>
               {item.files?.data.length === 1 ? (
                 <Image
@@ -264,6 +304,18 @@ const Post = (props: NextLinkProps) => {
               </div>
             </div>
           </Stack>
+        ))
+      ) : (
+        <></>
+      )}
+      {postChange ? (
+        (console.log(postChange),
+        (
+          <UpdatePost
+            post={postChange}
+            onOpen={openChangePost}
+            handleClose={handleCloseAll}
+          />
         ))
       ) : (
         <></>
