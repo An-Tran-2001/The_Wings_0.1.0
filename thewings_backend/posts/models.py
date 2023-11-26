@@ -11,13 +11,25 @@ from django.db.models import (
     OneToOneField,
     CASCADE,
     ManyToOneRel,
+    Manager,
+    Q,
 )
 from django.contrib.auth import get_user_model
+from thewings_backend.friends.models import Friend
 import uuid
 
 # Create your models here.
 User = get_user_model()
 
+
+class FileManager(Manager):
+    def get_files(self, user1, user2):
+        if Friend.objects.are_friends(user1, user2):
+            return self.filter(
+                post__author=user2,
+                post__status__in=["public", "private"],
+            ).order_by("-created_at")
+        return self.filter(ost__author=user2, post__status="public").order_by("-created_at")
 
 class File(Model):
     post = ForeignKey("Post", on_delete=CASCADE, related_name="post_files")
@@ -26,12 +38,21 @@ class File(Model):
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
 
+    objects = FileManager()
     def __str__(self) -> str:
         return super().__str__()
 
     class Meta:
         ordering = ("-created_at",)
 
+class PostManager(Manager):
+    def get_yourposts(self, user1, user2):
+        if Friend.objects.are_friends(user1, user2):
+            return self.filter(
+                author=user2,
+                status__in=["public", "private"],
+            ).order_by("-created_at")
+        return self.filter(author=user2, status="public").order_by("-created_at")
 
 class Post(Model):
     STATUS = (
@@ -50,7 +71,9 @@ class Post(Model):
     )
     created_at = DateTimeField(auto_now_add=True)
     status = CharField(max_length=20, choices=STATUS, default="public")
-
+    objects = PostManager()
+    
+    
     def __str__(self) -> str:
         return super().__str__()
 

@@ -10,6 +10,7 @@ from thewings_backend.users.views import (
     user_logout_view,
     search_user_view,
     get_user_view,
+    YourPics
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path("logout/", view=user_logout_view, name="logout"),
     path("search/", view=search_user_view, name="search"),
     path("get/<str:username>/", view=get_user_view, name="get"),
+    path("pics/<str:username>/", view=YourPics.as_view(), name="pics"),
 ]

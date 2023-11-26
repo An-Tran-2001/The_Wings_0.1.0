@@ -23,11 +23,16 @@ class FriendManager(Manager):
         ).exists()
         
     def are_send_requested(self, user1, user2):
-        print("here ư")
         return self.filter(user=user1.id, friend=user2.id, is_accepted=False).exists()
     
     def are_receive_requested(self, user1, user2):
         return self.filter(user=user2.id, friend=user1.id, is_accepted=False).exists()
+    
+    def is_blocked(self, user1, user2):
+        return self.filter(user=user1.id, black_friend=user2.id).exists()
+    
+    def is_blocked_by(self, user1, user2):
+        return self.filter(user=user2.id, black_friend=user1.id).exists()
 
 
 class Friend(Model):

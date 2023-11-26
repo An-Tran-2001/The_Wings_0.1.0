@@ -99,27 +99,17 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 
     @action(detail=False, methods=["get"], url_path="(?P<username>[^/.]+)", pagination_class=StandardResultsSetPagination)
     def your_post(self, request, *args, **kwargs):
-        user_id = kwargs.get("username", None)
-        if not User.objects.filter(username=user_id).exists():
+        username = kwargs.get("username", None)
+        if not User.objects.filter(username=username).exists():
             return Response(
                 status=status.HTTP_404_NOT_FOUND, data={"message": "User not found"}
             )
-        user_id = User.objects.get(username=user_id).id
-        friend = Friend.objects.filter(
-            Q(Q(user=user_id) | Q(friend=user_id) & Q(is_accepted=True))
-        ).values("user", "friend")
-        if self.request.user.id in friend:
-            serializer = self.serializer_class(
-                self.get_queryset().filter(Q(author=user_id) | Q(status="private")),
-                many=True,
-                context={"request": request},
-            )
-        else:
-            serializer = self.serializer_class(
-                Post.objects.filter(author=user_id, status="public"),
-                many=True,
-                context={"request": request},
-            )
+        ot_user = User.objects.get(username=username)
+        serializer = self.serializer_class(
+            Post.objects.get_yourposts(request.user, ot_user),
+            many=True,
+            context={"request": request},
+        )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
     
     @action(detail=False, methods=["get"], pagination_class=StandardResultsSetPagination)
