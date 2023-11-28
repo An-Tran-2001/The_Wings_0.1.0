@@ -45,15 +45,18 @@ class PostStatus(permissions.BasePermission):
             post = Post.objects.get(id=post_id)
         elif post_id := request.data.get("posts"):
             post = Post.objects.get(id=post_id)
-        if post.status == "public":
-            return True
-        elif post.status == "private":
-            friend_pairs = Friend.objects.filter(
-                Q(Q(user=post.author) | Q(friend=post.author) & Q(is_accepted=True))
-            ).values_list("user", "friend")
-            for user, friend in friend_pairs:
-                if request.user.id in [user, friend]:
-                    return True
-        elif post.status == "private_only":
-            return False
+        else:
+            post = None
+        if post is not None:
+            if post.status == "public":
+                return True
+            elif post.status == "private":
+                friend_pairs = Friend.objects.filter(
+                    Q(Q(user=post.author) | Q(friend=post.author) & Q(is_accepted=True))
+                ).values_list("user", "friend")
+                for user, friend in friend_pairs:
+                    if request.user.id in [user, friend]:
+                        return True
+            elif post.status == "private_only":
+                return False
         return True 

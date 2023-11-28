@@ -21,3 +21,25 @@ export const getMyPics = createAsyncThunk(
         }
     }
 );
+
+export interface getYoursPicsParams extends PagePaginationRequest {
+    username: string;
+}
+
+export const getYoursPics = createAsyncThunk(
+    "my_pics/getYoursPics",
+    async (params: getYoursPicsParams, { rejectWithValue }) => {
+        try {
+            const { username, page, page_size } = params;
+            const url = `${Endpoint.YOURS_PICS}${username}/?page=${page}&page_size=${page_size}`;
+            const response = await client.get(url);
+            return response.data;
+        } catch (error) {
+            const err = error as AxiosError;
+            if (err.response?.status === HttpStatusCode.Unauthorized) {
+                return rejectWithValue(AN_ERROR_TRY_AGAIN);
+            }
+            return rejectWithValue(err.message);
+        }
+    }
+);

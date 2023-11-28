@@ -29,7 +29,7 @@ class FileManager(Manager):
                 post__author=user2,
                 post__status__in=["public", "private"],
             ).order_by("-created_at")
-        return self.filter(ost__author=user2, post__status="public").order_by("-created_at")
+        return self.filter(post__author=user2, post__status="public").order_by("-created_at")
 
 class File(Model):
     post = ForeignKey("Post", on_delete=CASCADE, related_name="post_files")
@@ -83,7 +83,7 @@ class Post(Model):
 
 
 class Comment(Model):
-    posts = ForeignKey(Post, on_delete=CASCADE, related_name="post_comments")
+    posts = ForeignKey(Post, on_delete=CASCADE, related_name="post_comments", null=True, blank=True)
     users = ForeignKey(User, on_delete=CASCADE, related_name="users_comments")
     parent = ForeignKey(
         "self", on_delete=CASCADE, related_name="parent_comments", null=True, blank=True

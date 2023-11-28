@@ -21,7 +21,7 @@ from thewings_backend.users.renderers import UserRenderer
 from django.views.generic import DetailView
 from django.db.models import Q
 from thewings_backend.docs.posts import get_all_post_docs
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from thewings_backend.friends.models import Friend
 from thewings_backend.paginate import StandardResultsSetPagination
 from rest_framework.pagination import PageNumberPagination
@@ -89,14 +89,57 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             )
         return super().retrieve(request, *args)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='page',
+                type=int,
+                description='Page number',
+                required=False,
+            ),
+            OpenApiParameter(
+                name='page_size',
+                type=int,
+                description='Number of results per page',
+                required=False,
+            ),
+        ],
+        responses=OpenApiResponse(response=PostsSerializer),
+    )
     @get_all_post_docs()
     @action(detail=False, pagination_class=StandardResultsSetPagination, methods=["get"])
     def my_post_all(self, request):
+        post = self.get_queryset()
+        page = self.paginate_queryset(post)
+        if page is not None:
+            serializer = self.serializer_class(
+                page,
+                many=True,
+                context={"request": request},
+            )
+            return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(
-            self.get_queryset(), many=True, context={"request": request}
+            post, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='page',
+                type=int,
+                description='Page number',
+                required=False,
+            ),
+            OpenApiParameter(
+                name='page_size',
+                type=int,
+                description='Number of results per page',
+                required=False,
+            ),
+        ],
+        responses=OpenApiResponse(response=PostsSerializer),
+    )
     @action(detail=False, methods=["get"], url_path="(?P<username>[^/.]+)", pagination_class=StandardResultsSetPagination)
     def your_post(self, request, *args, **kwargs):
         username = kwargs.get("username", None)
@@ -105,13 +148,39 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
                 status=status.HTTP_404_NOT_FOUND, data={"message": "User not found"}
             )
         ot_user = User.objects.get(username=username)
+        post = Post.objects.get_yourposts(request.user, ot_user)
+        page = self.paginate_queryset(post)
+        if page is not None:
+            serializer = self.serializer_class(
+                page,
+                many=True,
+                context={"request": request},
+            )
+            return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(
-            Post.objects.get_yourposts(request.user, ot_user),
+            post,
             many=True,
             context={"request": request},
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
     
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='page',
+                type=int,
+                description='Page number',
+                required=False,
+            ),
+            OpenApiParameter(
+                name='page_size',
+                type=int,
+                description='Number of results per page',
+                required=False,
+            ),
+        ],
+        responses=OpenApiResponse(response=PostsSerializer),
+    )
     @action(detail=False, methods=["get"], pagination_class=StandardResultsSetPagination)
     def all(self, request, *args, **kwargs):
         friends = Friend.objects.filter(Q(Q(user=self.request.user) | Q(friend=self.request.user)) & Q(is_accepted=True)).values("user", "friend")
@@ -120,6 +189,15 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             Q(Q(author=self.request.user.id) | Q(author__in=friend_ids)) &
             Q(status__in=["public", "private"])
         )
+        page = self.paginate_queryset(post)
+        if page is not None:
+            serializer = self.serializer_class(
+                page,
+                many=True,
+                context={"request": request},
+            )
+            return self.get_paginated_response(serializer.data)
+        
         serializer = self.serializer_class(
                 post,
                 many=True,
@@ -212,7 +290,7 @@ class CommentViewSet(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(users=request.user)
-        post = Post.objects.get(id=serializer.data["posts"])
+        post = Post.objects.get(id=request.data["posts"])
         return Response(
             status=status.HTTP_201_CREATED,
             data={"post": PostsSerializer(post, context={"request": request}).data}

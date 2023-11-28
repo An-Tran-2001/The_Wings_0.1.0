@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 
 import { Pic, addPic, removePic } from "./reducer";
-import { getMyPics } from "./actions";
+import { getMyPics, getYoursPics, getYoursPicsParams } from "./actions";
 import { PagePaginationRequest } from "store/interfaces";
 
 export const useMyPics = () => {
@@ -11,6 +11,10 @@ export const useMyPics = () => {
 
     const fetchMyPics = useCallback((params: PagePaginationRequest) => {
         dispatch(getMyPics(params));
+    }, [dispatch]);
+
+    const fetchYoursPics = useCallback((params: getYoursPicsParams) => {
+        dispatch(getYoursPics(params));
     }, [dispatch]);
     
     const addMyPic = useCallback((pic: Pic) => {
@@ -26,6 +30,7 @@ export const useMyPics = () => {
         status,
         error,
         fetchMyPics,
+        fetchYoursPics,
         addMyPic,
         removeMyPic,
     };

@@ -171,6 +171,9 @@ class CommentCreateSerializer(ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        if validated_data.get("parent"):
+            validated_data = {**validated_data, "posts": None}
+            print(validated_data)
         comment = Comment.objects.create(**validated_data)
         return comment
 

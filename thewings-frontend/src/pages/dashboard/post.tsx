@@ -256,7 +256,7 @@ const Page = () => {
                               </div>
                               {comment.users.username === user?.username && (
                                 <CloseIcon
-                                  className="ml-auto text-[25px]"
+                                  className="ml-auto text-[25px] cursor-pointer"
                                   onClick={() => handleDeleteComment(comment.id)}
                                 />
                               )

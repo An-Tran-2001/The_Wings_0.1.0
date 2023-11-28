@@ -4,6 +4,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "store/auth";
 import { DataStatus } from "constant/enum";
 import { AN_ERROR_TRY_AGAIN } from "constant";
+import { PagePaginationResponse } from "store/interfaces";
 
 export interface DataLike {
     id: number,
@@ -62,6 +63,11 @@ export interface Post {
     likes?: Like;
     comments?: Comment;
 }
+
+export interface PostResponse extends PagePaginationResponse {
+  results: Post[];
+}
+
 export interface postState {
     posts: Post[];
     post: Post | undefined;
@@ -85,7 +91,7 @@ const postSlice = createSlice({
       state.postState = DataStatus.IDLE;
       state.error = null;
     },
-    viewPost: (state, action: PayloadAction<Post>) => {
+    viewPost: (state, action: PayloadAction<PostResponse>) => {
       state.post = action.payload;
     },
     popPost: (state, action: PayloadAction<{id: number}>) => {
@@ -97,9 +103,9 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [createPost.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [createPost.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload;
+      state.posts = action.payload.results;
     },
     [createPost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -109,9 +115,9 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [getPosts.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [getPosts.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload;
+      state.posts = action.payload.results;
     },
     [getPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -121,9 +127,9 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [getPostsHome.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [getPostsHome.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload;
+      state.posts = action.payload.results;
     },
     [getPostsHome.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -133,9 +139,9 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [getOrtherPosts.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [getOrtherPosts.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload;
+      state.posts = action.payload.results;
     },
     [getOrtherPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -145,7 +151,7 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [postLike.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [postLike.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
         state.post = action.payload.post
@@ -165,7 +171,7 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [postComment.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [postComment.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
         state.posts = state.posts.map((post) => {
@@ -198,7 +204,7 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [deleteComment.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [deleteComment.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
         state.postState = DataStatus.SUCCESS;
         const id_comment = action.payload.id
         state.post = {...state.post, comments: {count: state.post.comments?.count - 1, data: state.post.comments?.data.filter((comment) => comment.id !== id_comment)}}
@@ -211,7 +217,7 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [changePost.fulfilled.type]: (state, action: PayloadAction<Post>) => {
+    [changePost.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.id
         state.posts = state.posts.map((post) => {

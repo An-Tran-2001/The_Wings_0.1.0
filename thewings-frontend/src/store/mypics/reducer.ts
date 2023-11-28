@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DataStatus } from "constant/enum";
 import {
-  getMyPics,
+  getMyPics, getYoursPics,
 } from "./actions";
 import { PagePaginationResponse } from "store/interfaces";
 
@@ -50,6 +50,17 @@ const myPicsSlice = createSlice({
             state.pics = action.payload.results;
         });
         builder.addCase(getMyPics.rejected, (state, action) => {
+            state.status = DataStatus.FAILED;
+            state.error = action.payload as string;
+        });
+        builder.addCase(getYoursPics.pending, (state) => {
+            state.status = DataStatus.LOADING;
+        });
+        builder.addCase(getYoursPics.fulfilled, (state, action) => {
+            state.status = DataStatus.SUCCESS;
+            state.pics = action.payload.results;
+        });
+        builder.addCase(getYoursPics.rejected, (state, action) => {
             state.status = DataStatus.FAILED;
             state.error = action.payload as string;
         });
