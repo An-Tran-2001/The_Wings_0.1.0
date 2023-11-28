@@ -25,6 +25,9 @@ import useFriend from "store/friend/selector";
 import Face5Icon from "@mui/icons-material/Face5";
 import CardImage from "components/CardImage";
 import { Pic } from "store/mypics/reducer";
+import { PagePaginationRequest } from "store/interfaces";
+import DialogImagesSlide from "components/DialogImages";
+import { useMyPics } from "store/mypics/selectors";
 
 export interface Ionic {
   users_info: User;
@@ -57,6 +60,7 @@ const Profile = (props: Ionic) => {
   };
   const { user, onChangeProfile } = useAuth();
   const { onAddFriend, onRemoveFriend, onAcceptRequest } = useFriend();
+  const {pics, fetchMyPics, fetchYoursPics} = useMyPics();
   const { users_info, onSubmit, review_pics } = props;
   const [info, setInfo] = useState<changeProfileInfo>(INITIAL_VALUES_PROFILE);
   const [ImageCoverPreview, setImageCoverPreview] = useState(null);
@@ -101,6 +105,16 @@ const Profile = (props: Ionic) => {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  const onGetPics = async () => {
+    if (user?.id === users_info?.id) {
+      await fetchMyPics(INITIAL_VALUES_PIC_PAGE);
+    } else {
+      INITIAL_VALUES_PIC_PAGE.username = users_info?.username;
+      await fetchYoursPics(INITIAL_VALUES_PIC_PAGE);
+    }
+    INITIAL_VALUES_PIC_PAGE.username = undefined;
   }
 
   useEffect(() => {
@@ -473,20 +487,22 @@ const Profile = (props: Ionic) => {
               <Stack>
                 <div className="flex justify-between items-center py-3">
                   <h2 className="font-bold text-[1.1rem]">Recent Image</h2>
-                  <Link href={MESSAGE_PATH}>
-                  See all
-                  </Link>
+                  <div onClick={onGetPics}>
+                    <DialogImagesSlide
+                      name_button="View All"
+                      images={review_pics}
+                    />
+                  </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 my-3">
-                  {
-                    review_pics?.map((pic) => (
-                      <div className="col-span-1 rounded-xl overflow-hidden" key={pic?.id}>
-                        <CardImage
-                          src={pic?.file}
-                        />
-                      </div>
-                    ))
-                  }
+                  {review_pics?.slice(0, 3).map((pic) => (
+                    <div
+                      className="col-span-1 rounded-xl overflow-hidden"
+                      key={pic?.id}
+                    >
+                      <CardImage src={pic?.file} />
+                    </div>
+                  ))}
                 </div>
               </Stack>
             </div>
@@ -512,4 +528,12 @@ const INITIAL_VALUES_PROFILE: changeProfileInfo = {
   address: "",
   avatar: "",
   cover_image: "",
+};
+export interface PicsParams extends PagePaginationRequest {
+  username?: string;
+};
+
+const INITIAL_VALUES_PIC_PAGE: PicsParams = {
+  page: 1,
+  page_size: 50,
 };

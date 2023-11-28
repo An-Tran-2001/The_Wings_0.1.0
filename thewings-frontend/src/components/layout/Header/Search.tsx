@@ -12,7 +12,7 @@ import useProfiles from "store/profile/selector";
 import { usePost } from "store/post/selector";
 type PropsSearch = {
   inputProps?: InputProps;
-  onClick?: any;
+  onClick?: (user: User) => void;
 } & StackProps;
 
 const Search = (props: PropsSearch) => {
@@ -66,52 +66,60 @@ const Search = (props: PropsSearch) => {
         <IconButton>
           <SearchIcon className="text-white" />
         </IconButton>
-        {value ? <Stack className="absolute top-[45px] w-full bg-slate-600 z-30 rounded-xl flex justify-center items-center max-h-[300px] overflow-scroll pt-10">
-          {value &&
-            users?.map((user) => (
-              <Stack
-                key={user.id}
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                className="w-[98%] h-[40px] mt-2 bg-slate-300 p-3 rounded-xl z-30 cursor-pointer hover:bg-slate-400 transition duration-300"
-              >
+        {value ? (
+          <Stack className="absolute top-[45px] w-full bg-slate-600 z-30 rounded-xl flex justify-center items-center max-h-[300px] overflow-y-auto space-y-2 p-2">
+            {value &&
+              users?.map((user) => (
                 <Stack
-                  onClick={() => onClick(user)}
+                  key={user.id}
                   direction="row"
-                  color="black"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  className="w-[98%] h-[40px] bg-slate-300 rounded-xl z-30 cursor-pointer hover:bg-slate-400 transition duration-300"
                 >
-                  {user.avatar ? (
-                    <Avatar
-                      src={"http://localhost:8000" + user.avatar}
-                      alt={user.name}
-                      sx={{ width: 32, height: 32 }}
-                      className="mx-2"
-                    />
-                  ) : (
-                    <Avatar sx={{ width: 32, height: 32 }} className="mx-2" />
-                  )}
                   <Stack
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
+                    onClick={() => {
+                      if (onClick) {
+                        onClick(user);
+                      } else {
+                        handleOpenProfile(user.username)
+                      }
+                    }}
+                    direction="row"
+                    color="black"
                   >
+                    {user.avatar ? (
+                      <Avatar
+                        src={"http://localhost:8000" + user.avatar}
+                        alt={user.name}
+                        sx={{ width: 32, height: 32 }}
+                        className="mx-2"
+                      />
+                    ) : (
+                      <Avatar sx={{ width: 32, height: 32 }} className="mx-2" />
+                    )}
                     <Stack
-                      direction="row"
+                      direction="column"
                       alignItems="center"
                       justifyContent="center"
                     >
-                      <span className="font-bold">{user.name}</span>
-                      <span className="text-gray-400">@{user.username}</span>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span className="font-bold">{user.name}</span>
+                        <span className="text-gray-400">@{user.username}</span>
+                      </Stack>
                     </Stack>
                   </Stack>
+                  <PermContactCalendarIcon
+                    onClick={() => handleOpenProfile(user.username)}
+                  />
                 </Stack>
-                <PermContactCalendarIcon
-                  onClick={() => handleOpenProfile(user.username)}
-                />
-              </Stack>
-            ))}
-        </Stack> : null}
+              ))}
+          </Stack>
+        ) : null}
       </Stack>
     </Stack>
   );

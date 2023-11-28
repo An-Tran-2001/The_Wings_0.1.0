@@ -42,9 +42,7 @@ class PostsViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     def get_queryset(self, *args, **kwargs):
         assert isinstance(self.request.user.id, int)
         if self.action == "my_post_all":
-            return self.queryset.filter(author=self.request.user.id).order_by(
-                "-created_at"
-            )
+            return self.queryset.filter(Q(author=self.request.user.id) | Q(tags=self.request.user)).order_by("-created_at")
         if friend := Friend.objects.filter(
             Q(
                 Q(user=self.request.user)
