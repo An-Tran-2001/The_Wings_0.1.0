@@ -60,13 +60,13 @@ type NextLinkProps = {
   onClick?: () => void;
 };
 
-const Post = (props: NextLinkProps) => {
+const PostComponent = (props: NextLinkProps) => {
   const { user } = useAuth();
   const [openChangePost, setOpenChangePost] = useState(false);
   const [postChange, setPostChange] = useState<Post>(null);
   const { link_post, posts, children, className, onClick } = props;
-  const {onPopPost} = usePost();
-  const {onLikePost, onViewPost, onDeletePost} = usePost();
+  const { onPopPost } = usePost();
+  const { onLikePost, onViewPost, onDeletePost } = usePost();
 
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);
   const [openStates, setOpenStates] = useState<boolean[]>(() =>
@@ -75,20 +75,20 @@ const Post = (props: NextLinkProps) => {
   const [anchorElStates, setAnchorElStates] = useState<(HTMLElement | null)[]>(
     () => (Array.isArray(posts) ? posts.map(() => null) : []),
   );
-  const handleLikePost = async  (payload: LikeSet) => {
+  const handleLikePost = async (payload: LikeSet) => {
     await onLikePost(payload);
   };
-   const handleClickOpenCP = (index: number) => {
-     setOpenStates((prevStates) =>
-       prevStates.map((state, i) => (i === index ? true : state)),
-     );
-   };
+  const handleClickOpenCP = (index: number) => {
+    setOpenStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? true : state)),
+    );
+  };
 
   const handleSetPostChange = (post: Post) => {
     console.log(post);
     setPostChange(post);
     setOpenChangePost(true);
-  }
+  };
 
   const handleCloseCP = (index: number) => {
     setOpenStates((prevStates) =>
@@ -99,40 +99,37 @@ const Post = (props: NextLinkProps) => {
   const handleCloseAll = () => {
     setOpenStates((prevStates) => prevStates.map(() => false));
     setOpenChangePost(false);
-  }
+  };
 
-  const handleViewPost = async (payload: Post) => { 
+  const handleViewPost = async (payload: Post) => {
     await onViewPost(payload);
-  }
+  };
   const handleDeletePost = async (id: number) => {
-    handleClose();
     await onDeletePost(id);
-  }
-   const handleMenuClick = (
-     event: MouseEvent<HTMLDivElement>,
-     index: number,
-   ) => {
-     setAnchorElStates((prevStates) =>
-       prevStates.map((state, i) =>
-         i === index ? event.currentTarget : state,
-       ),
-     );
-     setOpenStates((prevStates) =>
-       prevStates.map((state, i) => (i === index ? !state : state)),
-     );
-   };
+  };
+  const handleMenuClick = (
+    event: MouseEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    setAnchorElStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? event.currentTarget : state)),
+    );
+    setOpenStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? !state : state)),
+    );
+  };
 
-   const handleClose = (index: number) => {
-     setAnchorElStates((prevStates) =>
-       prevStates.map((state, i) => (i === index ? null : state)),
-     );
-     setOpenStates((prevStates) =>
-       prevStates.map((state, i) => (i === index ? false : state)),
-     );
-   };
+  const handleClose = (index: number) => {
+    setAnchorElStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? null : state)),
+    );
+    setOpenStates((prevStates) =>
+      prevStates.map((state, i) => (i === index ? false : state)),
+    );
+  };
   const handlePopPost = async (id: number) => {
     await onPopPost(id);
-  }
+  };
   return (
     <Stack>
       {posts?.length > 0 ? (
@@ -270,12 +267,17 @@ const Post = (props: NextLinkProps) => {
                   }
                 >
                   {user?.id &&
+                  item.likes &&
+                  item.likes?.data &&
                   item.likes?.data.find((like) => like.user.id === user?.id) ? (
                     <ThumbUpIcon />
                   ) : (
                     <ThumbUpOffAltIcon />
                   )}
-                  {item.likes?.data && item.likes?.data.length > 0 ? (
+                  {item.likes &&
+                  item.likes?.data &&
+                  item.likes?.data &&
+                  item.likes?.data.length > 0 ? (
                     <AvatarGroup max={3} className="mx-2" spacing="small">
                       {item.likes?.data.map((info) => (
                         <Avatar
@@ -289,7 +291,7 @@ const Post = (props: NextLinkProps) => {
                   ) : (
                     <></>
                   )}
-                  <p>Like {item.likes?.count}</p>
+                  <p>Like {(item.likes && item.likes?.count) || 0}</p>
                 </div>
               </div>
               <div className="col-span-1 text-center space-x-2 flex justify-center items-center">
@@ -325,7 +327,7 @@ const Post = (props: NextLinkProps) => {
   );
 };
 
-export default React.memo(Post);
+export default React.memo(PostComponent);
 const INITIAL_VALUES_LIKE_POST = {
   status: LikeStatus.DISLIKE,
   post: 0,

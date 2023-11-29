@@ -76,6 +76,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 interface Status {
   onPosts: () => void;
+  paramsOnPosts?: any;
 }
 const CreatePost = (props: Status) => {
   const { onPosts} = props;
@@ -120,10 +121,8 @@ const CreatePost = (props: Status) => {
       const userIds = selectedValueTags.map((user) => Number(user.id));
       creds.tags = userIds;
       creds.status = status;
-      console.log(creds);
       await onCreatePost(creds);
       setOpen(false);
-      await onPosts();
     } catch (error) {
       setIsError("Error Not Content");
     }

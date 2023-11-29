@@ -101,9 +101,18 @@ const postSlice = createSlice({
       state.post = action.payload;
     },
     popPost: (state, action: PayloadAction<{id: number}>) => {
+      if (state.myPosts && state.myPosts.results) {
       state.myPosts = {...state.myPosts, results: state.myPosts?.results.filter((post) => post.id !== action.payload.id)}
+      }
+      if (state.homePosts && state.homePosts.results) {
       state.homePosts = {...state.homePosts, results: state.homePosts?.results.filter((post) => post.id !== action.payload.id)}
+      }
+      if (state.yourPosts && state.yourPosts.results) {
       state.yourPosts = {...state.yourPosts, results: state.yourPosts?.results.filter((post) => post.id !== action.payload.id)}
+      }
+    },
+    resetYourPosts: (state) => {
+      state.yourPosts = undefined;
     },
   },
   extraReducers: {
@@ -113,7 +122,15 @@ const postSlice = createSlice({
     },
     [createPost.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      // state.posts = action.payload.results;
+      if (state.myPosts) {
+        state.myPosts = {...state.myPosts, results: [action.payload.post, ...state.myPosts.results]}
+      }
+      if (state.homePosts) {
+        state.homePosts = {...state.homePosts, results: [action.payload.post, ...state.homePosts.results]}
+      }
+      if (state.yourPosts) {
+        state.yourPosts = {...state.yourPosts, results: [action.payload.post, ...state.yourPosts.results]}
+      }
     },
     [createPost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -176,13 +193,42 @@ const postSlice = createSlice({
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
         state.post = action.payload.post
-        state.posts = state.posts.map((post) => {
-        if (post.id === id_post) {
-            return action.payload.post
+        const myPosts =
+          state.myPosts &&
+          state.myPosts.results &&
+          state.myPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+        if (state.myPosts && state.myPosts.results) {
+        state.myPosts.results = myPosts;
         }
-        return post;
+        const homePosts =
+          state.homePosts &&
+          state.homePosts.results &&
+          state.homePosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+        if (state.homePosts && state.homePosts.results) {
+        state.homePosts.results = homePosts;
         }
-        );
+        const yourPosts =
+          state.yourPosts &&
+          state.yourPosts.results &&
+          state.yourPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+        if (state.yourPosts && state.yourPosts.results) {
+        state.yourPosts.results = yourPosts;
+        }
     },
     [postLike.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -192,17 +238,47 @@ const postSlice = createSlice({
       state.postState = DataStatus.LOADING;
       state.error = null;
     },
-    [postComment.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
+    [postComment.fulfilled.type]: (state, action: PayloadAction<Post>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.post.id
-        state.posts = state.posts.map((post) => {
-        if (post.id === id_post) {
-            return action.payload.post
-        }
-        return post;
-        }
-        );
-        state.post.comments = action.payload.post.comments
+        const myPosts =
+          state.myPosts &&
+          state.myPosts.results &&
+          state.myPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+        const homePosts =
+          state.homePosts &&
+          state.homePosts.results &&
+          state.homePosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+        const yourPosts =
+          state.yourPosts &&
+          state.yourPosts.results &&
+          state.yourPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload.post;
+            }
+            return post;
+          });
+          if (state.myPosts && state.myPosts.results) {
+          state.myPosts.results = myPosts;
+          }
+          if (state.homePosts && state.homePosts.results) {
+          state.homePosts.results = homePosts;
+          }
+          if (state.yourPosts && state.yourPosts.results) {
+          state.yourPosts.results = yourPosts;
+          }
+          state.post.comments = action.payload.post.comments;
+    
     },
     [postComment.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -215,7 +291,33 @@ const postSlice = createSlice({
     [deletePost.fulfilled.type]: (state, action: PayloadAction<{id: number, response: any}>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.id
-        state.posts = state.posts.filter((post) => post.id !== id_post);
+        const myPosts =
+          state.myPosts &&
+          state.myPosts.results &&
+          state.myPosts.results.filter(
+            (post) => post.id !== id_post,
+          );
+        const homePosts =
+          state.homePosts &&
+          state.homePosts.results &&
+          state.homePosts.results.filter(
+            (post) => post.id !== id_post,
+          );
+        const yourPosts =
+          state.yourPosts &&
+          state.yourPosts.results &&
+          state.yourPosts.results.filter(
+            (post) => post.id !== id_post,
+          );
+        if (state.myPosts && state.myPosts.results) {
+        state.myPosts.results = myPosts;
+        }
+        if (state.homePosts && state.homePosts.results) {
+        state.homePosts.results = homePosts;
+        }
+        if (state.yourPosts && state.yourPosts.results) {
+        state.yourPosts.results = yourPosts;
+        }
     },
     [deletePost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -241,13 +343,42 @@ const postSlice = createSlice({
     [changePost.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
         state.postState = DataStatus.SUCCESS;
         const id_post = action.payload.id
-        state.posts = state.posts.map((post) => {
-        if (post.id === id_post) {
-            return action.payload
+        const myPosts =
+          state.myPosts &&
+          state.myPosts.results &&
+          state.myPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload;
+            }
+            return post;
+          });
+        const homePosts =
+          state.homePosts &&
+          state.homePosts.results &&
+          state.homePosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload;
+            }
+            return post;
+          });
+        const yourPosts =
+          state.yourPosts &&
+          state.yourPosts.results &&
+          state.yourPosts.results.map((post) => {
+            if (post.id === id_post) {
+              return action.payload;
+            }
+            return post;
+          });
+        if (state.myPosts && state.myPosts.results) {
+        state.myPosts.results = myPosts;
         }
-        return post;
+        if (state.homePosts && state.homePosts.results) {
+        state.homePosts.results = homePosts;
         }
-        );
+        if (state.yourPosts && state.yourPosts.results) {
+        state.yourPosts.results = yourPosts;
+        }
     },
     [changePost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -256,5 +387,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { resetState, viewPost, popPost } = postSlice.actions;
+export const { resetState, viewPost, popPost, resetYourPosts } = postSlice.actions;
 export default postSlice.reducer;

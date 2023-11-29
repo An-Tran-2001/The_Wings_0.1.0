@@ -243,9 +243,10 @@ class CreatePostViewSet(UpdateModelMixin, GenericViewSet):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
+        post = Post.objects.get(id=serializer.data["id"])
         return Response(
             status=status.HTTP_201_CREATED,
-            data={"message": "Post created successfully", "post": serializer.data},
+            data={"message": "Post created successfully", "post": PostsSerializer(post, context={"request": request}).data},
         )
 
 

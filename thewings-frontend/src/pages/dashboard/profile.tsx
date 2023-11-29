@@ -26,7 +26,7 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        if (myPosts && myPosts.results.length === myPosts.count) {
+        if (myPosts && myPosts.results.length >= myPosts.count) {
           return;
         }
         await onGetPosts(page);
@@ -53,6 +53,7 @@ const Page = () => {
         onSubmit={onGetPosts}
         review_pics={pics}
         posts={(myPosts && myPosts.results) || []}
+        paramsOnPosts={INITIAL_VALUES_PAGE}
       />
     </Stack>
   );

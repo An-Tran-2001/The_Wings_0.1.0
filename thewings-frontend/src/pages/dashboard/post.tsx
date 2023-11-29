@@ -3,7 +3,6 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import { DashboardLayout } from "layout";
 import Image from "next/image";
 import { ReactElement, useEffect, useState } from "react";
-import { Post } from "store/post/reducer";
 import { usePost } from "store/post/selector";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";

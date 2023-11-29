@@ -33,6 +33,7 @@ export interface Ionic {
   posts: p[];
   onSubmit?: () => void;
   review_pics?: Pic[];
+  paramsOnPosts?: any;
 }
 
 export const FlipCameraIosIconCustom = () => {
@@ -61,7 +62,7 @@ const Profile = (props: Ionic) => {
   const { user, onChangeProfile } = useAuth();
   const { onAddFriend, onRemoveFriend, onAcceptRequest } = useFriend();
   const {pics, fetchMyPics, fetchYoursPics} = useMyPics();
-  const { users_info, onSubmit, review_pics, posts } = props;
+  const { users_info, onSubmit, review_pics, posts, paramsOnPosts } = props;
   const [info, setInfo] = useState<changeProfileInfo>(INITIAL_VALUES_PROFILE);
   const [ImageCoverPreview, setImageCoverPreview] = useState(null);
   const [ImageAvatarPreview, setImageAvatarPreview] = useState(null);
@@ -507,9 +508,9 @@ const Profile = (props: Ionic) => {
               </Stack>
             </div>
             <div className="col-span-2">
-              <CreatePost onPosts={onSubmit} />
+              <CreatePost onPosts={onSubmit} paramsOnPosts={paramsOnPosts} />
               <Stack className="justify-center items-center mt-3">
-                <Post link_post="post" posts={posts}/>
+                <Post link_post="post" posts={posts} />
               </Stack>
             </div>
           </div>

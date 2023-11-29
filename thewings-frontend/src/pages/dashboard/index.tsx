@@ -2,7 +2,7 @@ import { ReactElement, memo, useEffect, useState } from "react";
 import { DashboardLayout } from "../../layout";
 import { Stack } from "@mui/material";
 import CreatePost from "../../components/post/CreatePost";
-import Post from "../../components/post/Post";
+import PostComponent from "../../components/post/Post";
 import { usePost } from "store/post/selector";
 import { useAuth } from "store/auth";
 import debounce from "lodash.debounce";
@@ -26,7 +26,10 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        if (homePosts && homePosts.results.length === homePosts.count) {
+        if (
+          homePosts &&
+          homePosts.results && homePosts.results.length >= homePosts.count
+        ) {
           return;
         }
         await onGetPostsHome(page);
@@ -45,15 +48,15 @@ const Page = () => {
         className="bg-neutral-950"
       >
         <Stack width="600px" margin={3}>
-          <CreatePost onPosts={onGetPostsHome} />
+          <CreatePost onPosts={onGetPostsHome} paramsOnPosts={INITIAL_VALUES_PAGE}/>
         </Stack>
-        <Post link_post="dashboard/post" posts={(homePosts && homePosts.results) || []} />
+        <PostComponent link_post="dashboard/post" posts={(homePosts && homePosts.results) || []} />
       </Stack>
     </Stack>
   );
 };
 
-export default memo(Page);
+export default Page;
 
 Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
