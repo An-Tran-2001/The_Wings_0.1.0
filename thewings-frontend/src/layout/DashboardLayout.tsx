@@ -22,9 +22,7 @@ const DashboardLayout = ({ children }: IProps) => {
       <Header />
       <Stack direction="row" flex={1} height="92vh">
         <Sidebar />
-        <Stack flex={1} overflow="auto">
           {children}
-        </Stack>
       </Stack>
     </Stack>
   );

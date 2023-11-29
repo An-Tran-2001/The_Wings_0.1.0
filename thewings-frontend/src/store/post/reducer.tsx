@@ -69,7 +69,9 @@ export interface PostResponse extends PagePaginationResponse {
 }
 
 export interface postState {
-    posts: Post[];
+    myPosts: PostResponse | undefined;
+    homePosts: PostResponse | undefined;
+    yourPosts: PostResponse | undefined;
     post: Post | undefined;
     postState: DataStatus;
     error: string | null;
@@ -77,7 +79,9 @@ export interface postState {
 
 const initialState: postState = {
     post: undefined,
-    posts: [],
+    myPosts: undefined,
+    homePosts: undefined,
+    yourPosts: undefined,
     postState: DataStatus.IDLE,
     error: null,
 };
@@ -87,15 +91,19 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     resetState: (state) => {
-      state.posts = [];
+      state.myPosts = undefined;
+      state.homePosts = undefined;
+      state.yourPosts = undefined;
       state.postState = DataStatus.IDLE;
       state.error = null;
     },
-    viewPost: (state, action: PayloadAction<PostResponse>) => {
+    viewPost: (state, action: PayloadAction<Post>) => {
       state.post = action.payload;
     },
     popPost: (state, action: PayloadAction<{id: number}>) => {
-      state.posts = state.posts.filter((post) => post.id !== action.payload.id);
+      state.myPosts = {...state.myPosts, results: state.myPosts?.results.filter((post) => post.id !== action.payload.id)}
+      state.homePosts = {...state.homePosts, results: state.homePosts?.results.filter((post) => post.id !== action.payload.id)}
+      state.yourPosts = {...state.yourPosts, results: state.yourPosts?.results.filter((post) => post.id !== action.payload.id)}
     },
   },
   extraReducers: {
@@ -105,7 +113,7 @@ const postSlice = createSlice({
     },
     [createPost.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload.results;
+      // state.posts = action.payload.results;
     },
     [createPost.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -117,7 +125,12 @@ const postSlice = createSlice({
     },
     [getPosts.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload.results;
+      if (state.myPosts) {
+        state.myPosts = {...state.myPosts, results: [...state.myPosts.results, ...action.payload.results]}
+      }
+      else {
+        state.myPosts = action.payload;
+      }
     },
     [getPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -129,7 +142,11 @@ const postSlice = createSlice({
     },
     [getPostsHome.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload.results;
+      if (state.homePosts) {
+        state.homePosts = {...state.homePosts, results: [...state.homePosts.results, ...action.payload.results]}
+      } else {
+      state.homePosts = action.payload;
+      }
     },
     [getPostsHome.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;
@@ -141,7 +158,11 @@ const postSlice = createSlice({
     },
     [getOrtherPosts.fulfilled.type]: (state, action: PayloadAction<PostResponse>) => {
       state.postState = DataStatus.SUCCESS;
-      state.posts = action.payload.results;
+      if (state.yourPosts) {
+        state.yourPosts = {...state.yourPosts, results: [...state.yourPosts.results, ...action.payload.results]}
+      } else {
+      state.yourPosts = action.payload;
+      }
     },
     [getOrtherPosts.rejected.type]: (state, action: PayloadAction<string>) => {
       state.postState = DataStatus.FAILED;

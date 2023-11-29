@@ -11,7 +11,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { LikeSet } from "store/post/actions";
 import { LikeStatus } from "constant/enum";
-import { DataComment } from "store/post/reducer";
+import { DataComment, Post } from "store/post/reducer";
 import { Router } from "next/router";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
@@ -54,6 +54,7 @@ export const StyledBadge = styled(Badge)(({ theme }) => ({
 
 type NextLinkProps = {
   link_post: string;
+  posts: Post[];
   children?: React.ReactNode;
   className?: string;
   onClick?: () => void;
@@ -63,8 +64,8 @@ const Post = (props: NextLinkProps) => {
   const { user } = useAuth();
   const [openChangePost, setOpenChangePost] = useState(false);
   const [postChange, setPostChange] = useState<Post>(null);
-  const { link_post, children, className, onClick } = props;
-  const { posts , onPopPost} = usePost();
+  const { link_post, posts, children, className, onClick } = props;
+  const {onPopPost} = usePost();
   const {onLikePost, onViewPost, onDeletePost} = usePost();
 
   const [creds, setCreds] = useState<LikeSet>(INITIAL_VALUES_LIKE_POST);

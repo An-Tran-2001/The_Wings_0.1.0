@@ -17,7 +17,7 @@ export interface OtherPostRequest extends PagePaginationRequest {
 }
 export const usePost = () => {
     const dispatch = useAppDispatch();
-    const { posts, post, postState } = useAppSelector((state) => state.post);
+    const { myPosts, homePosts, yourPosts, post, postState } = useAppSelector((state) => state.post);
     const onCreatePost = useCallback(
         async (payload: CreatePostPayload) => {
         try {
@@ -116,7 +116,9 @@ export const usePost = () => {
         [dispatch],
         );
     return {
-        posts,
+        myPosts,
+        homePosts,
+        yourPosts,
         post,
         postState,
         onCreatePost,

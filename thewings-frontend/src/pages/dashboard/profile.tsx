@@ -1,25 +1,61 @@
 import { DashboardLayout } from "layout";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useAuth } from "store/auth";
 import { usePost } from "store/post/selector";
 import Profile from "components/layout/Profile";
 import { useMyPics } from "store/mypics/selectors";
+import { debounce } from "lodash";
+import { Stack } from "@mui/material";
 
 const Page = () => {
   const { user } = useAuth();
-  const { onGetPosts } = usePost();
+  const { myPosts, onGetPosts } = usePost();
   const {pics, fetchMyPics} = useMyPics();
+  const [page, setPage] = useState(INITIAL_VALUES_PAGE);
+
+  const handleScroll = debounce((e: any) => {
+    const currentListE = e.target;
+    if (
+      currentListE &&
+      currentListE.scrollTop + currentListE.clientHeight + 1 >=
+        currentListE.scrollHeight
+    ) {
+      setPage((prev) => ({ ...prev, page: prev.page + 1 }));
+    }
+  });
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        await onGetPosts(INITIAL_VALUES_PAGE);
-        fetchMyPics(INITIAL_VALUES_PAGE);
+        if (myPosts && myPosts.results.length === myPosts.count) {
+          return;
+        }
+        await onGetPosts(page);
       }
     };
 
     fetchData();
-  }, [onGetPosts, user?.username, fetchMyPics]);
-  return <Profile users_info={user} onSubmit={onGetPosts} review_pics={pics} />;
+  }, [onGetPosts, user?.username, page]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user?.username) {
+        await fetchMyPics(INITIAL_VALUES_PAGE);
+      }
+    };
+
+    fetchData();
+  }
+  , [fetchMyPics, user?.username]);
+  return (
+    <Stack flex={1} overflow="auto" onScroll={(e) => handleScroll(e) as any}>
+      <Profile
+        users_info={user}
+        onSubmit={onGetPosts}
+        review_pics={pics}
+        posts={(myPosts && myPosts.results) || []}
+      />
+    </Stack>
+  );
 };
 export default Page;
 

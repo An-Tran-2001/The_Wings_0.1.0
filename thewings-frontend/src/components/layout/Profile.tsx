@@ -4,9 +4,7 @@ import Post from "components/post/Post";
 import Image from "next/image";
 import { User, changeProfileInfo, useAuth } from "store/auth";
 import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
-import Link from "next/link";
 import Button from "components/Button";
-import { MESSAGE_PATH } from "constant/path";
 import { memo, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -28,9 +26,11 @@ import { Pic } from "store/mypics/reducer";
 import { PagePaginationRequest } from "store/interfaces";
 import DialogImagesSlide from "components/DialogImages";
 import { useMyPics } from "store/mypics/selectors";
+import { Post as p } from "store/post/reducer";
 
 export interface Ionic {
   users_info: User;
+  posts: p[];
   onSubmit?: () => void;
   review_pics?: Pic[];
 }
@@ -61,7 +61,7 @@ const Profile = (props: Ionic) => {
   const { user, onChangeProfile } = useAuth();
   const { onAddFriend, onRemoveFriend, onAcceptRequest } = useFriend();
   const {pics, fetchMyPics, fetchYoursPics} = useMyPics();
-  const { users_info, onSubmit, review_pics } = props;
+  const { users_info, onSubmit, review_pics, posts } = props;
   const [info, setInfo] = useState<changeProfileInfo>(INITIAL_VALUES_PROFILE);
   const [ImageCoverPreview, setImageCoverPreview] = useState(null);
   const [ImageAvatarPreview, setImageAvatarPreview] = useState(null);
@@ -509,7 +509,7 @@ const Profile = (props: Ionic) => {
             <div className="col-span-2">
               <CreatePost onPosts={onSubmit} />
               <Stack className="justify-center items-center mt-3">
-                <Post link_post="post" />
+                <Post link_post="post" posts={posts}/>
               </Stack>
             </div>
           </div>
