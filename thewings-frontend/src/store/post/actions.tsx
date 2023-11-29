@@ -4,6 +4,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, HttpStatusCode } from "axios";
 import { LikeStatus, PostStatus } from "constant/enum";
 import { DataLike, Post } from "./reducer";
+import { PagePaginationRequest } from "store/interfaces";
+import { OtherPostRequest } from "./selector";
 
 export interface CreatePostPayload {
   content: string;
@@ -55,9 +57,10 @@ export const createPost = createAsyncThunk(
 
 export const getPosts = createAsyncThunk(
   "post/getPosts",
-  async () => {
+  async (params: PagePaginationRequest) => {
     try {
-      const response = await client.get(Endpoint.GET_MY_POSTS);
+      const url = new URLSearchParams(params as any).toString();
+      const response = await client.get(Endpoint.GET_MY_POSTS + "?" + url);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -72,9 +75,10 @@ export const getPosts = createAsyncThunk(
 
 export const getPostsHome = createAsyncThunk(
   "post/getPostsHome",
-  async () => {
+  async (params: PagePaginationRequest) => {
     try {
-      const response = await client.get(Endpoint.GET_HOME_POSTS);
+      const url = new URLSearchParams(params as any).toString();
+      const response = await client.get(Endpoint.GET_HOME_POSTS + "?" + url);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -88,9 +92,11 @@ export const getPostsHome = createAsyncThunk(
 
 export const getOrtherPosts = createAsyncThunk(
   "post/getOrtherPosts",
-  async (username: string) => {
+  async (params: OtherPostRequest) => {
     try {
-      const endpoint = Endpoint.GET_OTHER_POSTS + username + "/";
+      const { username, ...rest } = params;
+      const url = new URLSearchParams(rest as any).toString();
+      const endpoint = Endpoint.GET_OTHER_POSTS + username + "/?" + url;
       const response = await client.get(endpoint);
       return response.data;
     } catch (error) {

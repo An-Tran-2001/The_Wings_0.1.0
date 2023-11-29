@@ -12,7 +12,7 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        await onGetPostsHome();
+        await onGetPostsHome(INITIAL_VALUES_PAGE);
       }
     };
 
@@ -38,4 +38,10 @@ export default Page;
 
 Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
+};
+
+
+const INITIAL_VALUES_PAGE = {
+  page: 1,
+  page_size: 5,
 };

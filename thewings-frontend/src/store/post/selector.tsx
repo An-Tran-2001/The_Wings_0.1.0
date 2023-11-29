@@ -3,12 +3,17 @@ import { useCallback } from "react";
 import { CreateCommentPayload, LikeSet, createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike, deleteComment, UpdatePost, changePost } from "./actions";
 import { PostStatus } from "constant/enum";
 import { Post,  popPost,  viewPost} from "./reducer";
+import { PagePaginationRequest } from "store/interfaces";
 
 export interface CreatePostPayload {
     content: string;
     files: File[];
     status: PostStatus;
     tags: number[];
+}
+
+export interface OtherPostRequest extends PagePaginationRequest {
+    username: string;
 }
 export const usePost = () => {
     const dispatch = useAppDispatch();
@@ -24,9 +29,9 @@ export const usePost = () => {
         [dispatch],
     );
     const onGetPosts = useCallback(
-        async () => {
+        async (params: PagePaginationRequest) => {
         try {
-            await dispatch(getPosts()).unwrap();
+            await dispatch(getPosts(params)).unwrap();
         } catch (error) {
             throw error;
         }
@@ -34,19 +39,19 @@ export const usePost = () => {
         [dispatch],
     );
     const onGetPostsHome = useCallback(
-        async () => {
+      async (params: PagePaginationRequest) => {
         try {
-            await dispatch(getPostsHome()).unwrap();
+          await dispatch(getPostsHome(params)).unwrap();
         } catch (error) {
-            throw error;
+          throw error;
         }
-        },
-        [dispatch],
+      },
+      [dispatch],
     );
     const onGetOrtherPosts = useCallback(
-      async (username: string) => {
+      async (params: OtherPostRequest) => {
         try {
-          await dispatch(getOrtherPosts(username)).unwrap();
+          await dispatch(getOrtherPosts(params)).unwrap();
         } catch (error) {
           throw error;
         }

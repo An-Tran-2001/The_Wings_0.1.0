@@ -7,13 +7,13 @@ import { useMyPics } from "store/mypics/selectors";
 
 const Page = () => {
   const { user } = useAuth();
-  const { posts , onGetPosts } = usePost();
+  const { onGetPosts } = usePost();
   const {pics, fetchMyPics} = useMyPics();
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        await onGetPosts();
-        fetchMyPics(INITIAL_VALUES_PIC_PAGE);
+        await onGetPosts(INITIAL_VALUES_PAGE);
+        fetchMyPics(INITIAL_VALUES_PAGE);
       }
     };
 
@@ -27,7 +27,7 @@ Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-const INITIAL_VALUES_PIC_PAGE = {
+const INITIAL_VALUES_PAGE = {
   page: 1,
   page_size: 3,
 };

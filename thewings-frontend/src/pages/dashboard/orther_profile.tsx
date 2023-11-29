@@ -12,9 +12,9 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
-        INITIAL_VALUES_PIC_PAGE.username = user?.username;
-        await onGetOrtherPosts(user?.username);
-        fetchYoursPics(INITIAL_VALUES_PIC_PAGE);
+        INITIAL_VALUES_PAGE.username = user?.username;
+        await onGetOrtherPosts(INITIAL_VALUES_PAGE);
+        fetchYoursPics(INITIAL_VALUES_PAGE);
       }
     };
 
@@ -29,7 +29,7 @@ export default Page;
 Page.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
-const INITIAL_VALUES_PIC_PAGE = {
+const INITIAL_VALUES_PAGE = {
   page: 1,
   page_size: 3,
   username: "",
