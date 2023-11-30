@@ -9,7 +9,7 @@ import debounce from "lodash.debounce";
 
 const Page = () => {
   const { user } = useAuth();
-  const { homePosts, onGetPostsHome } = usePost();
+  const { homePosts, onGetPostsHome, onResetHomePosts } = usePost();
   const [page, setPage] = useState(INITIAL_VALUES_PAGE);
 
   const handleScroll = debounce((e: any) => {
@@ -26,13 +26,26 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
+        await onResetHomePosts();
+        await onGetPostsHome(page);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user?.username) {
         if (
           homePosts &&
           homePosts.results && homePosts.results.length >= homePosts.count
         ) {
           return;
         }
-        await onGetPostsHome(page);
+        if (page.page > 1) {
+          await onGetPostsHome(page);
+        }
       }
     };
 

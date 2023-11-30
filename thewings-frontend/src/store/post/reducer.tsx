@@ -114,6 +114,12 @@ const postSlice = createSlice({
     resetYourPosts: (state) => {
       state.yourPosts = undefined;
     },
+    resetHomePosts: (state) => {
+      state.homePosts = undefined;
+    },
+    resetMyPosts: (state) => {
+      state.myPosts = undefined;
+    },
   },
   extraReducers: {
     [createPost.pending.type]: (state) => {
@@ -387,5 +393,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { resetState, viewPost, popPost, resetYourPosts } = postSlice.actions;
+export const { resetState, viewPost, popPost, resetYourPosts, resetHomePosts, resetMyPosts } = postSlice.actions;
 export default postSlice.reducer;

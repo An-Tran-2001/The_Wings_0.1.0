@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "store/hooks";
 import { useCallback } from "react";
 import { CreateCommentPayload, LikeSet, createPost, deletePost, getOrtherPosts, getPosts, getPostsHome, postComment, postLike, deleteComment, UpdatePost, changePost } from "./actions";
 import { PostStatus } from "constant/enum";
-import { Post,  popPost,  viewPost, resetYourPosts} from "./reducer";
+import { Post,  popPost,  viewPost, resetYourPosts, resetHomePosts, resetMyPosts} from "./reducer";
 import { PagePaginationRequest } from "store/interfaces";
 
 export interface CreatePostPayload {
@@ -106,6 +106,8 @@ export const usePost = () => {
         );
     const onPopPost = async (id: number) => await dispatch(popPost({id: id}));
     const onResetYourPosts = async () => await dispatch(resetYourPosts());
+    const onResetHomePosts = async () => await dispatch(resetHomePosts());
+    const onResetMyPosts = async () => await dispatch(resetMyPosts());
     const onUpdatePost = useCallback(
         async (payload: UpdatePost) => {
             try {
@@ -123,6 +125,7 @@ export const usePost = () => {
         post,
         postState,
         onCreatePost,
+        onResetHomePosts,
         onGetPosts,
         onGetPostsHome,
         onGetOrtherPosts,
@@ -134,5 +137,6 @@ export const usePost = () => {
         onPopPost,
         onUpdatePost,
         onResetYourPosts,
+        onResetMyPosts,
     };
     };

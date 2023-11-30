@@ -9,7 +9,7 @@ import { Stack } from "@mui/material";
 
 const Page = () => {
   const { user } = useAuth();
-  const { myPosts, onGetPosts } = usePost();
+  const { myPosts, onGetPosts, onResetMyPosts } = usePost();
   const {pics, fetchMyPics} = useMyPics();
   const [page, setPage] = useState(INITIAL_VALUES_PAGE);
 
@@ -26,10 +26,23 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
+        await onResetMyPosts();
+        await onGetPosts(page);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user?.username) {
         if (myPosts && myPosts.results.length >= myPosts.count) {
           return;
         }
+        if (page.page > 1) {
         await onGetPosts(page);
+        }
       }
     };
 
