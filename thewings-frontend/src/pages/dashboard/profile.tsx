@@ -47,7 +47,7 @@ const Page = () => {
     };
 
     fetchData();
-  }, [onGetPosts, user?.username, page]);
+  }, [user?.username, page.page]);
 
   useEffect(() => {
     const fetchData = async () => {

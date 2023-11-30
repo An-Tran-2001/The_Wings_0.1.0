@@ -42,9 +42,9 @@ const Page = () => {
         if (
           yourPosts &&
           yourPosts.results && yourPosts.results.length >= yourPosts.count &&
+          yourPosts.results[0].author &&
           yourPosts.results[0].author.username === user?.username
         ) {
-          console.log("yourPosts", yourPosts);
           return;
         };
         page.username = user?.username || "";

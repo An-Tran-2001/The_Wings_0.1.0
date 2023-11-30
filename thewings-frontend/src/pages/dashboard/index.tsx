@@ -33,7 +33,7 @@ const Page = () => {
 
     fetchData();
   }, []);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
@@ -50,7 +50,7 @@ const Page = () => {
     };
 
     fetchData();
-  }, [onGetPostsHome, user?.username, page]);
+  }, [user?.username, page.page]);
 
   return (
     <Stack flex={1} overflow="auto" onScroll={(e) => handleScroll(e) as any}>
