@@ -26,6 +26,7 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user?.username) {
+        console.log("1")
         await onResetMyPosts();
         await onGetPosts(page);
       }
@@ -41,6 +42,7 @@ const Page = () => {
           return;
         }
         if (page.page > 1) {
+          console.log("2")
         await onGetPosts(page);
         }
       }

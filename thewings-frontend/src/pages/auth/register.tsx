@@ -37,8 +37,7 @@ const Page = () => {
         },
       });
     } catch (error) {
-      console.log('ko')
-      setIsError("Error infomation not correct");
+      setIsError(error.message);
     } 
   };
 

@@ -67,12 +67,26 @@ export const register = createAsyncThunk(
       if (response.status === HttpStatusCode.Created) {
         return response.data;
       }
-      
+
       throw AN_ERROR_TRY_AGAIN;
     } catch (error) {
-      console.log("abc");
-      if ((error as AxiosError).response?.status === HttpStatusCode.BadRequest)
-        throw AN_ERROR_TRY_AGAIN;
+      if (
+        (error as AxiosError).response?.status === HttpStatusCode.BadRequest
+      ) {
+        const errors = (error.response?.data.errors || []) as Record<
+          string,
+          string
+        >[];
+
+        const errorString = Object.values(errors)
+          .map((errorObj) => Object.values(errorObj).join(", "))
+          .join(", ");
+
+        console.error(errorString);
+
+        throw errorString;
+      }
+
       throw error;
     }
   },
